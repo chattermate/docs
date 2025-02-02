@@ -1,0 +1,188 @@
+---
+title: 'Groups'
+description: 'User group management endpoints'
+---
+
+# Groups API
+
+Manage user groups and their members.
+
+## List Groups
+
+List all groups in the organization.
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/groups \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+[
+  {
+    "name": "Support Team",
+    "description": "Customer support team members",
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "organization_id": "123e4567-e89b-12d3-a456-426614174001",
+    "users": [
+      {
+        "email": "agent1@example.com",
+        "full_name": "John Agent",
+        "id": "123e4567-e89b-12d3-a456-426614174002"
+      }
+    ]
+  }
+]
+```
+</ResponseExample>
+
+## Create Group
+
+Create a new group.
+
+<ParamField body="name" type="string" required>
+  Group name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Group description
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/groups \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "name": "Support Team",
+    "description": "Customer support team members"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "name": "Support Team",
+  "description": "Customer support team members",
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "organization_id": "123e4567-e89b-12d3-a456-426614174001"
+}
+```
+</ResponseExample>
+
+## Get Group
+
+Get group details including members.
+
+<ParamField path="group_id" type="string" format="uuid" required>
+  Group ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/groups/{group_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "name": "Support Team",
+  "description": "Customer support team members",
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "organization_id": "123e4567-e89b-12d3-a456-426614174001",
+  "users": [
+    {
+      "email": "agent1@example.com",
+      "full_name": "John Agent",
+      "id": "123e4567-e89b-12d3-a456-426614174002"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## Update Group
+
+Update group details.
+
+<ParamField path="group_id" type="string" format="uuid" required>
+  Group ID
+</ParamField>
+
+<ParamField body="name" type="string">
+  Group name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Group description
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X PUT https://api.chattermate.chat/api/v1/groups/{group_id} \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "name": "Support Team Alpha",
+    "description": "Primary customer support team"
+  }'
+```
+</RequestExample>
+
+## Delete Group
+
+Delete a group.
+
+<ParamField path="group_id" type="string" format="uuid" required>
+  Group ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X DELETE https://api.chattermate.chat/api/v1/groups/{group_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Add User to Group
+
+Add a user to a group.
+
+<ParamField path="group_id" type="string" format="uuid" required>
+  Group ID
+</ParamField>
+
+<ParamField path="user_id" type="string" format="uuid" required>
+  User ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/groups/{group_id}/users/{user_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Remove User from Group
+
+Remove a user from a group.
+
+<ParamField path="group_id" type="string" format="uuid" required>
+  Group ID
+</ParamField>
+
+<ParamField path="user_id" type="string" format="uuid" required>
+  User ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X DELETE https://api.chattermate.chat/api/v1/groups/{group_id}/users/{user_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample> 

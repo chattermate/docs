@@ -1,0 +1,194 @@
+---
+title: 'Knowledge Base'
+description: 'Knowledge base management endpoints'
+---
+
+# Knowledge Base API
+
+Manage knowledge base content for AI agents.
+
+## Upload PDF Files
+
+Upload PDF files to the knowledge base.
+
+<ParamField body="files" type="array" required>
+  Array of PDF files to upload
+</ParamField>
+
+<ParamField body="org_id" type="string" required>
+  Organization ID
+</ParamField>
+
+<ParamField body="agent_id" type="string">
+  Optional agent ID to associate the knowledge with
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/knowledge/upload/pdf \
+  -H "Cookie: access_token=your_access_token" \
+  -F "files=@document1.pdf" \
+  -F "files=@document2.pdf" \
+  -F "org_id=123e4567-e89b-12d3-a456-426614174000" \
+  -F "agent_id=123e4567-e89b-12d3-a456-426614174001"
+```
+</RequestExample>
+
+## Add URLs
+
+Add URLs to the knowledge base.
+
+<ParamField body="org_id" type="string" format="uuid" required>
+  Organization ID
+</ParamField>
+
+<ParamField body="pdf_urls" type="array">
+  Array of PDF URLs to process
+</ParamField>
+
+<ParamField body="websites" type="array">
+  Array of website URLs to process
+</ParamField>
+
+<ParamField body="agent_id" type="string">
+  Optional agent ID to associate the knowledge with
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/knowledge/add/urls \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "org_id": "123e4567-e89b-12d3-a456-426614174000",
+    "pdf_urls": ["https://example.com/doc1.pdf"],
+    "websites": ["https://example.com/docs"],
+    "agent_id": "123e4567-e89b-12d3-a456-426614174001"
+  }'
+```
+</RequestExample>
+
+## Link Knowledge to Agent
+
+Link existing knowledge to an agent.
+
+<ParamField query="knowledge_id" type="integer" required>
+  Knowledge base item ID
+</ParamField>
+
+<ParamField query="agent_id" type="string" required>
+  Agent ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST "https://api.chattermate.chat/api/v1/knowledge/link?knowledge_id=123&agent_id=123e4567-e89b-12d3-a456-426614174001" \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Unlink Knowledge from Agent
+
+Unlink knowledge from an agent.
+
+<ParamField query="knowledge_id" type="integer" required>
+  Knowledge base item ID
+</ParamField>
+
+<ParamField query="agent_id" type="string" required>
+  Agent ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X DELETE "https://api.chattermate.chat/api/v1/knowledge/unlink?knowledge_id=123&agent_id=123e4567-e89b-12d3-a456-426614174001" \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Get Knowledge by Agent
+
+Get knowledge sources and their data for an agent with pagination.
+
+<ParamField path="agent_id" type="string" required>
+  Agent ID
+</ParamField>
+
+<ParamField query="page" type="integer" default="1" min="1">
+  Page number
+</ParamField>
+
+<ParamField query="page_size" type="integer" default="10" min="1" max="100">
+  Items per page
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.chattermate.chat/api/v1/knowledge/agent/{agent_id}?page=1&page_size=10" \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Get Knowledge by Organization
+
+Get knowledge sources and their data for an organization with pagination.
+
+<ParamField path="org_id" type="string" required>
+  Organization ID
+</ParamField>
+
+<ParamField query="page" type="integer" default="1" min="1">
+  Page number
+</ParamField>
+
+<ParamField query="page_size" type="integer" default="10" min="1" max="100">
+  Items per page
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.chattermate.chat/api/v1/knowledge/organization/{org_id}?page=1&page_size=10" \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Get Queue Status
+
+Get status of a queued knowledge item.
+
+<ParamField path="queue_id" type="integer" required>
+  Queue ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/knowledge/queue/{queue_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Get Processor Status
+
+Get status of the knowledge processor for user's organization.
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/knowledge/processor/status \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Delete Knowledge
+
+Delete a knowledge source and its associated data.
+
+<ParamField path="knowledge_id" type="integer" required>
+  Knowledge base item ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X DELETE https://api.chattermate.chat/api/v1/knowledge/{knowledge_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample> 

@@ -1,0 +1,237 @@
+---
+title: 'Users'
+description: 'User management endpoints'
+---
+
+# Users API
+
+Manage users, their roles, and profiles.
+
+## Create User
+
+Create a new user in the organization.
+
+<ParamField body="email" type="string" format="email" required>
+  User's email address
+</ParamField>
+
+<ParamField body="full_name" type="string" required>
+  User's full name
+</ParamField>
+
+<ParamField body="password" type="string" required>
+  User's password
+</ParamField>
+
+<ParamField body="role_id" type="integer" required>
+  Role ID to assign to the user
+</ParamField>
+
+<ParamField body="is_active" type="boolean" default="true">
+  Whether the user account is active
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/users \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "email": "user@example.com",
+    "full_name": "John Doe",
+    "password": "secure_password",
+    "role_id": 1
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "email": "user@example.com",
+  "full_name": "John Doe",
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "organization_id": "123e4567-e89b-12d3-a456-426614174001",
+  "is_active": true,
+  "created_at": "2024-03-15T10:30:00Z",
+  "updated_at": "2024-03-15T10:30:00Z",
+  "role": {
+    "id": 1,
+    "name": "Agent",
+    "description": "Customer service agent"
+  }
+}
+```
+</ResponseExample>
+
+## List Users
+
+List all users in the organization with pagination.
+
+<ParamField query="skip" type="integer" default="0">
+  Number of records to skip
+</ParamField>
+
+<ParamField query="limit" type="integer" default="100">
+  Maximum number of records to return
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.chattermate.chat/api/v1/users?limit=100&skip=0" \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+[
+  {
+    "email": "user@example.com",
+    "full_name": "John Doe",
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "is_active": true,
+    "role": {
+      "id": 1,
+      "name": "Agent"
+    }
+  }
+]
+```
+</ResponseExample>
+
+## Get User
+
+Get user details by ID.
+
+<ParamField path="user_id" type="string" required>
+  User ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/users/{user_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Update User
+
+Update user details.
+
+<ParamField path="user_id" type="string" required>
+  User ID
+</ParamField>
+
+<ParamField body="email" type="string" format="email">
+  User's email address
+</ParamField>
+
+<ParamField body="full_name" type="string">
+  User's full name
+</ParamField>
+
+<ParamField body="password" type="string">
+  New password
+</ParamField>
+
+<ParamField body="current_password" type="string">
+  Current password (required for password change)
+</ParamField>
+
+<ParamField body="role_id" type="integer">
+  New role ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X PUT https://api.chattermate.chat/api/v1/users/{user_id} \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "full_name": "John Smith",
+    "role_id": 2
+  }'
+```
+</RequestExample>
+
+## Delete User
+
+Delete a user.
+
+<ParamField path="user_id" type="string" required>
+  User ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X DELETE https://api.chattermate.chat/api/v1/users/{user_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Update Profile
+
+Update current user's profile.
+
+<ParamField body="full_name" type="string">
+  User's full name
+</ParamField>
+
+<ParamField body="password" type="string">
+  New password
+</ParamField>
+
+<ParamField body="current_password" type="string">
+  Current password (required for password change)
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X PATCH https://api.chattermate.chat/api/v1/users/me \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "full_name": "John Smith"
+  }'
+```
+</RequestExample>
+
+## Upload Profile Picture
+
+Upload user profile picture.
+
+<ParamField body="file" type="file" required>
+  Profile picture file
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/users/me/profile-pic \
+  -H "Cookie: access_token=your_access_token" \
+  -F "file=@profile.jpg"
+```
+</RequestExample>
+
+## Update User Status
+
+Update user's online status.
+
+<ParamField path="user_id" type="string" required>
+  User ID
+</ParamField>
+
+<ParamField body="is_online" type="boolean" required>
+  User's online status
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/users/{user_id}/status \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "is_online": true
+  }'
+```
+</RequestExample> 

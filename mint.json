@@ -1,0 +1,103 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "ChatterMate",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "favicon": "/images/favicon/favicon-32x32.png",
+  "colors": {
+    "primary": "#f34611",
+    "light": "#62CFE5",
+    "dark": "#000000",
+    "anchors": {
+      "from": "#f34611",
+      "to": "#62CFE5"
+    }
+  },
+  "modeToggle": {
+    "default": "dark",
+    "isHidden": false
+  },
+  "backgroundImage": "/images/background.png",
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:support@chattermate.chat"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "GitHub",
+    "url": "https://github.com/chattermate/chattermate.chat"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "API Reference",
+      "icon": "rectangle-terminal",
+      "url": "api-reference"
+    },
+    {
+      "name": "Community",
+      "icon": "discord",
+      "url": "https://discord.gg/XNCMg8jV8U"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "introduction",
+        "quickstart",
+        "development",
+        "deployment"
+      ]
+    },
+    {
+      "group": "Components",
+      "pages": [
+        "components/dashboard-layout"
+      ]
+    },
+    {
+      "group": "Views",
+      "pages": [
+        "views/overview"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/authentication",
+        "api-reference/chat",
+        "api-reference/organizations",
+        "api-reference/users",
+        "api-reference/knowledge-base",
+        "api-reference/ai",
+        "api-reference/agent",
+        "api-reference/widget",
+        "api-reference/groups",
+        "api-reference/roles",
+        "api-reference/notifications"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/chattermate/chattermate.chat",
+    "discord": "https://discord.gg/XNCMg8jV8U"
+  },
+  "analytics": {
+    "ga4": {
+      "measurementId": "G-XXXXXXXXXX"
+    }
+  },
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true
+  }
+} 

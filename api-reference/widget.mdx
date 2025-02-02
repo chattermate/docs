@@ -1,0 +1,202 @@
+---
+title: 'Widget'
+description: 'Chat widget management endpoints'
+---
+
+# Widget API
+
+Manage chat widgets for website integration.
+
+## Create New Widget
+
+Create a new widget for the organization.
+
+<ParamField body="name" type="string" required>
+  Widget name
+</ParamField>
+
+<ParamField body="agent_id" type="string" format="uuid">
+  Optional agent ID to associate with the widget
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/widgets \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "name": "Support Widget",
+    "agent_id": "123e4567-e89b-12d3-a456-426614174000"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "id": "widget_123",
+  "organization_id": "123e4567-e89b-12d3-a456-426614174001",
+  "agent": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "support_agent",
+    "display_name": "Support Bot",
+    "customization": {
+      "chat_background_color": "#F8F9FA",
+      "chat_bubble_color": "#E9ECEF"
+    }
+  }
+}
+```
+</ResponseExample>
+
+## List Widgets
+
+List all widgets for the organization.
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/widgets \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+[
+  {
+    "id": "widget_123",
+    "organization_id": "123e4567-e89b-12d3-a456-426614174001",
+    "agent": {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "name": "support_agent",
+      "display_name": "Support Bot"
+    }
+  }
+]
+```
+</ResponseExample>
+
+## Get Widget UI
+
+Get widget UI and handle customer authentication.
+
+<ParamField path="widget_id" type="string" required>
+  Widget ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/widgets/{widget_id}/data \
+  -H "Cookie: conversation_token=your_conversation_token"
+```
+</RequestExample>
+
+## Get Widget Data
+
+Get widget data including agent customization.
+
+<ParamField path="widget_id" type="string" required>
+  Widget ID
+</ParamField>
+
+<ParamField query="email" type="string">
+  Optional customer email for personalization
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.chattermate.chat/api/v1/widgets/{widget_id}?email=customer@example.com" \
+  -H "Cookie: conversation_token=your_conversation_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "id": "widget_123",
+  "organization_id": "123e4567-e89b-12d3-a456-426614174001",
+  "agent": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "support_agent",
+    "display_name": "Support Bot",
+    "customization": {
+      "chat_background_color": "#F8F9FA",
+      "chat_bubble_color": "#E9ECEF",
+      "accent_color": "#f34611",
+      "font_family": "Inter, system-ui, sans-serif"
+    }
+  },
+  "customer": {
+    "full_name": "John Customer",
+    "profile_pic": "https://example.com/profile.jpg"
+  }
+}
+```
+</ResponseExample>
+
+## Remove Widget
+
+Delete a widget.
+
+<ParamField path="widget_id" type="string" required>
+  Widget ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X DELETE https://api.chattermate.chat/api/v1/widgets/{widget_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Get Widget Details
+
+Get widget details for authenticated users.
+
+<ParamField path="widget_id" type="string" required>
+  Widget ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/widgets/{widget_id}/details \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Widget Integration
+
+To integrate the chat widget into your website, add the following script tag:
+
+```html
+<script>
+  window.ChatterMateConfig = {
+    widgetId: 'your_widget_id',
+    position: 'bottom-right', // or 'bottom-left'
+    theme: 'light' // or 'dark'
+  };
+</script>
+<script src="https://cdn.chattermate.chat/widget.js" async></script>
+```
+
+### Configuration Options
+
+<ResponseField name="widgetId" type="string" required>
+  Your widget ID from the ChatterMate dashboard
+</ResponseField>
+
+<ResponseField name="position" type="string" default="bottom-right">
+  Widget position on the page (bottom-right, bottom-left)
+</ResponseField>
+
+<ResponseField name="theme" type="string" default="light">
+  Widget theme (light, dark)
+</ResponseField>
+
+<ResponseField name="defaultOpen" type="boolean" default="false">
+  Whether the chat window should be open by default
+</ResponseField>
+
+<ResponseField name="customerData" type="object">
+  Optional customer data for personalization
+</ResponseField> 

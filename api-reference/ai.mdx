@@ -1,0 +1,122 @@
+---
+title: 'AI'
+description: 'AI configuration and management endpoints'
+---
+
+# AI API
+
+Configure and manage AI models and settings.
+
+## Setup AI
+
+Setup AI configuration for the current user's organization.
+
+<ParamField body="model_type" type="string" required>
+  AI model type (OPENAI, ANTHROPIC, DEEPSEEK, GOOGLE, GOOGLEVERTEX, GROQ, MISTRAL, HUGGINGFACE, OLLAMA, XAI)
+</ParamField>
+
+<ParamField body="model_name" type="string" required>
+  Name of the specific model to use
+</ParamField>
+
+<ParamField body="api_key" type="string" required>
+  API key for the AI provider
+</ParamField>
+
+<ParamField body="settings" type="object">
+  Additional model-specific settings
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/ai/setup \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "model_type": "OPENAI",
+    "model_name": "gpt-4",
+    "api_key": "your_api_key",
+    "settings": {
+      "temperature": 0.7,
+      "max_tokens": 150
+    }
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "message": "AI configuration successfully created",
+  "config": {
+    "id": 1,
+    "organization_id": "123e4567-e89b-12d3-a456-426614174000",
+    "model_type": "OPENAI",
+    "model_name": "gpt-4",
+    "is_active": true,
+    "settings": {
+      "temperature": 0.7,
+      "max_tokens": 150
+    }
+  }
+}
+```
+</ResponseExample>
+
+## Get Organization AI Config
+
+Get active AI configuration for the current user's organization.
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/ai/config \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "id": 1,
+  "organization_id": "123e4567-e89b-12d3-a456-426614174000",
+  "model_type": "OPENAI",
+  "model_name": "gpt-4",
+  "is_active": true,
+  "settings": {
+    "temperature": 0.7,
+    "max_tokens": 150
+  }
+}
+```
+</ResponseExample>
+
+## Supported AI Models
+
+ChatterMate supports integration with various AI providers:
+
+### OpenAI
+- GPT-4
+- GPT-3.5-turbo
+- GPT-4-turbo
+
+### Anthropic
+- Claude 2
+- Claude 3
+
+### Google
+- Gemini Pro
+- Gemini Ultra
+- PaLM 2
+
+### Mistral
+- Mistral-7B
+- Mixtral-8x7B
+
+### Other Providers
+- Ollama (local models)
+- HuggingFace (hosted models)
+- DeepSeek
+- Groq
+- XAI
+
+Each provider may have specific configuration requirements and capabilities. Refer to the provider's documentation for detailed information about model parameters and API usage. 

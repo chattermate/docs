@@ -1,0 +1,189 @@
+---
+title: 'Organizations'
+description: 'Organization management endpoints'
+---
+
+# Organizations API
+
+Manage organizations and their settings.
+
+## Create Organization
+
+Create a new organization with an admin user and default roles.
+
+<ParamField body="name" type="string" required>
+  Organization name
+</ParamField>
+
+<ParamField body="domain" type="string" required>
+  Organization domain
+</ParamField>
+
+<ParamField body="admin_email" type="string" required>
+  Admin user email
+</ParamField>
+
+<ParamField body="admin_name" type="string" required>
+  Admin user full name
+</ParamField>
+
+<ParamField body="admin_password" type="string" required>
+  Admin user password
+</ParamField>
+
+<ParamField body="timezone" type="string" default="UTC">
+  Organization timezone
+</ParamField>
+
+<ParamField body="business_hours" type="object">
+  Organization business hours configuration
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/organizations \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Acme Inc",
+    "domain": "acme.com",
+    "admin_email": "admin@acme.com",
+    "admin_name": "Admin User",
+    "admin_password": "secure_password",
+    "timezone": "America/New_York"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "name": "Acme Inc",
+  "domain": "acme.com",
+  "timezone": "America/New_York",
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "is_active": true,
+  "access_token": "eyJ0eXAi...",
+  "refresh_token": "eyJ0eXAi...",
+  "token_type": "bearer",
+  "user": {
+    "email": "admin@acme.com",
+    "full_name": "Admin User",
+    "id": "123e4567-e89b-12d3-a456-426614174001"
+  }
+}
+```
+</ResponseExample>
+
+## List Organizations
+
+List all organizations with pagination.
+
+<ParamField query="skip" type="integer" default="0">
+  Number of records to skip
+</ParamField>
+
+<ParamField query="limit" type="integer" default="100">
+  Maximum number of records to return
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.chattermate.chat/api/v1/organizations?limit=100&skip=0" \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+[
+  {
+    "name": "Acme Inc",
+    "domain": "acme.com",
+    "timezone": "America/New_York",
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "is_active": true
+  }
+]
+```
+</ResponseExample>
+
+## Get Organization
+
+Get organization details by ID.
+
+<ParamField path="org_id" type="string" format="uuid" required>
+  Organization ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/organizations/{org_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Update Organization
+
+Update organization details including business hours.
+
+<ParamField path="org_id" type="string" format="uuid" required>
+  Organization ID
+</ParamField>
+
+<ParamField body="name" type="string">
+  Organization name
+</ParamField>
+
+<ParamField body="domain" type="string">
+  Organization domain
+</ParamField>
+
+<ParamField body="timezone" type="string">
+  Organization timezone
+</ParamField>
+
+<ParamField body="business_hours" type="object">
+  Organization business hours configuration
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X PATCH https://api.chattermate.chat/api/v1/organizations/{org_id} \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "name": "Acme Corporation",
+    "timezone": "America/Los_Angeles"
+  }'
+```
+</RequestExample>
+
+## Delete Organization
+
+Delete organization (soft delete by setting is_active=False).
+
+<ParamField path="org_id" type="string" format="uuid" required>
+  Organization ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X DELETE https://api.chattermate.chat/api/v1/organizations/{org_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Get Organization Stats
+
+Get organization statistics.
+
+<ParamField path="org_id" type="string" format="uuid" required>
+  Organization ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/organizations/{org_id}/stats \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample> 

@@ -1,0 +1,114 @@
+---
+title: 'Authentication'
+description: 'User authentication and token management endpoints'
+---
+
+# Authentication
+
+ChatterMate uses cookie-based authentication with access and refresh tokens.
+
+## Login
+
+<ParamField body="username" type="string" required>
+  User's email address
+</ParamField>
+
+<ParamField body="password" type="string" required>
+  User's password
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/users/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=user@example.com&password=password123"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "access_token": "eyJ0eXAi...",
+  "refresh_token": "eyJ0eXAi...",
+  "token_type": "bearer",
+  "user": {
+    "email": "user@example.com",
+    "full_name": "John Doe",
+    "id": "123e4567-e89b-12d3-a456-426614174000"
+  }
+}
+```
+</ResponseExample>
+
+## Refresh Token
+
+Get a new access token using the refresh token from cookie.
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/users/refresh \
+  -H "Cookie: refresh_token=your_refresh_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "access_token": "eyJ0eXAi...",
+  "refresh_token": "eyJ0eXAi...",
+  "token_type": "bearer",
+  "user": {
+    "email": "user@example.com",
+    "full_name": "John Doe",
+    "id": "123e4567-e89b-12d3-a456-426614174000"
+  }
+}
+```
+</ResponseExample>
+
+## Logout
+
+Logout user and clear authentication cookies.
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/users/logout \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "message": "Successfully logged out"
+}
+```
+</ResponseExample>
+
+## Update FCM Token
+
+Update user's FCM token for web notifications.
+
+<ParamField body="token" type="string" required>
+  Firebase Cloud Messaging token
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/users/token/fcm-token \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{"token": "fcm_token_value"}'
+```
+</RequestExample>
+
+## Clear FCM Token
+
+Clear user's FCM token.
+
+<RequestExample>
+```bash
+curl -X DELETE https://api.chattermate.chat/api/v1/users/token/fcm-token \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample> 

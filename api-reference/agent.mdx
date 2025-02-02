@@ -1,0 +1,204 @@
+---
+title: 'Agent'
+description: 'AI agent management endpoints'
+---
+
+# Agent API
+
+Manage AI agents and their customization.
+
+## Update Agent
+
+Update agent details.
+
+<ParamField path="agent_id" type="string" format="uuid" required>
+  Agent ID
+</ParamField>
+
+<ParamField body="display_name" type="string">
+  Display name for the agent
+</ParamField>
+
+<ParamField body="instructions" type="array">
+  Array of instructions for the agent
+</ParamField>
+
+<ParamField body="is_active" type="boolean">
+  Whether the agent is active
+</ParamField>
+
+<ParamField body="transfer_to_human" type="boolean">
+  Whether to enable human handoff
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X PUT https://api.chattermate.chat/api/v1/agent/{agent_id} \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "display_name": "Support Bot",
+    "instructions": [
+      "Be friendly and professional",
+      "Follow company guidelines"
+    ],
+    "is_active": true,
+    "transfer_to_human": true
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "support_agent",
+  "display_name": "Support Bot",
+  "description": "Customer support AI agent",
+  "agent_type": "customer_support",
+  "instructions": [
+    "Be friendly and professional",
+    "Follow company guidelines"
+  ],
+  "is_active": true,
+  "organization_id": "123e4567-e89b-12d3-a456-426614174001",
+  "transfer_to_human": true,
+  "customization": {
+    "chat_background_color": "#F8F9FA",
+    "chat_bubble_color": "#E9ECEF",
+    "accent_color": "#f34611",
+    "font_family": "Inter, system-ui, sans-serif"
+  }
+}
+```
+</ResponseExample>
+
+## Get Agent by ID
+
+Get agent details by ID.
+
+<ParamField path="agent_id" type="string" format="uuid" required>
+  Agent ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/agent/{agent_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## List Organization Agents
+
+Get all agents for the current user's organization.
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/agent/list \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+[
+  {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "support_agent",
+    "display_name": "Support Bot",
+    "agent_type": "customer_support",
+    "is_active": true,
+    "customization": {
+      "chat_background_color": "#F8F9FA",
+      "chat_bubble_color": "#E9ECEF"
+    }
+  }
+]
+```
+</ResponseExample>
+
+## Create Agent Customization
+
+Create or update agent customization.
+
+<ParamField path="agent_id" type="string" format="uuid" required>
+  Agent ID
+</ParamField>
+
+<ParamField body="chat_background_color" type="string" default="#F8F9FA">
+  Chat background color
+</ParamField>
+
+<ParamField body="chat_bubble_color" type="string" default="#E9ECEF">
+  Chat bubble color
+</ParamField>
+
+<ParamField body="chat_text_color" type="string" default="#212529">
+  Chat text color
+</ParamField>
+
+<ParamField body="accent_color" type="string" default="#f34611">
+  Accent color
+</ParamField>
+
+<ParamField body="font_family" type="string" default="Inter, system-ui, sans-serif">
+  Font family
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/agent/{agent_id}/customization \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "chat_background_color": "#F8F9FA",
+    "chat_bubble_color": "#E9ECEF",
+    "accent_color": "#f34611",
+    "font_family": "Inter, system-ui, sans-serif"
+  }'
+```
+</RequestExample>
+
+## Upload Agent Photo
+
+Upload agent profile photo.
+
+<ParamField path="agent_id" type="string" required>
+  Agent ID
+</ParamField>
+
+<ParamField body="photo" type="file" required>
+  Agent profile photo file
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/agent/{agent_id}/customization/photo \
+  -H "Cookie: access_token=your_access_token" \
+  -F "photo=@agent.jpg"
+```
+</RequestExample>
+
+## Update Agent Groups
+
+Update agent's assigned groups.
+
+<ParamField path="agent_id" type="string" format="uuid" required>
+  Agent ID
+</ParamField>
+
+<ParamField body="group_ids" type="array" required>
+  Array of group UUIDs
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X PUT https://api.chattermate.chat/api/v1/agent/{agent_id}/groups \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '[
+    "123e4567-e89b-12d3-a456-426614174002",
+    "123e4567-e89b-12d3-a456-426614174003"
+  ]'
+```
+</RequestExample> 

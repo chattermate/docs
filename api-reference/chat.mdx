@@ -1,0 +1,153 @@
+---
+title: 'Chat'
+description: 'Chat session management and messaging endpoints'
+---
+
+# Chat API
+
+Manage chat sessions and messages between customers and agents.
+
+## Get Chat History
+
+Get complete chat history.
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/chats/ \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Get Recent Chats
+
+Get recent chats based on user permissions and groups.
+
+<ParamField query="skip" type="integer" default="0">
+  Number of records to skip
+</ParamField>
+
+<ParamField query="limit" type="integer" default="20" max="100">
+  Maximum number of records to return
+</ParamField>
+
+<ParamField query="agent_id" type="string">
+  Filter chats by agent ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.chattermate.chat/api/v1/chats/recent?limit=20&skip=0" \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+[
+  {
+    "customer": {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "email": "customer@example.com",
+      "full_name": "Jane Customer"
+    },
+    "agent": {
+      "id": "123e4567-e89b-12d3-a456-426614174001",
+      "name": "Support Agent",
+      "display_name": "Support"
+    },
+    "last_message": "Thank you for your help!",
+    "updated_at": "2024-03-15T10:30:00Z",
+    "message_count": 5,
+    "status": "closed",
+    "group_id": "123e4567-e89b-12d3-a456-426614174002",
+    "session_id": "123e4567-e89b-12d3-a456-426614174003"
+  }
+]
+```
+</ResponseExample>
+
+## Get Chat Detail
+
+Get detailed chat history for a specific session.
+
+<ParamField path="session_id" type="string" required>
+  Chat session ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/chats/{session_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "customer": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "email": "customer@example.com",
+    "full_name": "Jane Customer"
+  },
+  "agent": {
+    "id": "123e4567-e89b-12d3-a456-426614174001",
+    "name": "Support Agent",
+    "display_name": "Support"
+  },
+  "messages": [
+    {
+      "message": "Hello, how can I help you today?",
+      "message_type": "agent",
+      "created_at": "2024-03-15T10:25:00Z"
+    },
+    {
+      "message": "I have a question about my subscription",
+      "message_type": "customer",
+      "created_at": "2024-03-15T10:26:00Z"
+    }
+  ],
+  "status": "closed",
+  "group_id": "123e4567-e89b-12d3-a456-426614174002",
+  "session_id": "123e4567-e89b-12d3-a456-426614174003",
+  "user_id": "123e4567-e89b-12d3-a456-426614174004",
+  "user_name": "John Agent",
+  "created_at": "2024-03-15T10:25:00Z",
+  "updated_at": "2024-03-15T10:30:00Z"
+}
+```
+</ResponseExample>
+
+## Take Over Chat
+
+Take over a chat session as an agent.
+
+<ParamField path="session_id" type="string" required>
+  Chat session ID to take over
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/sessions/{session_id}/takeover \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "customer": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "email": "customer@example.com",
+    "full_name": "Jane Customer"
+  },
+  "agent": {
+    "id": "123e4567-e89b-12d3-a456-426614174001",
+    "name": "Support Agent",
+    "display_name": "Support"
+  },
+  "messages": [],
+  "status": "open",
+  "session_id": "123e4567-e89b-12d3-a456-426614174003"
+}
+```
+</ResponseExample> 

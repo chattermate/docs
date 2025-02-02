@@ -1,0 +1,262 @@
+---
+title: 'Roles'
+description: 'Role and permission management endpoints'
+---
+
+# Roles API
+
+Manage roles and their permissions.
+
+## Create Role
+
+Create a new role.
+
+<ParamField body="name" type="string" required>
+  Role name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Role description
+</ParamField>
+
+<ParamField body="is_default" type="boolean" default="false">
+  Whether this is a default role
+</ParamField>
+
+<ParamField body="permissions" type="array" required>
+  Array of permission objects
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/roles \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "name": "Support Agent",
+    "description": "Customer support agent role",
+    "is_default": false,
+    "permissions": [
+      {
+        "id": 1,
+        "name": "chat:read",
+        "description": "Read chat messages"
+      },
+      {
+        "id": 2,
+        "name": "chat:write",
+        "description": "Send chat messages"
+      }
+    ]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "name": "Support Agent",
+  "description": "Customer support agent role",
+  "is_default": false,
+  "id": 1,
+  "organization_id": "123e4567-e89b-12d3-a456-426614174000",
+  "created_at": "2024-03-15T10:30:00Z",
+  "updated_at": "2024-03-15T10:30:00Z",
+  "permissions": [
+    {
+      "id": 1,
+      "name": "chat:read",
+      "description": "Read chat messages"
+    },
+    {
+      "id": 2,
+      "name": "chat:write",
+      "description": "Send chat messages"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## List Roles
+
+List all roles in the organization.
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/roles \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+[
+  {
+    "name": "Support Agent",
+    "description": "Customer support agent role",
+    "is_default": false,
+    "id": 1,
+    "organization_id": "123e4567-e89b-12d3-a456-426614174000",
+    "permissions": [
+      {
+        "id": 1,
+        "name": "chat:read",
+        "description": "Read chat messages"
+      }
+    ]
+  }
+]
+```
+</ResponseExample>
+
+## Get Role
+
+Get role details including permissions.
+
+<ParamField path="role_id" type="integer" required>
+  Role ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/roles/{role_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Update Role
+
+Update role details.
+
+<ParamField path="role_id" type="integer" required>
+  Role ID
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  Role name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Role description
+</ParamField>
+
+<ParamField body="is_default" type="boolean">
+  Whether this is a default role
+</ParamField>
+
+<ParamField body="permissions" type="array">
+  Array of permission objects
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X PUT https://api.chattermate.chat/api/v1/roles/{role_id} \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access_token=your_access_token" \
+  -d '{
+    "name": "Senior Support Agent",
+    "description": "Senior customer support agent role",
+    "permissions": [
+      {
+        "id": 1,
+        "name": "chat:read"
+      },
+      {
+        "id": 2,
+        "name": "chat:write"
+      },
+      {
+        "id": 3,
+        "name": "chat:manage"
+      }
+    ]
+  }'
+```
+</RequestExample>
+
+## Delete Role
+
+Delete a role.
+
+<ParamField path="role_id" type="integer" required>
+  Role ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X DELETE https://api.chattermate.chat/api/v1/roles/{role_id} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Add Role Permission
+
+Add a permission to a role.
+
+<ParamField path="role_id" type="integer" required>
+  Role ID
+</ParamField>
+
+<ParamField path="permission" type="string" required>
+  Permission name
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/roles/{role_id}/permissions/{permission} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Remove Role Permission
+
+Remove a permission from a role.
+
+<ParamField path="role_id" type="integer" required>
+  Role ID
+</ParamField>
+
+<ParamField path="permission" type="string" required>
+  Permission name
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X DELETE https://api.chattermate.chat/api/v1/roles/{role_id}/permissions/{permission} \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## List Permissions
+
+List all available permissions.
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/roles/permissions/all \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+[
+  {
+    "id": 1,
+    "name": "chat:read",
+    "description": "Read chat messages"
+  },
+  {
+    "id": 2,
+    "name": "chat:write",
+    "description": "Send chat messages"
+  },
+  {
+    "id": 3,
+    "name": "chat:manage",
+    "description": "Manage chat sessions"
+  }
+]
+```
+</ResponseExample> 

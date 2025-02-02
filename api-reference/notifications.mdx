@@ -1,0 +1,150 @@
+---
+title: 'Notifications'
+description: 'Notification management endpoints'
+---
+
+# Notifications API
+
+Manage user notifications and preferences.
+
+## List Notifications
+
+Get user's notifications with pagination.
+
+<ParamField query="skip" type="integer" default="0">
+  Number of records to skip
+</ParamField>
+
+<ParamField query="limit" type="integer" default="50">
+  Maximum number of records to return
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.chattermate.chat/api/v1/notifications?limit=50&skip=0" \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+[
+  {
+    "id": 1,
+    "user_id": "123e4567-e89b-12d3-a456-426614174000",
+    "type": "chat",
+    "title": "New Message",
+    "message": "You have a new message from Customer",
+    "notification_metadata": {
+      "session_id": "123e4567-e89b-12d3-a456-426614174001"
+    },
+    "is_read": false,
+    "created_at": "2024-03-15T10:30:00Z"
+  }
+]
+```
+</ResponseExample>
+
+## Mark as Read
+
+Mark a notification as read.
+
+<ParamField path="notification_id" type="integer" required>
+  Notification ID
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X PATCH https://api.chattermate.chat/api/v1/notifications/{notification_id}/read \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Get Unread Count
+
+Get count of unread notifications.
+
+<RequestExample>
+```bash
+curl -X GET https://api.chattermate.chat/api/v1/notifications/unread-count \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "unread_count": 5
+}
+```
+</ResponseExample>
+
+## Send Test Notification
+
+Send a test notification to the current user.
+
+<RequestExample>
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/notifications/test \
+  -H "Cookie: access_token=your_access_token"
+```
+</RequestExample>
+
+## Notification Types
+
+ChatterMate supports the following notification types:
+
+### Chat Notifications
+- New messages
+- Chat transfers
+- Customer waiting
+- Session timeouts
+
+### Knowledge Base Notifications
+- Processing status
+- Import completion
+- Processing errors
+
+### System Notifications
+- Service updates
+- Maintenance alerts
+- Security notifications
+
+## Web Push Integration
+
+ChatterMate uses Firebase Cloud Messaging (FCM) for web push notifications. To enable web push notifications:
+
+1. Register your FCM token using the [Update FCM Token](/api-reference/authentication#update-fcm-token) endpoint
+2. Handle incoming notifications in your web application:
+
+```javascript
+// Initialize Firebase in your web app
+firebase.initializeApp({
+  // Your Firebase config
+});
+
+const messaging = firebase.messaging();
+
+// Request permission and get FCM token
+messaging.requestPermission()
+  .then(() => {
+    return messaging.getToken();
+  })
+  .then((token) => {
+    // Send token to server
+    updateFCMToken(token);
+  });
+
+// Handle incoming messages
+messaging.onMessage((payload) => {
+  console.log('Message received:', payload);
+  // Show notification to user
+});
+```
+
+## Best Practices
+
+1. **Polling**: Use the unread count endpoint for periodic polling (recommended: every 30 seconds)
+2. **Batch Updates**: Mark multiple notifications as read in a single request when possible
+3. **Error Handling**: Implement proper error handling for notification delivery failures
+4. **User Experience**: Show notifications in real-time using WebSocket connections when available 
