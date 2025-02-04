@@ -5,11 +5,14 @@
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
   },
-  "favicon": "/images/favicon/favicon-32x32.png",
+  "favicon": "/favicon.ico",
   "colors": {
     "primary": "#f34611",
     "light": "#62CFE5",
     "dark": "#000000",
+    "background": {
+      "dark": "#090014"
+    },
     "anchors": {
       "from": "#f34611",
       "to": "#62CFE5"
@@ -27,8 +30,8 @@
     }
   ],
   "topbarCtaButton": {
-    "name": "GitHub",
-    "url": "https://github.com/chattermate/chattermate.chat"
+    "name": "Dashboard",
+    "url": "https://app.chattermate.chat"
   },
   "tabs": [
     {
@@ -43,18 +46,23 @@
       "url": "api-reference"
     },
     {
-      "name": "Community",
-      "icon": "discord",
-      "url": "https://discord.gg/XNCMg8jV8U"
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/chattermate/chattermate.chat"
     }
   ],
   "navigation": [
     {
       "group": "Getting Started",
       "pages": [
-        "quickstart",
-        "development",
-        "deployment"
+        "index",
+        "quickstart"
+      ]
+    },
+    {
+      "group": "Deployment",
+      "pages": [
+        "deployment/docker"
       ]
     },
     {
@@ -70,18 +78,12 @@
       ]
     },
     {
-      "group": "API Reference",
+      "group": "API Documentation",
       "pages": [
         "api-reference/authentication",
         "api-reference/chat",
-        "api-reference/organizations",
-        "api-reference/users",
-        "api-reference/knowledge-base",
-        "api-reference/ai",
-        "api-reference/agent",
-        "api-reference/widget",
-        "api-reference/groups",
-        "api-reference/roles",
+        "api-reference/knowledge",
+        "api-reference/agents",
         "api-reference/notifications"
       ]
     }
