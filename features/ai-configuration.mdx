@@ -1,0 +1,119 @@
+---
+title: 'Configure AI Provider'
+description: 'Set up your AI provider to enable intelligent customer support'
+---
+
+# AI Provider Configuration
+
+Configure your preferred AI provider to power ChatterMate's intelligent customer support capabilities.
+
+<Frame>
+  <img src="/images/ai-configuration.png" alt="AI Provider Configuration" />
+</Frame>
+
+## Available Providers
+
+ChatterMate supports multiple AI providers, giving you the flexibility to choose the one that best fits your needs:
+
+<CardGroup cols={3}>
+  <Card title="OpenAI" icon="robot-astromech">
+    Industry-leading models like GPT-4
+  </Card>
+  <Card title="Anthropic" icon="brain-circuit">
+    Claude models for enhanced reasoning
+  </Card>
+  <Card title="Google" icon="cloud">
+    Gemini and Vertex AI models
+  </Card>
+  <Card title="Mistral" icon="wind">
+    Open-source high-performance models
+  </Card>
+  <Card title="Groq" icon="bolt-lightning">
+    Ultra-fast inference platform
+  </Card>
+  <Card title="DeepSeek" icon="microchip">
+    Specialized language models
+  </Card>
+  <Card title="HuggingFace" icon="code-branch">
+    Access to open-source models
+  </Card>
+  <Card title="Ollama" icon="server">
+    Self-hosted model deployment
+  </Card>
+  <Card title="xAI" icon="gear-complex">
+    Advanced AI capabilities
+  </Card>
+</CardGroup>
+
+## Configuration Fields
+
+### AI Provider
+Select your preferred AI provider from the dropdown menu. Each provider has its own strengths:
+- **OpenAI** (Recommended): Best-in-class models with consistent performance
+- **Anthropic**: Strong reasoning and analysis capabilities
+- **Google**: Integrated with Google's ecosystem
+- **Others**: Specialized use cases and self-hosting options
+
+### Model Name
+Enter the model identifier for your chosen provider. Our recommendations:
+
+<CodeGroup>
+```bash OpenAI (Recommended)
+gpt-4-0125-preview  # Latest GPT-4 Turbo
+gpt-4               # Standard GPT-4
+gpt-3.5-turbo      # Cost-effective option
+```
+
+```bash Anthropic
+claude-3-opus       # Most capable
+claude-3-sonnet    # Balanced performance
+claude-3-haiku     # Fast and efficient
+```
+
+```bash Google
+gemini-pro         # Latest Gemini model
+vertex-ai          # Enterprise-grade option
+```
+</CodeGroup>
+
+### API Key
+Your provider's API key for authentication. Security measures:
+- Keys are encrypted before storage
+- Keys are never logged or exposed in plaintext
+- Access is restricted to authorized systems only
+- Regular key rotation is supported
+- Compliance with SOC 2 standards
+
+<Note>
+  Never share your API keys or commit them to version control. ChatterMate encrypts and stores them securely.
+</Note>
+
+## Best Practices
+
+1. **Provider Selection**
+   - Start with OpenAI's GPT-4 for best overall performance
+   - Consider Anthropic's Claude for complex reasoning tasks
+   - Use Ollama for self-hosted deployments
+
+2. **Model Choice**
+   - Balance between capability and cost
+   - Test different models before production
+   - Monitor usage and adjust as needed
+
+3. **Security**
+   - Use environment-specific API keys
+   - Rotate keys periodically
+   - Monitor usage for anomalies
+
+## What's Next?
+
+After configuring your AI provider:
+
+1. Test the configuration with sample queries
+2. Customize the AI agent's behavior
+3. Add domain knowledge to improve responses
+4. Set up human handoff rules
+
+<Card title="Customize AI Agent" icon="wand-magic-sparkles" href="/features/ai-customization">
+  Next: Learn how to customize your AI agent's behavior
+</Card> 

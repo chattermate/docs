@@ -1,0 +1,155 @@
+---
+title: 'Quickstart'
+description: 'Get started with ChatterMate in minutes'
+---
+
+# Quickstart Guide
+
+This guide will help you get ChatterMate up and running quickly.
+
+## Installation
+
+### Backend Setup
+
+<CodeGroup>
+
+```bash bash
+# Clone the repository
+git clone https://github.com/chattermate/chattermate
+cd chattermate/backend
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+```python .env
+DATABASE_URL=postgresql://user:pass@localhost:5432/chattermate
+FIREBASE_CREDENTIALS=firebase-credentials.json
+JWT_SECRET_KEY=your-secret-key
+CONVERSATION_SECRET_KEY=yoursecretkey
+ENCRYPTION_KEY=encryption.key
+CORS_ORIGINS=["https://yourdomain.com"]
+```
+
+</CodeGroup>
+
+### Frontend Setup
+
+<CodeGroup>
+
+```bash bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Configure environment
+cp .env.example .env.local
+```
+
+```env .env.local
+VITE_API_URL=http://localhost:8000
+VITE_WS_URL=ws://localhost:8000
+```
+
+</CodeGroup>
+
+## Database Setup
+
+<Steps>
+  <Step title="Create Database">
+    Create a PostgreSQL database and enable the vector extension:
+    ```sql
+    CREATE DATABASE chattermate;
+    \c chattermate
+    CREATE EXTENSION vector;
+    ```
+  </Step>
+  <Step title="Run Migrations">
+    Apply the database migrations:
+    ```bash
+    alembic upgrade head
+    ```
+  </Step>
+</Steps>
+
+## Running the Application
+
+### Development Mode
+
+<CodeGroup>
+
+```bash Backend
+# Start the backend server
+uvicorn app.main:app --reload --port 8000
+```
+
+```bash Frontend
+# Start the frontend development server
+npm run dev
+```
+
+</CodeGroup>
+
+### Production Mode
+
+<CodeGroup>
+
+```bash Backend
+# Start the production server
+gunicorn -k uvicorn.workers.UvicornWorker -w 4 main:app
+```
+
+```bash Frontend
+# Build and serve the frontend
+npm run build
+npm run serve
+```
+
+</CodeGroup>
+
+## Verify Installation
+
+1. Open your browser and navigate to `http://localhost:8000/docs` to view the API documentation
+2. Visit `http://localhost:3000` to access the web interface
+3. Try sending a test message in the chat widget
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Setup Organization" icon="building" href="/features/organization">
+    Setup new organization
+  </Card>
+  <Card title="Configure AI" icon="robot" href="/features/ai-configuration">
+    Configure AI provider
+  </Card>
+  <Card title="Customize AI Agent" icon="wand-magic-sparkles" href="/features/ai-customization">
+    Customizing AI agent
+  </Card>
+  <Card title="Knowledge Base" icon="book" href="/features/knowledge-base">
+    Adding knowledge to AI agent
+  </Card>
+  <Card title="Testing" icon="vial" href="/features/testing">
+    Testing AI agent
+  </Card>
+  <Card title="Widget Integration" icon="code" href="/features/widget">
+    Adding chat widget to the website
+  </Card>
+  <Card title="Human Agents" icon="user-plus" href="/features/human-agents">
+    Adding Human Agent
+  </Card>
+  <Card title="Roles & Permissions" icon="shield" href="/features/roles">
+    Managing Roles and Permission
+  </Card>
+  <Card title="Chat Management" icon="messages" href="/features/chat-management">
+    Managing Customer chat and Taking over chat
+  </Card>
+  <Card title="Availability" icon="clock" href="/features/availability">
+    Going offline
+  </Card>
+</CardGroup> 

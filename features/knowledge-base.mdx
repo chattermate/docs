@@ -1,0 +1,194 @@
+---
+title: 'Knowledge Base'
+description: 'Enhance your AI agent with domain knowledge'
+---
+
+# Knowledge Base
+
+Train your AI agents with domain-specific knowledge to provide more accurate and contextual responses.
+
+<Frame>
+  <img src="/images/knowledge-sources.png" alt="Knowledge Sources Dashboard" />
+</Frame>
+
+## Adding Knowledge Sources
+
+ChatterMate supports multiple ways to add knowledge to your AI agents:
+
+<CardGroup cols={3}>
+  <Card title="PDF Upload" icon="file-pdf">
+    Upload PDF documentation, guides, and manuals
+  </Card>
+  <Card title="URL Import" icon="link">
+    Import knowledge from web pages and documentation sites
+  </Card>
+  <Card title="Link Existing" icon="link-simple">
+    Share knowledge sources between multiple agents
+  </Card>
+</CardGroup>
+
+## Knowledge Sharing
+
+ChatterMate allows multiple agents to share common knowledge sources through the "Link Existing" feature:
+
+<CardGroup cols={2}>
+  <Card title="Link Existing" icon="link-simple">
+    Connect agents to existing knowledge sources
+  </Card>
+  <Card title="Shared Access" icon="share-nodes">
+    Multiple agents can reference the same knowledge
+  </Card>
+</CardGroup>
+
+### Benefits of Knowledge Sharing
+- Maintain consistency across different agent types
+- Reduce duplicate content processing
+- Centralized knowledge management
+- Easy updates propagate to all linked agents
+
+### Use Cases
+- Share company policies across all agents
+- Common product documentation for sales and support
+- Technical specifications for multiple specialist agents
+- FAQ content for general and specialized support
+
+<Note>
+When you update a shared knowledge source, all agents linked to it will automatically have access to the updated information without requiring reprocessing.
+</Note>
+
+## Knowledge Processing
+
+### Batch Processing
+ChatterMate processes knowledge sources in batches to ensure system stability:
+
+- Maximum 20 subpages per batch
+- Processing occurs every 5 minutes
+- Queued items are processed in FIFO order
+- Status tracking for each knowledge source
+
+<Note>
+Knowledge processing includes text extraction, chunking, embedding generation, and vector database indexing. This ensures optimal retrieval during customer interactions.
+</Note>
+
+### Processing States
+
+<AccordionGroup>
+  <Accordion title="Queued">
+    - Knowledge source is waiting to be processed
+    - Part of the next available batch
+    - Shows position in queue
+  </Accordion>
+  
+  <Accordion title="Processing">
+    - Currently being analyzed and indexed
+    - Includes text extraction and embedding
+    - Progress indicator available
+  </Accordion>
+  
+  <Accordion title="Completed">
+    - Successfully processed and indexed
+    - Available for AI agent use
+    - Shows completion timestamp
+  </Accordion>
+  
+  <Accordion title="Failed">
+    - Error during processing
+    - Detailed error message
+    - Option to retry processing
+  </Accordion>
+</AccordionGroup>
+
+## Notifications
+
+When Firebase Cloud Messaging is enabled:
+
+<CodeGroup>
+```json Success
+{
+  "title": "Knowledge Processing Complete",
+  "body": "Your knowledge source '[filename]' has been successfully processed",
+  "type": "knowledge_processed"
+}
+```
+
+```json Error
+{
+  "title": "Knowledge Processing Failed",
+  "body": "Failed to process '[filename]'. Click for details",
+  "type": "knowledge_failed"
+}
+```
+</CodeGroup>
+
+- Notifications are sent only when processing completes
+- Success and failure states are reported
+- Click notification to view details
+- Configurable notification preferences
+
+## Knowledge Source Management
+
+### Source Types
+- PDF Documents
+- Web Pages
+- HTML Content
+- Markdown Files
+- Plain Text
+
+### Source Details
+Each knowledge source shows:
+- Source name/URL
+- Number of subpages
+- Creation date
+- Processing status
+- Last updated timestamp
+
+## Best Practices
+
+1. **Document Preparation**
+   - Use clear, well-structured documents
+   - Break large documents into smaller sections
+   - Ensure text is extractable from PDFs
+   - Keep URLs accessible and stable
+
+2. **Processing Management**
+   - Monitor queue status
+   - Process during off-peak hours
+   - Keep documents under 100MB
+   - Use consistent formatting
+
+3. **Content Organization**
+   - Group related documents
+   - Use descriptive filenames
+   - Update outdated content
+   - Remove obsolete sources
+
+## Limitations
+
+<Warning>
+- Maximum 20 subpages per batch
+- Processing occurs every 5 minutes
+- PDF size limit: 100MB
+- URL must be publicly accessible
+- Text must be extractable (no scanned PDFs)
+</Warning>
+
+## Monitoring Progress
+
+Track knowledge processing through:
+1. Dashboard status indicators
+2. Firebase notifications (if enabled)
+3. Processing history logs
+4. Error reports and retry options
+
+## What's Next?
+
+After adding knowledge sources:
+
+1. Test AI responses with new knowledge
+2. Monitor response accuracy
+3. Update content as needed
+4. Configure notification preferences
+
+<Card title="Testing" icon="vial" href="/features/testing">
+  Next: Learn how to test your AI agent's knowledge
+</Card> 

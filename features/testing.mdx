@@ -1,0 +1,147 @@
+---
+title: 'Testing AI Agent'
+description: 'Test and verify your AI agent behavior and responses'
+---
+
+# Testing AI Agent
+
+Test your AI agents in a simulated environment to ensure they provide accurate and appropriate responses before deploying to production.
+
+<Frame>
+  <img src="/images/testing-agent.png" alt="AI Agent Testing Interface" />
+</Frame>
+
+## Customer Identification
+
+### Email Collection
+- Email is required before starting a chat
+- Automatically identifies returning customers
+- Loads previous conversation history
+- Maintains context across sessions
+
+
+
+## Testing Features
+
+### Conversation Testing
+<AccordionGroup>
+  <Accordion title="Basic Interactions">
+    - Test standard greetings and responses
+    - Verify tone and communication style
+    - Check response formatting
+    - Test multi-turn conversations
+  </Accordion>
+  
+  <Accordion title="Knowledge Retrieval">
+    - Test queries against added knowledge
+    - Verify accurate information recall
+    - Check context maintenance
+    - Test complex multi-topic queries
+  </Accordion>
+  
+  <Accordion title="Human Handoff">
+    - Test automatic transfer triggers
+    - Verify after-hours behavior
+    - Check transfer messages
+    - Test manual transfer requests
+  </Accordion>
+</AccordionGroup>
+
+## Test Scenarios
+
+### Customer Context
+1. **New Customer**
+   - First-time interaction
+   - No previous history
+   - Basic profile creation
+
+2. **Returning Customer**
+   - Previous history loaded
+   - Context from past interactions
+   - Personalized responses
+
+### Common Test Cases
+
+<CardGroup cols={2}>
+  <Card title="Product Inquiries" icon="box">
+    Test product knowledge and pricing responses
+  </Card>
+  <Card title="Support Issues" icon="life-ring">
+    Verify troubleshooting capabilities
+  </Card>
+  <Card title="Account Questions" icon="user">
+    Test account-related responses
+  </Card>
+  <Card title="Complex Scenarios" icon="puzzle">
+    Multi-step problem resolution
+  </Card>
+</CardGroup>
+
+## Chat History
+
+### History Features
+- Complete conversation logs
+- Timestamp for each interaction
+- Session summaries
+- Action tracking (transfers, resolutions)
+
+### History Usage
+- Context for personalized responses
+- Issue tracking and follow-up
+- Training data for improvements
+- Quality assurance reviews
+
+<Note>
+Chat history is automatically associated with the customer's email address, allowing for seamless continuation of conversations across multiple sessions.
+</Note>
+
+## Testing Best Practices
+
+1. **Systematic Testing**
+   - Start with basic queries
+   - Progress to complex scenarios
+   - Test edge cases
+   - Verify error handling
+
+2. **Knowledge Testing**
+   - Test recently added content
+   - Verify cross-document knowledge
+   - Check information accuracy
+   - Test knowledge updates
+
+3. **Customer Experience**
+   - Verify response times
+   - Check message formatting
+   - Test file attachments
+   - Validate email notifications
+
+## Test Environment
+
+### Features Available
+- Real-time chat interface
+- Knowledge base access
+- History simulation
+- Transfer scenarios
+
+### Testing Tools
+- Chat widget preview
+- Response analysis
+- Performance metrics
+- Error logging
+
+<Warning>
+Test thoroughly in the staging environment before deploying changes to production. This includes testing with different customer profiles and various conversation scenarios.
+</Warning>
+
+## What's Next?
+
+After testing your AI agent:
+
+1. Review test results
+2. Make necessary adjustments
+3. Update knowledge if needed
+4. Deploy to production
+
+<Card title="Widget Integration" icon="code" href="/features/widget">
+  Next: Learn how to integrate the chat widget into your website
+</Card> 

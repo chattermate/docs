@@ -1,0 +1,229 @@
+# Docker Deployment
+
+ChatterMate can be deployed using Docker in both development and production environments.
+
+## Development Setup
+
+For local development, we use `docker-compose.yml` which sets up:
+- Frontend (Vue.js) with hot-reloading
+- Backend (FastAPI) with auto-reload
+- PostgreSQL with pgvector extension
+- Redis for caching and rate limiting
+
+### Prerequisites
+- Docker
+- Docker Compose
+- Git
+
+### Quick Start
+
+1. Clone the repository:
+```bash
+git clone https://github.com/chattermate/chattermate.chat
+cd chattermate.chat
+```
+
+2. Create environment files:
+```bash
+# Frontend environment
+cp frontend/.env.example frontend/.env
+
+# Backend environment
+cp backend/.env.example backend/.env
+```
+
+3. Start the development environment:
+```bash
+docker-compose up --build
+```
+
+Services will be available at:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- Backend Docs: http://localhost:8000/docs
+- PostgreSQL: localhost:5432
+- Redis: localhost:6379
+
+### Development Features
+- Hot-reloading for frontend changes
+- Auto-reload for backend changes
+- Volume mounts for live code updates
+- Development-mode Firebase credentials
+- Automatic database migrations
+- Health checks for all services
+
+## Production Deployment
+
+For production deployment, we use `docker-compose.prod.yml` which provides:
+- Optimized multi-stage builds
+- Nginx for frontend serving
+- Gunicorn for backend serving
+- Production-grade configurations
+- Health monitoring
+- Automatic restarts
+
+### Production Setup
+
+1. Set up environment files:
+```bash
+# Frontend production environment
+cp frontend/.env.prod.example frontend/.env
+
+# Backend production environment
+cp backend/.env.prod.example backend/.env
+```
+
+2. Configure Firebase (Optional):
+```bash
+# Place your Firebase credentials in
+./config/firebase-credentials.json
+```
+
+3. Start production services:
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### Production Features
+- Multi-stage builds for smaller images
+- Nginx configuration for frontend
+- Gunicorn with multiple workers
+- Redis persistence
+- Database backups
+- Automatic health checks
+- Container restart policies
+
+## Docker Images
+
+### Frontend Images
+- Development: `Dockerfile.frontend`
+  - Node.js development server
+  - Hot-reloading enabled
+  - Volume mounts for live updates
+
+- Production: `Dockerfile.frontend.prod`
+  - Multi-stage build
+  - Nginx for static file serving
+  - Optimized build size
+  - Health monitoring
+
+### Backend Images
+- Development: `Dockerfile`
+  - Python development server
+  - Auto-reload enabled
+  - Debug mode
+
+- Production: `Dockerfile.backend.prod`
+  - Multi-stage build
+  - Gunicorn server
+  - Optimized dependencies
+  - Worker configuration
+
+### Database Image
+- Custom PostgreSQL image with pgvector
+- Vector similarity search support
+- Automatic initialization
+- Health checks
+
+## Environment Variables
+
+### Frontend Variables
+```env
+VITE_API_URL=http://localhost:8000
+VITE_WS_URL=ws://localhost:8000
+```
+
+### Backend Variables
+```env
+DATABASE_URL=postgresql://postgres:postgres@db:5432/chattermate
+CORS_ORIGINS=["http://localhost:3000"]
+FIREBASE_CREDENTIALS=/app/config/firebase-credentials.json
+```
+
+### Production Additional Variables
+```env
+REDIS_ENABLED=true
+REDIS_URL=redis://redis:6379/0
+WORKERS=4
+TIMEOUT=120
+LOG_LEVEL=info
+```
+
+## Health Checks
+
+All services include health checks:
+- Frontend: Checks HTTP endpoint
+- Backend: Monitors API health
+- PostgreSQL: Verifies database connection
+- Redis: Ensures cache availability
+
+## Volumes
+
+Persistent data is managed through Docker volumes:
+- `postgres_data`: Database files
+- `redis_data`: Cache data
+- `backend_data`: Uploaded files
+- `frontend_node_modules`: NPM packages
+
+## Networks
+
+Services communicate through Docker networks:
+- Development: `app-network`
+- Production: `chattermate-network`
+
+## Monitoring
+
+Monitor your deployment using Docker commands:
+```bash
+# View all logs
+docker-compose logs -f
+
+# Service-specific logs
+docker-compose logs -f frontend
+docker-compose logs -f backend
+docker-compose logs -f db
+docker-compose logs -f redis
+
+# Container health
+docker ps
+```
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. Frontend not starting:
+```bash
+# Check frontend logs
+docker-compose logs frontend
+
+# Rebuild frontend
+docker-compose build --no-cache frontend
+```
+
+2. Backend migrations failing:
+```bash
+# Check backend logs
+docker-compose logs backend
+
+# Manual migration
+docker-compose exec backend alembic upgrade head
+```
+
+3. Database connection issues:
+```bash
+# Check database logs
+docker-compose logs db
+
+# Verify database health
+docker-compose exec db pg_isready -U postgres
+```
+
+4. Redis connection issues:
+```bash
+# Check Redis logs
+docker-compose logs redis
+
+# Verify Redis connection
+docker-compose exec redis redis-cli ping
+``` 

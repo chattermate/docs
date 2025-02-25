@@ -1,0 +1,143 @@
+---
+title: 'Customize AI Agent'
+description: 'Configure and personalize your AI agents for optimal customer support'
+---
+
+# AI Agent Customization
+
+Customize your AI agents to provide consistent, on-brand customer support that aligns with your organization's voice and requirements.
+
+<Frame>
+  <img src="/images/agent-management.png" alt="Agent Management Dashboard" />
+</Frame>
+
+## Agent Types
+
+ChatterMate offers specialized AI agents for different support scenarios:
+
+<CardGroup cols={3}>
+  <Card title="Customer Support" icon="headset">
+    General customer service and inquiry handling
+  </Card>
+  <Card title="Technical Support" icon="wrench">
+    Technical troubleshooting and product guidance
+  </Card>
+  <Card title="Sales Lead" icon="money-bill">
+    Lead qualification and product information
+  </Card>
+</CardGroup>
+
+## Agent Configuration
+
+### Display Name
+- Choose a friendly, professional name for your AI agent
+- This name will be visible to customers in the chat widget
+- Example: "David", "Sarah", "Alex"
+
+### Status Management
+- Toggle agent between Online/Offline states
+- Offline agents won't accept new conversations
+- Status is clearly displayed to customers
+
+### Transfer to Human
+Enable or disable automatic transfer to human agents when:
+- AI agent can't handle the query
+- Customer specifically requests human support
+- Complex issues require human intervention
+
+<Note>
+During off-hours (outside business hours), even if transfer is enabled, the AI agent will inform customers that human support is unavailable until the next business day.
+</Note>
+
+## Agent Instructions
+
+Configure how your AI agent behaves and communicates:
+
+<AccordionGroup>
+  <Accordion title="Communication Style">
+    - Use first person plural (we/our) to represent the company
+    - Maintain professional yet approachable tone
+    - Show empathy in responses
+  </Accordion>
+  
+  <Accordion title="Response Guidelines">
+    - Take ownership of customer concerns
+    - Use phrases like 'we understand', 'our team', 'we can help'
+    - Acknowledge when additional verification is needed
+  </Accordion>
+  
+  <Accordion title="Knowledge Usage">
+    - Utilize knowledge base for accurate information
+    - Admit when information needs to be verified
+    - Focus on efficient issue resolution
+  </Accordion>
+</AccordionGroup>
+
+## Visual Customization
+
+### Colors
+Customize the chat widget appearance:
+- Background color
+- Chat bubble color
+- Accent color (for buttons and highlights)
+
+<CodeGroup>
+```css Background
+#F8F9FA  /* Default light background */
+```
+
+```css Chat Bubble
+#3a91e9  /* Default message bubble */
+```
+
+```css Accent
+#f34611  /* Default accent color */
+```
+</CodeGroup>
+
+### Typography
+- Choose fonts that match your brand
+- Default: Inter, system-ui, sans-serif
+- Supports custom font families
+
+## Widget Preview
+
+<Frame>
+  <img src="/images/widget-preview.png" alt="Chat Widget Preview" />
+</Frame>
+
+The live preview shows how your customizations appear to customers, including:
+- Agent name and avatar
+- Color scheme
+- Typography
+- Message formatting
+
+## Best Practices
+
+1. **Agent Personality**
+   - Keep the tone consistent across all agents
+   - Align communication style with your brand voice
+   - Use clear, concise language
+
+2. **Response Configuration**
+   - Start with default instructions and refine based on interactions
+   - Regularly update guidelines based on common scenarios
+   - Include industry-specific terminology when relevant
+
+3. **Visual Design**
+   - Maintain brand consistency
+   - Ensure sufficient color contrast for accessibility
+   - Test appearance across different devices
+
+## What's Next?
+
+After customizing your AI agent:
+
+1. Test conversations to verify behavior
+2. Add knowledge base articles
+3. Configure human handoff rules
+4. Monitor agent performance
+
+<Card title="Knowledge Base" icon="book" href="/features/knowledge-base">
+  Next: Learn how to enhance your AI agent with domain knowledge
+</Card> 

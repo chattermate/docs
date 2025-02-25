@@ -1,0 +1,96 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "ChatterMate",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "favicon": "/images/favicon/favicon-32x32.png",
+  "colors": {
+    "primary": "#f34611",
+    "light": "#62CFE5",
+    "dark": "#000000",
+    "background": {
+      "dark": "#090014"
+    },
+    "anchors": {
+      "from": "#f34611",
+      "to": "#62CFE5"
+    }
+  },
+  "modeToggle": {
+    "default": "dark",
+    "isHidden": false
+  },
+  "backgroundImage": "/images/background.png",
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:support@chattermate.chat"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://app.chattermate.chat"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "API Reference",
+      "icon": "rectangle-terminal",
+      "url": "api-reference"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/chattermate/chattermate.chat"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "index",
+        "quickstart"
+      ]
+    },
+    {
+      "group": "Features",
+      "pages": [
+        "features/organization",
+        "features/ai-configuration",
+        "features/ai-customization",
+        "features/knowledge-base",
+        "features/testing",
+        "features/widget",
+        "features/human-agents",
+        "features/roles",
+        "features/chat-management"
+      ]
+    },
+    {
+      "group": "Deployment",
+      "pages": [
+        "deployment/docker"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/chattermate/chattermate.chat",
+    "discord": "https://discord.gg/XNCMg8jV8U"
+  },
+  "analytics": {
+    "ga4": {
+      "measurementId": "G-XXXXXXXXXX"
+    }
+  },
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true
+  }
+} 
