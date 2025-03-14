@@ -1,0 +1,117 @@
+---
+title: 'Jira Integration'
+description: 'Connect ChatterMate with Jira to streamline issue tracking and customer support workflows'
+---
+
+# Jira Integration
+
+Integrate ChatterMate with Jira to enable AI-based ticket management and status inquiries. Let your AI agents create and update tickets based on customer issues to seamlessly track and resolve support requests.
+
+<Frame>
+  <img src="/images/jira-integration.png" alt="Jira Integration Dashboard" />
+</Frame>
+
+## Integration Benefits
+
+<CardGroup cols={2}>
+  <Card title="AI-Powered Ticket Management" icon="robot">
+    AI agents automatically create and update Jira tickets based on customer conversations
+  </Card>
+  <Card title="Status Inquiries" icon="magnifying-glass">
+    Customers can ask about ticket status and receive immediate updates from AI agents
+  </Card>
+</CardGroup>
+
+## Seamless Integration
+
+ChatterMate connects to Jira using OAuth authentication, providing a secure and straightforward setup process:
+
+1. Navigate to the Integrations page in ChatterMate
+2. Select Jira from the available integrations
+3. Click the "+ Connect" button
+4. Authorize the connection using Jira OAuth
+
+<Note>
+Only Jira OAuth authentication is required. No complex configuration or webhook setup needed.
+</Note>
+
+## Agent-Specific Configuration
+
+Each AI or human agent can be configured with specific Jira integration settings:
+
+<Frame>
+  <img src="/images/jira-agent-config.png" alt="Agent-specific Jira Configuration" />
+</Frame>
+
+### Ticket Creation Triggers
+
+Configure when tickets should be automatically created in Jira:
+
+- Issues without immediate resolution
+- No transfer agent available
+- Transfer requests not attended
+- Customer follow-ups
+- Complex issues requiring tracking
+
+<Tip>
+You can enable or disable automatic ticket creation for each agent individually, allowing for specialized handling based on agent roles and responsibilities.
+</Tip>
+
+## Ticket Creation
+
+### AI-Powered Ticket Creation
+
+AI agents can automatically:
+- Detect when a customer issue requires tracking
+- Create appropriate Jira tickets with relevant details
+- Update customers on ticket status
+- Add conversation context to ticket descriptions
+
+### One-Click Ticket Creation for Human Agents
+
+Human agents can create Jira tickets with a single click:
+
+<Frame>
+  <img src="/images/jira-ticket-creation.png" alt="Create Jira Ticket Dialog" />
+</Frame>
+
+The ticket creation dialog allows agents to:
+- Select the appropriate project
+- Choose the issue type
+- Set priority
+- Add a summary and description
+- Include conversation context automatically
+
+## Ticket Customization
+
+### Project Selection
+Choose which Jira project tickets should be created in based on:
+- Customer issue type
+- Support department
+- Agent specialization
+
+### Issue Type Configuration
+Map ChatterMate conversation categories to appropriate Jira issue types:
+- Bug reports
+- Feature requests
+- Support inquiries
+- Account issues
+
+### Priority Setting
+Set ticket priority based on:
+- Customer status
+- Issue urgency
+- Business impact
+- Resolution timeframe
+
+## Customer Experience
+
+Customers benefit from the integration through:
+
+- **Transparent Tracking**: Receive ticket IDs and status updates directly in the conversation
+- **Status Inquiries**: Ask about ticket status at any time and receive immediate responses
+- **Seamless Handoffs**: Transition between AI and human agents while maintaining ticket context
+- **Consistent Updates**: Receive notifications as their issue progresses through resolution stages
+
+
+

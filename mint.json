@@ -70,7 +70,8 @@
         "features/widget",
         "features/human-agents",
         "features/roles",
-        "features/chat-management"
+        "features/chat-management",
+        "features/jira-integration"
       ]
     },
     {
