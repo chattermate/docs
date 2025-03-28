@@ -5,17 +5,64 @@ description: 'Welcome to ChatterMate - AI-Powered Customer Support Platform'
 
 # ChatterMate
 
-ChatterMate is an intelligent customer support platform that combines AI agents with human oversight.
+ChatterMate is an intelligent customer support platform that combines AI agents with human oversight. It enables businesses to provide 24/7 support through AI agents that can handle common queries, escalate complex issues, and continuously learn from knowledge base articles.
 
 ## Key Features
 
-- AI-Powered Responses: Context-aware AI with multiple provider support
-- Human Handoff: Seamless transition to human agents when needed
-- Deep Integration: Connect with Jira, Zendesk, Slack, and more
-- Custom Theming: Fully customizable chat interface
+<CardGroup cols={2}>
+  <Card title="AI-Powered Responses" icon="robot">
+    Context-aware AI with multiple provider support (OpenAI GPT-4, Google AI, Ollama)
+  </Card>
+  <Card title="Human Handoff" icon="users">
+    Seamless transition to human agents when needed
+  </Card>
+  <Card title="Deep Integration" icon="plug">
+    Connect with Jira, Zendesk, Slack, and more (Coming Soon)
+  </Card>
+  <Card title="Custom Theming" icon="palette">
+    Fully customizable chat interface
+  </Card>
+</CardGroup>
+
+## Technical Features
+
+### Backend (FastAPI)
+- Real-time WebSocket communication
+- Knowledge base management with vector search (PGVector)
+- OCR capabilities with RapidOCR
+- JWT & Firebase Authentication
+- PostgreSQL with SQLAlchemy ORM
+- Firebase Cloud Storage
+- Auto-generated API documentation
+
+### Frontend (Vue 3)
+- Real-time chat widget with markdown support
+- Agent dashboard for conversation monitoring
+- Knowledge management interface
+- White-label customizable widget
+- Theming with PrimeVue and HeadlessUI
+- Firebase Cloud Messaging integration
+- Modern toast notifications (Vue Sonner)
+- Comprehensive testing suite
+
+## Prerequisites
+
+<Check>Python 3.12+</Check>
+<Check>Node.js 22+</Check>
+<Check>PostgreSQL 14+ (with Vector extension)</Check>
+<Check>Firebase Project</Check>
+<Check>Redis (Optional for rate limiting)</Check>
 
 ## Quick Links
 
-- [Quickstart](quickstart)
-- [Features](features/organization)
-- [Development](deployment/docker) 
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="play" href="quickstart">
+    Get up and running in minutes
+  </Card>
+  <Card title="Features" icon="stars" href="features/organization">
+    Learn about ChatterMate's capabilities
+  </Card>
+  <Card title="Development" icon="code-branch" href="deployment/docker">
+    Set up your development environment
+  </Card>
+</CardGroup> 

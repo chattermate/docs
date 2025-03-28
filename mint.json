@@ -22,6 +22,7 @@
     "default": "dark",
     "isHidden": false
   },
+  "backgroundImage": "/images/background.png",
   "topbarLinks": [
     {
       "name": "Support",
@@ -54,7 +55,10 @@
     {
       "group": "Getting Started",
       "pages": [
-        "index",
+        {
+          "name": "Introduction",
+          "url": "index"
+        },
         "quickstart"
       ]
     },
