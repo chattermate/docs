@@ -33,18 +33,7 @@
     "name": "Dashboard",
     "url": "https://app.chattermate.chat"
   },
-  "tabs": [
-    {
-      "name": "API Reference",
-      "url": "api-reference"
-    }
-  ],
   "anchors": [
-    {
-      "name": "API Reference",
-      "icon": "rectangle-terminal",
-      "url": "api-reference"
-    },
     {
       "name": "GitHub",
       "icon": "github",
@@ -55,10 +44,7 @@
     {
       "group": "Getting Started",
       "pages": [
-        {
-          "name": "Introduction",
-          "url": "index"
-        },
+        "index",
         "quickstart"
       ]
     },
