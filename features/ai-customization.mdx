@@ -11,10 +11,17 @@ Customize your AI agents to provide consistent, on-brand customer support that a
   <img src="/images/agent-management.png" alt="Agent Management Dashboard" />
 </Frame>
 
+## Agent Modes
+
+Your AI agent can operate in two different modes:
+
+- **AI Mode**: Traditional AI-powered conversations with customizable instructions
+- **Workflow**: Advanced workflow-based responses with conditional logic and automation
+
 <Tabs>
-  <Tab title="General">
+  <Tab title="Agent">
     <Frame>
-      <img src="/images/agent-generaltab.png" alt="Agent Management Dashboard" />
+      <img src="/images/agent-tab.png" alt="Agent Configuration" />
     </Frame>
     ## Basic Configuration
 
@@ -23,6 +30,7 @@ Customize your AI agents to provide consistent, on-brand customer support that a
     - Define how the agent should behave and communicate
     - Set guidelines for handling customer interactions
     - Establish response patterns and tone
+    - Use the "Generate with AI" feature for intelligent instruction creation
 
     ### Transfer to Human
     Enable automatic transfer to human agents when:
@@ -34,7 +42,7 @@ Customize your AI agents to provide consistent, on-brand customer support that a
     When transfer is enabled, you can select specific user groups that can handle transferred conversations.
     </Note>
 
-    ### Customer Feedback
+    ### Ask for Rating
     - Enable/disable automatic rating requests at chat end
     - Collect customer satisfaction metrics
     - Track agent performance
@@ -45,9 +53,90 @@ Customize your AI agents to provide consistent, on-brand customer support that a
     - Status is clearly displayed to customers
   </Tab>
 
+  <Tab title="Chat Customization">
+    <Frame>
+      <img src="/images/chat-customization.png" alt="Chat Customization" />
+    </Frame>
+    ## Visual Customization
+
+    ### Colors
+    Customize the appearance of your chat widget:
+
+    #### Background
+    - Set the background color of the chat interface
+    - Default color palette available for quick selection
+
+    #### Chat Bubble
+    - Customize the color of chat message bubbles
+    - Maintain brand consistency with your website
+
+    #### Accent
+    - Configure accent colors for interactive elements
+    - Used for buttons, highlights, and call-to-action elements
+
+    ### Typography
+    #### Font Family
+    - Choose from system fonts: Inter, system-ui, sans-serif
+    - Ensure readability and brand alignment
+    - Consistent typography across all chat elements
+
+    <Note>
+    All customizations are instantly reflected in the chat preview on the right side of the interface.
+    </Note>
+  </Tab>
+
+  <Tab title="Test & Preview">
+    <Frame>
+      <img src="/images/test-preview.png" alt="Test & Preview" />
+    </Frame>
+    ## Chat Preview
+
+    ### Real-time Testing
+    This preview shows exactly how your chat widget will appear to users:
+    - Test all customizations in real-time
+    - Verify agent responses and behavior
+    - Ensure proper styling and branding
+    - Check functionality before deployment
+
+    ### Interactive Testing
+    - Type messages to test agent responses
+    - Verify knowledge base integration
+    - Test transfer to human functionality
+    - Validate rating system behavior
+
+    <Note>
+    Use this preview to thoroughly test your agent before making it live to ensure the best customer experience.
+    </Note>
+  </Tab>
+
+  <Tab title="Knowledge">
+    <Frame>
+      <img src="/images/knowledge-sources.png" alt="Knowledge Sources" />
+    </Frame>
+    ## Knowledge Sources
+
+    Connect your agent to various knowledge sources to enhance its responses with context-relevant information.
+
+    ### Adding Knowledge Sources
+    - **+ Add Knowledge**: Upload documents, websites, or other content
+    - **Link Existing**: Connect to previously configured knowledge bases
+
+    ### Knowledge Management
+    View and manage all connected knowledge sources:
+    - **Source**: Name and origin of the knowledge
+    - **Type**: Document type or source format
+    - **Subpages**: Number of indexed pages or sections
+    - **Created**: When the knowledge source was added
+    - **Actions**: Edit, update, or remove knowledge sources
+
+    <Note>
+    Add knowledge sources to improve the agent's responses and reduce "I don't know" scenarios.
+    </Note>
+  </Tab>
+
   <Tab title="Integrations">
     <Frame>
-      <img src="/images/agent-integrationtab.png" alt="Agent Management Dashboard" />
+      <img src="/images/agent-integrationtab.png" alt="Agent Integrations" />
     </Frame>
     ## Jira Integration
 
@@ -71,7 +160,7 @@ Customize your AI agents to provide consistent, on-brand customer support that a
 
   <Tab title="Widget">
     <Frame>
-      <img src="/images/agent-widgettab.png" alt="Agent Management Dashboard" />
+      <img src="/images/agent-widgettab.png" alt="Widget Integration" />
     </Frame>
     ## Widget Integration
 
@@ -83,11 +172,18 @@ Customize your AI agents to provide consistent, on-brand customer support that a
     ```
 
     Replace `YOUR_WIDGET_ID` and `YOUR_WIDGET_URL` with your actual widget credentials.
+
+    ### Widget Features
+    - Responsive design that works on all devices
+    - Customizable appearance based on Chat Customization settings
+    - Email collection for visitor identification
+    - Real-time messaging capabilities
+    - "Powered by ChatterMate" branding
   </Tab>
 
   <Tab title="Advanced">
     <Frame>
-      <img src="/images/agent-advancedtab.png" alt="Agent Management Dashboard" />
+      <img src="/images/agent-advancedtab.png" alt="Advanced Settings" />
     </Frame>
     ## Rate Limiting
 
@@ -110,8 +206,23 @@ Customize your AI agents to provide consistent, on-brand customer support that a
   </Tab>
 </Tabs>
 
+## Workflow Mode
 
+When using **Workflow** mode, your agent operates using predefined workflows instead of AI-generated responses. This provides:
+
+- **Structured Conversations**: Guide users through specific paths
+- **Conditional Logic**: Route conversations based on user inputs
+- **Automation**: Trigger actions based on conversation flow
+- **Consistency**: Ensure standardized responses for common scenarios
+
+<Note>
+Switch between AI Mode and Workflow using the toggle buttons at the top of the agent configuration.
+</Note>
+
+<Card title="Workflow Builder" icon="workflow" href="/features/workflow-builder">
+  Next: Learn how to create advanced conversation workflows
+</Card>
 
 <Card title="Knowledge Base" icon="book" href="/features/knowledge-base">
-  Next: Learn how to enhance your AI agent with domain knowledge
+  Learn how to enhance your AI agent with domain knowledge
 </Card> 
