@@ -59,6 +59,40 @@ Your AI agent can operate in two different modes:
     </Frame>
     ## Visual Customization
 
+    ### Chat Style
+    Choose from different chat interface styles:
+
+    #### Chatbot Style 💬
+    - Traditional customer support interface
+    - Features agent branding and formal layout
+    - Best for business customer support scenarios
+    - Standard email collection and greeting flow
+
+    #### Ask Anything Style 🤖
+    - Modern AI assistant interface
+    - Larger, more prominent design with welcome message
+    - Perfect for general-purpose AI assistants
+    - Features customizable welcome title and subtitle
+    - Clean, conversation-focused layout
+
+    <Note>
+    The "Ask Anything" style provides additional customization options for welcome messages and uses a wider chat interface optimized for AI conversations.
+    </Note>
+
+    ### Welcome Message (Ask Anything Style)
+    When using the "Ask Anything" chat style, you can customize:
+
+    #### Welcome Title
+    - Personalized greeting for your AI assistant
+    - Defaults to "Welcome to [Agent Name]" if left empty
+    - Maximum 100 characters
+
+    #### Welcome Subtitle
+    - Engaging description of your AI's capabilities
+    - Defaults to "I'm here to help you with anything you need. What can I assist you with today?"
+    - Maximum 250 characters
+    - Supports multiple lines for detailed descriptions
+
     ### Colors
     Customize the appearance of your chat widget:
 
@@ -158,6 +192,38 @@ Your AI agent can operate in two different modes:
     </Note>
   </Tab>
 
+  <Tab title="MCP Tools">
+    <Frame>
+      <img src="/images/mcp-tools.png" alt="MCP Tools" />
+    </Frame>
+    ## MCP Tools Integration
+
+    Connect external tools and services to your agent using the Model Context Protocol (MCP). These tools extend your agent's capabilities with access to file systems, APIs, databases, and more.
+
+    ### Adding MCP Tools
+    - **Create Tool**: Configure new MCP servers and tools
+    - **Link Existing**: Connect to previously configured MCP tools from your organization
+
+    ### Tool Management
+    View and manage all connected MCP tools:
+    - **Tool**: Name and description of the MCP tool
+    - **Type**: Transport protocol (STDIO, SSE, HTTP)
+    - **Configuration**: Connection details and parameters
+    - **Status**: Enabled/disabled state
+    - **Actions**: Edit, unlink, or delete MCP tools
+
+    ### Popular MCP Tools
+    Choose from pre-configured templates:
+    - **File System**: Access and manage files and directories
+    - **Git Repository**: Interact with Git repositories
+    - **Web Search**: Search the web using Brave Search API
+    - **Weather**: Get weather information
+
+    <Note>
+    MCP tools require proper configuration and may need API keys or specific permissions to function correctly.
+    </Note>
+  </Tab>
+
   <Tab title="Widget">
     <Frame>
       <img src="/images/agent-widgettab.png" alt="Widget Integration" />
@@ -218,6 +284,10 @@ When using **Workflow** mode, your agent operates using predefined workflows ins
 <Note>
 Switch between AI Mode and Workflow using the toggle buttons at the top of the agent configuration.
 </Note>
+
+<Card title="MCP Tools" icon="wrench" href="/features/mcp-tools">
+  Learn how to extend your AI agent with external tools and services
+</Card>
 
 <Card title="Workflow Builder" icon="workflow" href="/features/workflow-builder">
   Next: Learn how to create advanced conversation workflows

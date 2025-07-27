@@ -55,6 +55,7 @@
         "features/ai-customization",
         "features/workflow-builder",
         "features/knowledge-base",
+        "features/mcp-tools",
         "features/testing",
         "features/widget",
         "features/human-agents",
