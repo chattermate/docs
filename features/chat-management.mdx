@@ -1,44 +1,100 @@
 ---
 title: 'Chat Management'
-description: 'Manage customer conversations and chat assignments in ChatterMate'
+description: 'Advanced conversation management with filtering, human takeover, and chat reassignment in ChatterMate'
 ---
 
 # Chat Management
 
-Monitor and manage customer conversations, handle chat assignments, and ensure efficient customer support.
+Monitor and manage customer conversations with advanced filtering, seamless human-AI collaboration, and comprehensive chat lifecycle management.
 
 <Frame>
-  <img src="/images/chat-management.png" alt="Chat Management Dashboard" />
+  <img src="/images/chat-management.jpg" alt="Chat Management Dashboard" />
 </Frame>
 
-## Conversation Overview
+## Advanced Conversation Filtering
 
-### Chat List Features
-- Real-time conversation updates
-- Message count indicators
-- Timestamp information
-- Customer email display
-- Quick chat preview
-- Conversation status
+### Filter Options
+- **Agent Filter**: Filter conversations by specific AI agents
+- **User Filter**: Filter conversations by human agents/users
+- **Customer Email**: Search conversations by customer email
+- **Date Range**: Filter conversations within specific time periods
+- **Smart UI**: Icon-based filter toggle with active filter count indicator
 
-### Chat Actions
-<CardGroup cols={2}>
+### Filter Features
+- Apply-on-demand filtering (click "Apply Filters" to activate)
+- Auto-close filter panel after applying
+- Clear all filters with one click
+- Real-time filter count display
+
+## Chat Information Panel
+
+### Detailed Chat View
+- **Customer Information**: View customer details and contact information
+- **Assignment Tracking**: See current assignee and assignment timestamp
+- **Timeline**: Track chat creation and last update times
+- **Status Monitoring**: Real-time chat status (Open, Transferred, Closed)
+- **Toggleable Sidebar**: Discord/Slack-style panel that pushes content
+
+### Panel Features
+- Responsive design matching conversation list height
+- Easy toggle on/off functionality
+- Comprehensive chat metadata display
+
+## Chat Actions & Control
+
+<CardGroup cols={3}>
   <Card title="Take Over" icon="user-switch">
-    Transfer from AI to human agent
+    Human agents can instantly take control of AI-handled conversations
   </Card>
-  <Card title="Assign" icon="user-plus">
-    Route chats to specific agents groups
+  <Card title="Reassign" icon="user-arrows">
+    Transfer chats between human agents with notifications
+  </Card>
+  <Card title="End Chat" icon="message-xmark">
+    Close conversations with reason tracking and descriptions
   </Card>
 </CardGroup>
 
+### Human Takeover
+- **Smart Permissions**: Only available for open chats handled by AI
+- **Instant Transfer**: Seamless transition from AI to human agent
+- **Real-time Updates**: UI refreshes automatically after takeover
+- **Status Sync**: Chat assignment updated across all interfaces
 
+### Chat Reassignment
+- **User Selection**: Easy dropdown with agent names and emails
+- **Validation**: Only open, user-handled chats can be reassigned
+- **Multi-party Notifications**: Automatic notifications sent to:
+  - Customer (chat reassigned)
+  - New assignee (new chat assigned)
+  - Previous assignee (chat transferred)
+- **Real-time Sync**: Instant updates across all connected clients
+
+### Automated Chat Management
+- **Auto-close**: AI-handled chats automatically close after 24 hours of inactivity
+- **Reason Tracking**: End chat reasons and descriptions for analytics
+- **Background Processing**: Daily worker checks for inactive chats
+
+## Real-time Features
+
+### Live Updates
+- Socket.IO integration for instant notifications
+- Real-time chat status changes
+- Multi-client synchronization
+- Toast notifications for user actions
+
+### Notification System
+- Chat takeover notifications
+- Reassignment alerts
+- Status change updates
+- New message indicators
 
 ## What's Next?
 
-After setting up chat management:
+After setting up advanced chat management:
 
-1. Train your team
-2. Monitor performance
-3. Gather feedback
-4. Optimize workflows
+1. **Configure Filters**: Set up default filters for your team
+2. **Train Agents**: Educate team on takeover and reassignment features
+3. **Monitor Analytics**: Track chat lifecycle and agent performance
+4. **Optimize Workflows**: Use reassignment for workload balancing
+5. **Review Auto-close**: Adjust inactive chat timeout if needed
 
