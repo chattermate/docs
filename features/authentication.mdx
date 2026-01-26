@@ -1,0 +1,230 @@
+---
+title: 'Widget Authentication'
+description: 'Secure your chat widget with token-based authentication'
+---
+
+# Widget Authentication
+
+Secure your embedded chat widget with flexible token-based authentication. ChatterMate supports both public and authenticated access modes to fit your application's needs.
+
+## Authentication Modes
+
+ChatterMate offers two authentication modes for your widget:
+
+<Tabs>
+  <Tab title="Optional (Default)">
+    ### Public Access Mode
+
+    The default mode allows anonymous visitors to start conversations without authentication.
+
+    **How it works:**
+    - Token is automatically generated when the widget initializes
+    - Visitors can chat immediately without signing in
+    - Email collection is optional (based on chat style settings)
+    - Conversation history is linked to the generated token
+
+    **Best for:**
+    - Public support websites
+    - Documentation assistants
+    - General Q&A interfaces
+    - Lead generation chatbots
+  </Tab>
+
+  <Tab title="Required">
+    ### Authenticated Access Mode
+
+    Require a valid token before users can start chatting. Enable this for secure, authenticated applications.
+
+    **How it works:**
+    - Widget requires a pre-generated token to initialize
+    - Token must be created server-side with user context
+    - Conversations are linked to authenticated users
+    - Previous conversation history loads automatically
+
+    **Best for:**
+    - Customer portals
+    - SaaS applications
+    - Internal support tools
+    - Apps with user authentication
+
+    <Note>
+    Enable required authentication by setting `require_token_auth: true` on your agent configuration.
+    </Note>
+  </Tab>
+</Tabs>
+
+## How Token Authentication Works
+
+### Token Structure
+
+ChatterMate uses JWT (JSON Web Token) for secure widget authentication. Each token contains:
+
+| Field | Description |
+|-------|-------------|
+| `widget_id` | Unique identifier for the widget |
+| `org_id` | Organization identifier |
+| `customer_id` | Customer/user identifier |
+| `source` | Optional tracking source |
+| `exp` | Token expiration timestamp |
+
+### Token Flow
+
+<Steps>
+  <Step title="Token Generation">
+    When a user visits your site, generate a token server-side using your secret key.
+  </Step>
+  <Step title="Widget Initialization">
+    Pass the token to the widget during initialization.
+  </Step>
+  <Step title="Token Validation">
+    ChatterMate validates the token on each request, verifying the signature and organization context.
+  </Step>
+  <Step title="Session Management">
+    Valid tokens maintain conversation continuity across sessions and devices.
+  </Step>
+</Steps>
+
+## Implementation
+
+### Server-Side Token Generation
+
+Generate tokens on your backend to securely identify users:
+
+<CodeGroup>
+```javascript Node.js
+const jwt = require('jsonwebtoken');
+
+function generateWidgetToken(userId, email) {
+  const payload = {
+    widget_id: 'YOUR_WIDGET_ID',
+    org_id: 'YOUR_ORG_ID',
+    customer_id: userId,
+    email: email,
+    source: 'web_app'
+  };
+
+  return jwt.sign(payload, process.env.CONVERSATION_SECRET_KEY, {
+    expiresIn: '24h'
+  });
+}
+```
+
+```python Python
+import jwt
+from datetime import datetime, timedelta
+
+def generate_widget_token(user_id: str, email: str) -> str:
+    payload = {
+        'widget_id': 'YOUR_WIDGET_ID',
+        'org_id': 'YOUR_ORG_ID',
+        'customer_id': user_id,
+        'email': email,
+        'source': 'web_app',
+        'exp': datetime.utcnow() + timedelta(hours=24)
+    }
+
+    return jwt.encode(payload, CONVERSATION_SECRET_KEY, algorithm='HS256')
+```
+</CodeGroup>
+
+### Client-Side Token Usage
+
+Pass the token when initializing the widget:
+
+```html
+<script>
+  window.chattermateId = 'YOUR_WIDGET_ID';
+  window.chattermateToken = 'GENERATED_JWT_TOKEN';
+</script>
+<script src="https://app.chattermate.chat/webclient/chattermate.min.js"></script>
+```
+
+### API Authentication
+
+For direct API calls, include the token in headers:
+
+<CodeGroup>
+```bash Authorization Header
+curl -X POST https://api.chattermate.chat/api/v1/chat \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+```bash Conversation Token Header
+curl -X POST https://api.chattermate.chat/api/v1/chat \
+  -H "X-Conversation-Token: YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+## Security Features
+
+<CardGroup cols={2}>
+  <Card title="Organization Isolation" icon="building">
+    Tokens are scoped to your organization. Cross-organization access is prevented.
+  </Card>
+  <Card title="Signature Verification" icon="shield-check">
+    All tokens are cryptographically signed and verified on each request.
+  </Card>
+  <Card title="Widget Binding" icon="link">
+    Tokens are bound to specific widgets, preventing cross-widget token reuse.
+  </Card>
+  <Card title="Encrypted Storage" icon="lock">
+    Tokens are stored securely with encryption at rest.
+  </Card>
+</CardGroup>
+
+<Warning>
+Never expose your `CONVERSATION_SECRET_KEY` in client-side code. Always generate tokens on your backend server.
+</Warning>
+
+## Best Practices
+
+1. **Token Expiration**
+   - Set appropriate expiration times (recommended: 24 hours)
+   - Implement token refresh for long sessions
+   - Handle expired token errors gracefully
+
+2. **Secure Generation**
+   - Generate tokens server-side only
+   - Use environment variables for secret keys
+   - Rotate secrets periodically
+
+3. **User Context**
+   - Include user identifiers for conversation continuity
+   - Add email for customer identification
+   - Use source tracking for analytics
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Token validation failed">
+    - Verify your `CONVERSATION_SECRET_KEY` matches between token generation and ChatterMate config
+    - Check token hasn't expired
+    - Ensure `widget_id` in token matches the widget being used
+  </Accordion>
+
+  <Accordion title="Widget not loading with token">
+    - Confirm token is set before the widget script loads
+    - Check browser console for JavaScript errors
+    - Verify token format is valid JWT
+  </Accordion>
+
+  <Accordion title="Conversation history not loading">
+    - Ensure `customer_id` is consistent for the same user
+    - Check organization ID matches
+    - Verify token hasn't been regenerated with different customer ID
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+After configuring authentication:
+
+1. Set up your widget integration
+2. Configure chat customization options
+3. Test with authenticated and anonymous users
+
+<Card title="Widget Integration" icon="puzzle-piece" href="/features/widget">
+  Learn how to integrate the widget into your website
+</Card>

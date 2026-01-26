@@ -1,0 +1,341 @@
+---
+title: 'Widget Apps'
+description: 'Deploy and manage embedded chat widgets for your websites and applications'
+---
+
+# Widget Apps
+
+Widget Apps are embeddable chat interfaces that you can add to any website or application. Customize the appearance, behavior, and functionality to match your brand and use case.
+
+## Creating a Widget App
+
+Every agent in ChatterMate has an associated widget that can be embedded on your website.
+
+<Steps>
+  <Step title="Create or Select an Agent">
+    Navigate to **Agents** in the dashboard and create a new agent or select an existing one.
+  </Step>
+  <Step title="Open Widget Tab">
+    Click on the **Widget** tab in the agent configuration.
+  </Step>
+  <Step title="Copy Widget Code">
+    Copy the provided code snippet.
+  </Step>
+  <Step title="Add to Your Website">
+    Paste the code just before the closing `</body>` tag on your website.
+  </Step>
+</Steps>
+
+## Chat Styles
+
+Choose the chat style that best fits your use case:
+
+<Tabs>
+  <Tab title="Chatbot Style">
+    ### Traditional Support Interface
+
+    The classic customer support chat experience with agent branding.
+
+    **Features:**
+    - Email collection before chat starts
+    - Agent avatar and name displayed
+    - Formal, business-focused layout
+    - "Powered by ChatterMate" branding
+    - Standard greeting message
+
+    **Best for:**
+    - Customer support portals
+    - E-commerce websites
+    - Service-based businesses
+    - Help desk interfaces
+  </Tab>
+
+  <Tab title="Ask Anything Style">
+    ### Modern AI Assistant Interface
+
+    A clean, conversation-focused interface perfect for AI assistants.
+
+    **Features:**
+    - No email required to start chatting
+    - Customizable welcome title and subtitle
+    - Larger, prominent design
+    - Anonymous conversation support
+    - Modern, AI-focused aesthetics
+
+    **Best for:**
+    - Documentation assistants
+    - Knowledge base Q&A
+    - General-purpose AI helpers
+    - Product exploration tools
+
+    <Note>
+    The "Ask Anything" style automatically creates anonymous customer sessions. Users can optionally provide their email later in the conversation.
+    </Note>
+  </Tab>
+</Tabs>
+
+## Integration Methods
+
+<CardGroup cols={2}>
+  <Card title="Script Integration (Recommended)" icon="code">
+    Simple, lightweight integration with a single script tag. Automatically handles updates and optimizations.
+  </Card>
+  <Card title="iFrame Integration" icon="square">
+    Embed as an iframe for more control over placement and dimensions. Useful for specific layout requirements.
+  </Card>
+</CardGroup>
+
+### Script Integration
+
+Add this code before your closing `</body>` tag:
+
+```html
+<script>
+  window.chattermateId = 'YOUR_WIDGET_ID';
+</script>
+<script src="https://app.chattermate.chat/webclient/chattermate.min.js"></script>
+```
+
+### iFrame Integration
+
+For iframe embedding:
+
+```html
+<iframe
+  src="https://api.chattermate.chat/api/v1/widgets/YOUR_WIDGET_ID/data"
+  frameborder="0"
+  width="400"
+  height="600"
+  allow="clipboard-write"
+  style="border-radius: 24px;">
+</iframe>
+```
+
+## Customization Options
+
+### Visual Customization
+
+Customize your widget's appearance in the **Chat Customization** tab:
+
+| Option | Description |
+|--------|-------------|
+| **Background Color** | Main background of the chat interface |
+| **Chat Bubble Color** | Color of message bubbles |
+| **Accent Color** | Buttons, links, and interactive elements |
+| **Font Family** | Typography (Inter, system-ui, sans-serif) |
+
+### Welcome Messages (Ask Anything Style)
+
+| Field | Description | Max Length |
+|-------|-------------|------------|
+| **Welcome Title** | Main greeting headline | 100 characters |
+| **Welcome Subtitle** | Descriptive text about capabilities | 250 characters |
+
+Example:
+```
+Title: "Welcome to TechSupport AI"
+Subtitle: "I can help you troubleshoot issues, find documentation,
+and answer questions about our products. What can I help you with?"
+```
+
+### CSS Variables
+
+The widget uses CSS variables for consistent theming:
+
+```css
+:root {
+  --primary-color: #f34611;
+  --background-base: #ffffff;
+  --text-color: #1F2937;
+  --border-color: #E5E7EB;
+  --radius-lg: 24px;
+  --space-md: 16px;
+  --space-sm: 8px;
+}
+```
+
+## Widget Events
+
+The widget communicates via `postMessage` events:
+
+### Listen for Events
+
+```javascript
+window.addEventListener('message', (event) => {
+  switch(event.data.type) {
+    case 'TOKEN_UPDATE':
+      // New conversation token generated
+      const token = event.data.token;
+      localStorage.setItem('ctid', token);
+      break;
+
+    case 'CHAT_OPENED':
+      // Widget was opened
+      console.log('Chat opened');
+      break;
+
+    case 'CHAT_CLOSED':
+      // Widget was closed
+      console.log('Chat closed');
+      break;
+  }
+});
+```
+
+### Send Commands
+
+```javascript
+// Scroll chat to bottom
+window.postMessage({ type: 'SCROLL_TO_BOTTOM' }, '*');
+
+// Update customization
+window.postMessage({
+  type: 'CUSTOMIZATION_UPDATE',
+  data: {
+    chat_bubble_color: '#f34611'
+  }
+}, '*');
+```
+
+## Domain Restrictions
+
+Protect your widget from unauthorized embedding:
+
+<Steps>
+  <Step title="Access Agent Settings">
+    Navigate to your agent's configuration.
+  </Step>
+  <Step title="Configure Allowed Domains">
+    Add domains that are allowed to embed your widget.
+  </Step>
+  <Step title="Enable Domain Validation">
+    Turn on domain checking to block unauthorized sites.
+  </Step>
+</Steps>
+
+<Warning>
+When domain restrictions are enabled, the widget will only load on whitelisted domains. Requests from other domains will be blocked.
+</Warning>
+
+## Mobile Responsiveness
+
+The widget automatically adapts to different screen sizes:
+
+<CodeGroup>
+```css Desktop (> 768px)
+.widget-container {
+  width: 400px;
+  height: 600px;
+  border-radius: 24px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+```
+
+```css Mobile (< 768px)
+.widget-container {
+  width: 100%;
+  height: 100vh;
+  border-radius: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+```
+</CodeGroup>
+
+### Mobile Features
+
+- Full-screen chat interface on mobile devices
+- Touch-optimized buttons and inputs
+- Smooth animations and transitions
+- Keyboard-aware input positioning
+
+## Widget Features
+
+<CardGroup cols={3}>
+  <Card title="Real-time Chat" icon="comments">
+    Instant messaging with typing indicators and read receipts
+  </Card>
+  <Card title="File Attachments" icon="paperclip">
+    Share images and documents in conversations
+  </Card>
+  <Card title="Markdown Support" icon="markdown">
+    Rich text formatting in messages
+  </Card>
+  <Card title="Emoji Support" icon="face-smile">
+    Full emoji picker for expressive conversations
+  </Card>
+  <Card title="Message History" icon="clock-rotate-left">
+    Persistent conversation history across sessions
+  </Card>
+  <Card title="Human Handoff" icon="user-headset">
+    Seamless transfer to human agents when needed
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+1. **Placement**
+   - Add script just before closing `</body>` tag
+   - Ensure no conflicting CSS styles
+   - Test on multiple pages
+
+2. **Performance**
+   - The widget loads asynchronously
+   - Minimal impact on page load time
+   - Consider lazy loading on high-traffic pages
+
+3. **User Experience**
+   - Test on both desktop and mobile
+   - Verify email collection flow (Chatbot style)
+   - Check conversation history persistence
+   - Test offline/reconnection behavior
+
+4. **Branding**
+   - Match colors to your brand
+   - Use consistent typography
+   - Customize welcome messages for your audience
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Widget not appearing">
+    - Verify widget ID is correct
+    - Check browser console for JavaScript errors
+    - Ensure script is placed before `</body>` tag
+    - Check if ad blockers are interfering
+  </Accordion>
+
+  <Accordion title="Styling conflicts">
+    - Widget uses scoped CSS to minimize conflicts
+    - Check for global CSS rules affecting the widget
+    - Use browser DevTools to identify conflicting styles
+  </Accordion>
+
+  <Accordion title="Mobile display issues">
+    - Ensure viewport meta tag is present: `<meta name="viewport" content="width=device-width, initial-scale=1">`
+    - Check for CSS that might affect fixed positioning
+    - Test in actual mobile devices, not just browser emulation
+  </Accordion>
+
+  <Accordion title="Token not persisting">
+    - Verify localStorage is available and not blocked
+    - Check if cookies/storage are being cleared
+    - Ensure same widget ID is used across pages
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+After deploying your widget:
+
+1. Configure authentication for secure access
+2. Enable file attachments if needed
+3. Set up human agent handoff
+4. Monitor conversations in the dashboard
+
+<Card title="Authentication" icon="lock" href="/features/authentication">
+  Learn how to secure your widget with token authentication
+</Card>
