@@ -1,0 +1,252 @@
+---
+title: 'File Attachments'
+description: 'Enable customers to share images, documents, and files in chat conversations'
+---
+
+# File Attachments
+
+Allow customers to share files directly in chat conversations. ChatterMate supports secure file uploads with configurable file types, size limits, and storage options.
+
+## Enabling File Attachments
+
+File attachments are configured per agent. To enable:
+
+<Steps>
+  <Step title="Navigate to Agent Settings">
+    Go to your agent configuration in the ChatterMate dashboard.
+  </Step>
+  <Step title="Open Advanced Tab">
+    Click on the **Advanced** tab in agent settings.
+  </Step>
+  <Step title="Enable Attachments">
+    Toggle **Allow Attachments** to enable file uploads for this agent.
+  </Step>
+  <Step title="Configure File Types (Optional)">
+    Optionally restrict which file types are allowed.
+  </Step>
+</Steps>
+
+## Supported File Types
+
+<CardGroup cols={2}>
+  <Card title="Images" icon="image">
+    **Supported formats:**
+    - JPEG / JPG
+    - PNG
+    - GIF
+    - WebP
+
+    **Maximum size:** 5MB per file
+  </Card>
+  <Card title="Documents" icon="file-lines">
+    **Supported formats:**
+    - PDF
+    - Microsoft Word (.doc, .docx)
+    - Microsoft Excel (.xls, .xlsx)
+    - Plain Text (.txt)
+    - CSV (.csv)
+
+    **Maximum size:** 10MB per file
+  </Card>
+</CardGroup>
+
+### File Type Reference
+
+| Category | Extensions | MIME Types | Max Size |
+|----------|------------|------------|----------|
+| Images | .jpg, .jpeg, .png, .gif, .webp | image/jpeg, image/png, image/gif, image/webp | 5MB |
+| PDF | .pdf | application/pdf | 10MB |
+| Word | .doc, .docx | application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document | 10MB |
+| Excel | .xls, .xlsx | application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet | 10MB |
+| Text | .txt, .csv | text/plain, text/csv | 10MB |
+
+<Note>
+SVG files are intentionally excluded from supported types due to potential XSS (Cross-Site Scripting) security vulnerabilities.
+</Note>
+
+## Security Features
+
+ChatterMate implements multiple layers of security for file uploads:
+
+<CardGroup cols={2}>
+  <Card title="Magic Byte Validation" icon="shield-check">
+    Files are validated by their binary signature (magic bytes), not just MIME type or extension. This prevents file type spoofing.
+  </Card>
+  <Card title="Size Limits" icon="weight-scale">
+    Strict file size limits are enforced server-side to prevent abuse and ensure system stability.
+  </Card>
+  <Card title="Type Restrictions" icon="filter">
+    Configure allowed file types per agent to only accept what you need.
+  </Card>
+  <Card title="Signed URLs" icon="signature">
+    File downloads use temporary signed URLs that expire, preventing unauthorized access.
+  </Card>
+</CardGroup>
+
+### How Magic Byte Validation Works
+
+Unlike simple MIME type checking, magic byte validation reads the actual file header to verify its true type:
+
+```
+JPEG: Starts with FF D8 FF
+PNG:  Starts with 89 50 4E 47
+PDF:  Starts with 25 50 44 46 (%PDF)
+```
+
+This prevents attackers from renaming malicious files with safe extensions.
+
+## Storage Configuration
+
+### AWS S3 (Production)
+
+For production deployments, files are stored in AWS S3:
+
+```bash
+# Environment variables for S3 storage
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_S3_BUCKET=your-bucket-name
+AWS_REGION=us-east-1
+```
+
+**Storage path structure:**
+```
+uploads/chat_attachments/{org_id}/{unique_filename}
+```
+
+### Local Storage (Development)
+
+For local development, files are stored on the filesystem:
+
+```bash
+# Files stored in
+backend/uploads/chat_attachments/{org_id}/{unique_filename}
+```
+
+<Warning>
+Local storage is intended for development only. Use S3 or compatible object storage for production deployments.
+</Warning>
+
+## Agent Configuration
+
+### Enable All Attachments
+
+```json
+{
+  "allow_attachments": true
+}
+```
+
+### Restrict to Specific Types
+
+Limit uploads to specific categories:
+
+<CodeGroup>
+```json Images Only
+{
+  "allow_attachments": true,
+  "allowed_attachment_types": ["images"]
+}
+```
+
+```json Documents Only
+{
+  "allow_attachments": true,
+  "allowed_attachment_types": ["documents"]
+}
+```
+
+```json Images and PDFs
+{
+  "allow_attachments": true,
+  "allowed_attachment_types": ["images", "pdf"]
+}
+```
+</CodeGroup>
+
+## User Experience
+
+### Upload Flow
+
+When file attachments are enabled, users can:
+
+1. Click the attachment icon in the chat input
+2. Select files from their device
+3. Preview images before sending
+4. See upload progress indicator
+5. View attached files in chat history
+
+### Chat Interface
+
+<CardGroup cols={2}>
+  <Card title="Image Previews" icon="eye">
+    Images display as inline previews in the chat with click-to-expand functionality.
+  </Card>
+  <Card title="Document Links" icon="download">
+    Documents appear as downloadable links with file name and size displayed.
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+1. **Enable Only What You Need**
+   - If you only need image uploads, restrict to images only
+   - Reduces potential attack surface
+   - Improves user experience with focused UI
+
+2. **Monitor Storage Usage**
+   - Track file storage consumption
+   - Set up alerts for unusual upload patterns
+   - Implement retention policies for old files
+
+3. **Consider File Processing**
+   - Large files may impact chat performance
+   - Consider async processing for document analysis
+   - Compress images when possible
+
+4. **Inform Users**
+   - Display accepted file types in the UI
+   - Show clear error messages for rejected files
+   - Indicate file size limits
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="File upload fails with 'Invalid file type'">
+    - Verify the file extension matches the actual file type
+    - Check if the file type is in the allowed list
+    - Ensure the file hasn't been renamed with a different extension
+    - Try re-exporting the file from its source application
+  </Accordion>
+
+  <Accordion title="Upload fails with 'File too large'">
+    - Check file size against limits (5MB images, 10MB documents)
+    - Compress images before uploading
+    - Split large documents into smaller parts
+  </Accordion>
+
+  <Accordion title="Uploaded files not appearing">
+    - Verify S3 credentials are configured correctly
+    - Check S3 bucket permissions
+    - Ensure CORS is configured on your S3 bucket
+    - Review backend logs for storage errors
+  </Accordion>
+
+  <Accordion title="Cannot download uploaded files">
+    - Signed URLs may have expired (refresh the chat)
+    - Check S3 bucket access policies
+    - Verify the file wasn't deleted from storage
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+After enabling file attachments:
+
+1. Test upload functionality with various file types
+2. Configure file type restrictions as needed
+3. Set up S3 storage for production
+
+<Card title="Widget Apps" icon="window" href="/features/widget-apps">
+  Learn about deploying and customizing widget apps
+</Card>
