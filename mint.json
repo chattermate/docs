@@ -79,8 +79,8 @@
     "discord": "https://discord.gg/XNCMg8jV8U"
   },
   "analytics": {
-    "ga4": {
-      "measurementId": "G-XXXXXXXXXX"
+    "gtm": {
+      "tagId": "GTM-57P2P2RW"
     }
   },
   "feedback": {
