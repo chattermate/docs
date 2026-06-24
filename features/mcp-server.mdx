@@ -1,0 +1,168 @@
+---
+title: 'MCP Server'
+description: 'Let AI agents configure ChatterMate through the Model Context Protocol'
+---
+
+# ChatterMate MCP Server
+
+The ChatterMate MCP server (`chattermate-mcp`) exposes your ChatterMate instance to AI agents
+through the [Model Context Protocol](https://modelcontextprotocol.io). Connect it to Claude, an
+IDE assistant, or any MCP-compatible client and the agent can read and manage your agents,
+workflows, and knowledge sources on your behalf.
+
+<Note>
+**This is the inverse of [MCP Tools](/features/mcp-tools).** *MCP Tools* let your ChatterMate
+agents **call out** to external services. The *MCP Server* described here lets an external AI
+agent **call in** to ChatterMate to configure it.
+</Note>
+
+## How it works
+
+The server is a thin, stdio-based bridge over the ChatterMate API. It ships in the same
+`chattermate-sdk` package as the [CLI](/features/cli) and is authenticated with a
+[Personal Access Token](/features/cli#personal-access-tokens).
+
+<CardGroup cols={3}>
+  <Card title="stdio transport" icon="terminal">
+    Launched by your MCP client as a subprocess — the standard way agents run local MCP servers.
+  </Card>
+  <Card title="Token auth" icon="key">
+    Uses a `cmat_` Personal Access Token from the `CHATTERMATE_TOKEN` environment variable.
+  </Card>
+  <Card title="Scoped to your org" icon="building">
+    Every action runs as the token's owner, limited to that user's organization and permissions.
+  </Card>
+</CardGroup>
+
+## Prerequisites
+
+<Steps>
+  <Step title="Install the package">
+    The server runs via `uvx` (no install) or after `pipx install chattermate-sdk`. See the
+    [CLI installation guide](/features/cli#installation).
+  </Step>
+  <Step title="Create a Personal Access Token">
+    ```bash
+    chattermate token create my-agent
+    ```
+    Copy the `cmat_...` secret — it's shown only once.
+  </Step>
+</Steps>
+
+## Configuration
+
+Add the server to your MCP client's configuration, supplying your personal access token via
+`CHATTERMATE_TOKEN`. The server targets the hosted API (`https://api.chattermate.chat`) by
+default, so no API URL is needed. Running `chattermate token create` prints this exact snippet
+for you.
+
+<CodeGroup>
+```json Claude Desktop / generic
+{
+  "mcpServers": {
+    "chattermate": {
+      "command": "uvx",
+      "args": ["--from", "chattermate-sdk", "chattermate-mcp"],
+      "env": {
+        "CHATTERMATE_TOKEN": "cmat_xxxxxxxxxxxxxxxxxxxx"
+      }
+    }
+  }
+}
+```
+
+```bash Claude Code (CLI)
+claude mcp add chattermate \
+  --env CHATTERMATE_TOKEN=cmat_xxxxxxxxxxxxxxxxxxxx \
+  -- uvx --from chattermate-sdk chattermate-mcp
+```
+</CodeGroup>
+
+If you installed with `pipx`, you can use the `chattermate-mcp` command directly instead of
+`uvx`:
+
+```json
+{
+  "mcpServers": {
+    "chattermate": {
+      "command": "chattermate-mcp",
+      "env": {
+        "CHATTERMATE_TOKEN": "cmat_xxxxxxxxxxxxxxxxxxxx"
+      }
+    }
+  }
+}
+```
+
+<Note>
+Targeting a local or self-hosted backend? Add `"CHATTERMATE_API_URL": "http://localhost:8000"`
+to the `env` block.
+</Note>
+
+## Available tools
+
+The server exposes the following tools. Read-only tools are safe to run freely; mutating tools
+create or change configuration.
+
+<Tabs>
+  <Tab title="Read-only">
+    | Tool | Description |
+    | --- | --- |
+    | `whoami` | Return the authenticated user (id, email, organization, role) |
+    | `list_agents` | List all agents in the organization |
+    | `get_agent` | Get a single agent by id |
+    | `get_workflow` | Get the workflow attached to an agent |
+    | `get_workflow_nodes` | Get all nodes and connections for a workflow |
+    | `list_knowledge` | List knowledge sources linked to an agent |
+    | `get_ingestion_status` | Check the status of a knowledge ingestion job |
+  </Tab>
+  <Tab title="Mutating">
+    | Tool | Description |
+    | --- | --- |
+    | `create_agent` | Create an AI agent |
+    | `update_agent` | Update an agent's instructions, name, or active state |
+    | `create_workflow` | Create a workflow for an agent |
+    | `update_workflow` | Update a workflow's metadata |
+    | `update_workflow_nodes` | Replace a workflow's nodes/connections |
+    | `add_knowledge_url` | Add website/PDF URLs to the knowledge base |
+    | `link_knowledge` | Link a knowledge source to an agent |
+    | `unlink_knowledge` | Unlink a knowledge source from an agent |
+  </Tab>
+</Tabs>
+
+## Example prompts
+
+Once connected, you can ask your AI agent things like:
+
+- *"List my ChatterMate agents and tell me which ones have no workflow."*
+- *"Create a customer_support agent named 'Billing Bot' with instructions to handle refunds and
+  escalate disputes to a human."*
+- *"Add https://docs.acme.com to the Billing Bot's knowledge base and tell me when ingestion
+  finishes."*
+- *"Create an 'Onboarding' workflow for agent &lt;id&gt; and publish it."*
+
+The agent translates these into the appropriate tool calls.
+
+## Security
+
+<Warning>
+A Personal Access Token grants the agent the same permissions as its owner. Treat it like a
+password.
+</Warning>
+
+- Scope risk by creating a **dedicated token per agent/integration** and setting an expiry with
+  `--expires-in-days`.
+- **Revoke** a token at any time with `chattermate token revoke <id>` (or from the API); the
+  server stops working immediately.
+- The server never stores your token — it reads it from the environment on each run.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="CLI" icon="terminal" href="/features/cli">
+    Manage tokens and resources from your terminal.
+  </Card>
+  <Card title="MCP Tools" icon="plug" href="/features/mcp-tools">
+    The reverse direction — give your ChatterMate agents external tools.
+  </Card>
+</CardGroup>

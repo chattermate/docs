@@ -1,0 +1,233 @@
+---
+title: 'CLI'
+description: 'Sign up, authenticate, and configure ChatterMate from your terminal'
+---
+
+# ChatterMate CLI
+
+The ChatterMate CLI (`chattermate`) lets you sign up, log in, mint access tokens, and configure
+agents, workflows, and knowledge sources directly from your terminal — no browser required. It's
+ideal for automation, CI pipelines, and scripting your ChatterMate setup.
+
+<Note>
+The CLI and MCP server are part of the **enterprise/commercial edition**. They authenticate with
+[Personal Access Tokens](#personal-access-tokens), which require the enterprise backend.
+</Note>
+
+## Installation
+
+The CLI is published as the `chattermate-sdk` Python package. It installs two commands:
+`chattermate` (with the alias `cmate`) and [`chattermate-mcp`](/features/mcp-server).
+
+<CodeGroup>
+```bash pipx (recommended)
+pipx install chattermate-sdk
+```
+
+```bash pip
+pip install chattermate-sdk
+```
+
+```bash uvx (no install)
+uvx --from chattermate-sdk chattermate --help
+```
+</CodeGroup>
+
+Verify the install:
+
+```bash
+chattermate --version
+```
+
+## Pointing at your instance
+
+By default the CLI talks to the hosted API at `https://api.chattermate.chat` — no
+configuration needed. Only set the API URL when targeting a local or self-hosted backend.
+
+```bash
+# Local / self-hosted backend, per-command
+chattermate --api-url http://localhost:8000 whoami
+
+# Or for the whole session
+export CHATTERMATE_API_URL=http://localhost:8000
+```
+
+The URL resolves in this order: the `--api-url` flag, the `CHATTERMATE_API_URL` environment
+variable, your saved config, then the default `https://api.chattermate.chat`.
+
+## Authentication
+
+You can authenticate two ways.
+
+<Tabs>
+  <Tab title="Log in (interactive)">
+    Best for day-to-day terminal use. Stores JWT access + refresh tokens in
+    `~/.chattermate/config.json` (mode `600`) and refreshes them automatically.
+
+    ```bash
+    chattermate login --email you@acme.com
+    # password is prompted securely
+    ```
+  </Tab>
+  <Tab title="Personal Access Token">
+    Best for automation, CI, and AI agents. Long-lived and revocable. Pass it via the
+    `CHATTERMATE_TOKEN` environment variable.
+
+    ```bash
+    export CHATTERMATE_TOKEN=cmat_xxxxxxxxxxxxxxxxxxxx
+    chattermate whoami
+    ```
+  </Tab>
+</Tabs>
+
+### Sign up
+
+Create a new organization and admin user (community signup) without leaving the terminal:
+
+```bash
+chattermate signup \
+  --name "Acme Inc" \
+  --domain acme.com \
+  --admin-email admin@acme.com \
+  --admin-name "Ada Admin"
+# admin password is prompted securely
+```
+
+You're logged in automatically after signup.
+
+## Personal Access Tokens
+
+Personal Access Tokens (PATs) are long-lived, revocable credentials prefixed with `cmat_`. They
+are the recommended way to authenticate the [MCP server](/features/mcp-server), CI jobs, and any
+headless automation.
+
+<Warning>
+A token's secret is shown **only once**, at creation time. Store it somewhere safe — it cannot be
+retrieved again.
+</Warning>
+
+<Steps>
+  <Step title="Create a token">
+    ```bash
+    chattermate token create laptop-cli
+    # optionally set an expiry:
+    chattermate token create ci --expires-in-days 90
+    ```
+    The output includes the `cmat_...` secret and a ready-to-paste
+    [MCP client config](/features/mcp-server#configuration) snippet.
+  </Step>
+  <Step title="List your tokens">
+    ```bash
+    chattermate token list
+    ```
+    Only the non-secret prefix and metadata are shown.
+  </Step>
+  <Step title="Revoke a token">
+    ```bash
+    chattermate token revoke <token-id>
+    ```
+  </Step>
+</Steps>
+
+PATs are also managed through the API at `/api/v1/enterprise/tokens` (`POST` create, `GET` list,
+`DELETE /{id}` revoke).
+
+## Managing resources
+
+Every command supports a `--json` flag for machine-readable output, making the CLI easy to script.
+
+<AccordionGroup>
+  <Accordion title="Agents" icon="robot">
+    ```bash
+    # List agents
+    chattermate agent list
+
+    # Inspect one
+    chattermate agent get <agent-id>
+
+    # Create an agent (type: customer_support, sales, tech_support, general, custom)
+    chattermate agent create \
+      --name "Support" \
+      --type customer_support \
+      -i "Be concise and friendly" \
+      -i "Escalate billing questions to a human"
+
+    # Update instructions / state
+    chattermate agent update <agent-id> -i "New instruction" --inactive
+    ```
+  </Accordion>
+
+  <Accordion title="Workflows" icon="diagram-project">
+    ```bash
+    # Get the workflow attached to an agent
+    chattermate workflow get <agent-id>
+
+    # Create a workflow
+    chattermate workflow create --agent-id <agent-id> --name "Onboarding"
+
+    # Update metadata (status: draft, published, archived)
+    chattermate workflow update <workflow-id> --status published
+
+    # Read or replace nodes & connections
+    chattermate workflow nodes <workflow-id>
+    chattermate workflow set-nodes <workflow-id> --file nodes.json
+    ```
+  </Accordion>
+
+  <Accordion title="Knowledge" icon="book">
+    ```bash
+    # Add website and/or PDF URLs (optionally attach to an agent)
+    chattermate knowledge add-url \
+      --website https://docs.acme.com \
+      --pdf-url https://acme.com/guide.pdf \
+      --agent-id <agent-id>
+
+    # List sources linked to an agent
+    chattermate knowledge list <agent-id>
+
+    # Link / unlink an existing source
+    chattermate knowledge link <knowledge-id> <agent-id>
+    chattermate knowledge unlink <knowledge-id> <agent-id>
+
+    # Check ingestion progress
+    chattermate knowledge status <queue-id>
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Command reference
+
+| Command | Description |
+| --- | --- |
+| `chattermate signup` | Create an organization and admin user |
+| `chattermate login` | Log in and store JWT credentials |
+| `chattermate logout` | Remove stored credentials |
+| `chattermate whoami` | Show the authenticated user |
+| `chattermate token create <name>` | Create a Personal Access Token |
+| `chattermate token list` | List your tokens |
+| `chattermate token revoke <id>` | Revoke a token |
+| `chattermate agent list\|get\|create\|update` | Manage AI agents |
+| `chattermate workflow get\|create\|update\|nodes\|set-nodes` | Manage workflows |
+| `chattermate knowledge add-url\|list\|link\|unlink\|status` | Manage knowledge sources |
+
+## Configuration & environment
+
+| Variable | Purpose |
+| --- | --- |
+| `CHATTERMATE_API_URL` | API base URL (default `https://api.chattermate.chat`; set to `http://localhost:8000` for local) |
+| `CHATTERMATE_TOKEN` | A Personal Access Token (`cmat_...`) for non-interactive auth |
+| `CHATTERMATE_CONFIG_DIR` | Override the config directory (default `~/.chattermate`) |
+
+Credentials and the saved API URL live in `~/.chattermate/config.json` (written with `600`
+permissions).
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="MCP Server" icon="plug" href="/features/mcp-server">
+    Let AI agents configure ChatterMate through the Model Context Protocol.
+  </Card>
+  <Card title="Authentication" icon="key" href="/features/authentication">
+    Learn how ChatterMate handles users, sessions, and tokens.
+  </Card>
+</CardGroup>

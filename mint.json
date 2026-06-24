@@ -68,6 +68,13 @@
       ]
     },
     {
+      "group": "Developer Tools",
+      "pages": [
+        "features/cli",
+        "features/mcp-server"
+      ]
+    },
+    {
       "group": "Deployment",
       "pages": [
         "deployment/docker"
