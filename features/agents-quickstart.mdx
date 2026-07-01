@@ -21,12 +21,15 @@ for that.
 ```bash
 pip install chattermate-cli
 
-# 1. Create an account (community signup) — you're logged in automatically
+# 1. Create an account — a one-time code is emailed to --admin-email.
+#    Pass it with --otp (or enter at the prompt); you're logged in automatically.
+#    Self-hosted single-org instance? Add --community to skip OTP.
 chattermate signup \
   --name "Acme Inc" \
   --domain acme.com \
   --admin-email admin@acme.com \
-  --admin-name "Ada Admin"
+  --admin-name "Ada Admin" \
+  --otp 123456
   # --admin-password is prompted securely (pass it explicitly for non-interactive use)
 
 # 2. Create an agent

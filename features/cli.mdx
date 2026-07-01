@@ -90,7 +90,8 @@ You can authenticate two ways.
 
 ### Sign up
 
-Create a new organization and admin user (community signup) without leaving the terminal:
+Create a new organization and admin user without leaving the terminal. Signup emails a
+**one-time code** to `--admin-email`; supply it with `--otp` or enter it at the prompt:
 
 ```bash
 chattermate signup \
@@ -98,10 +99,16 @@ chattermate signup \
   --domain acme.com \
   --admin-email admin@acme.com \
   --admin-name "Ada Admin"
+# a one-time code is emailed to admin@acme.com — enter it when prompted
 # admin password is prompted securely
 ```
 
 You're logged in automatically after signup.
+
+<Note>
+Running a **single-org self-hosted** instance (no email delivery)? Add `--community` to create
+the org directly without OTP verification.
+</Note>
 
 ## Personal Access Tokens
 
