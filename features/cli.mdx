@@ -191,6 +191,9 @@ Every command supports a `--json` flag for machine-readable output, making the C
 
   <Accordion title="Knowledge" icon="book">
     ```bash
+    # Upload local PDF file(s) (optionally attach to an agent)
+    chattermate knowledge add-file ./guide.pdf ./faq.pdf --agent-id <agent-id>
+
     # Add website and/or PDF URLs (optionally attach to an agent)
     chattermate knowledge add-url \
       --website https://docs.acme.com \
@@ -208,6 +211,17 @@ Every command supports a `--json` flag for machine-readable output, making the C
     chattermate knowledge status <queue-id>
     ```
   </Accordion>
+
+  <Accordion title="Widgets" icon="code">
+    ```bash
+    # Create an embeddable widget for an agent — prints the widget id + embed snippet
+    chattermate widget create --agent-id <agent-id> --name "Website widget"
+
+    # List an agent's widgets (their ids are what you embed)
+    chattermate widget list <agent-id>
+    ```
+    The widget id is what goes in `window.chattermateId` — see [Widget integration](/features/widget).
+  </Accordion>
 </AccordionGroup>
 
 ## Command reference
@@ -223,7 +237,8 @@ Every command supports a `--json` flag for machine-readable output, making the C
 | `chattermate token revoke <id>` | Revoke a token |
 | `chattermate agent list\|get\|create\|update` | Manage AI agents |
 | `chattermate workflow get\|create\|update\|nodes\|set-nodes` | Manage workflows |
-| `chattermate knowledge add-url\|list\|link\|unlink\|status` | Manage knowledge sources |
+| `chattermate knowledge add-file\|add-url\|list\|link\|unlink\|status` | Manage knowledge sources (local PDFs or URLs) |
+| `chattermate widget create\|list` | Create/list embeddable widgets and get the widget id to embed |
 
 ## Configuration & environment
 

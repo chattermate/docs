@@ -93,11 +93,17 @@ output includes the new `id` — capture it for the next steps.
 
 ## Step 3 — Add knowledge
 
+From a URL, or upload local PDF file(s):
+
 ```bash
+# From a website / PDF URL
 chattermate knowledge add-url \
   --website https://docs.acme.com \
   --agent-id <agent-id> \
   --json
+
+# From local PDF file(s) on disk
+chattermate knowledge add-file ./guide.pdf ./faq.pdf --agent-id <agent-id> --json
 
 # Track ingestion progress
 chattermate knowledge status <queue-id>
@@ -105,8 +111,14 @@ chattermate knowledge status <queue-id>
 
 ## Step 4 — Go live with the widget
 
-Grab the agent's **widget ID** from the [dashboard](https://app.chattermate.chat) (or the agent
-API), then drop this snippet on any page:
+Create a widget for the agent from the CLI — it prints the **widget id** and the embed snippet:
+
+```bash
+chattermate widget create --agent-id <agent-id> --name "Website widget"
+# already have one? list them:  chattermate widget list <agent-id>
+```
+
+Then drop the snippet on any page:
 
 ```html
 <script>
@@ -140,7 +152,8 @@ a ready-to-paste client config — it authenticates with the same `cmat_` Person
 | Log in | `chattermate login --email you@acme.com` |
 | Token | `chattermate token create <name> [--expires-in-days N]` |
 | Agent | `chattermate agent create --name … --type … -i "…"` |
-| Knowledge | `chattermate knowledge add-url --website … [--agent-id …]` |
+| Knowledge (URL) | `chattermate knowledge add-url --website … [--agent-id …]` |
+| Knowledge (local PDF) | `chattermate knowledge add-file ./guide.pdf [--agent-id …]` |
 | Workflow | `chattermate workflow create --agent-id … --name …` |
 
 <CardGroup cols={2}>
