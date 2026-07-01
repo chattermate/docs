@@ -19,7 +19,7 @@ agent **call in** to ChatterMate to configure it.
 ## How it works
 
 The server is a thin, stdio-based bridge over the ChatterMate API. It ships in the same
-`chattermate-sdk` package as the [CLI](/features/cli) and is authenticated with a
+`chattermate-cli` package as the [CLI](/features/cli) and is authenticated with a
 [Personal Access Token](/features/cli#personal-access-tokens).
 
 <CardGroup cols={3}>
@@ -38,7 +38,7 @@ The server is a thin, stdio-based bridge over the ChatterMate API. It ships in t
 
 <Steps>
   <Step title="Install the package">
-    The server runs via `uvx` (no install) or after `pipx install chattermate-sdk`. See the
+    The server runs via `uvx` (no install) or after `pipx install chattermate-cli`. See the
     [CLI installation guide](/features/cli#installation).
   </Step>
   <Step title="Create a Personal Access Token">
@@ -62,7 +62,7 @@ for you.
   "mcpServers": {
     "chattermate": {
       "command": "uvx",
-      "args": ["--from", "chattermate-sdk", "chattermate-mcp"],
+      "args": ["--from", "chattermate-cli", "chattermate-mcp"],
       "env": {
         "CHATTERMATE_TOKEN": "cmat_xxxxxxxxxxxxxxxxxxxx"
       }
@@ -74,7 +74,7 @@ for you.
 ```bash Claude Code (CLI)
 claude mcp add chattermate \
   --env CHATTERMATE_TOKEN=cmat_xxxxxxxxxxxxxxxxxxxx \
-  -- uvx --from chattermate-sdk chattermate-mcp
+  -- uvx --from chattermate-cli chattermate-mcp
 ```
 </CodeGroup>
 

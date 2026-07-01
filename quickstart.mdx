@@ -5,30 +5,82 @@ description: 'Get started with ChatterMate in minutes'
 
 # Quickstart Guide
 
-This guide will help you get ChatterMate up and running quickly using our CLI tool.
+There are two ways to run ChatterMate. Pick the one that fits you:
 
-## Quick Start with CLI (Recommended)
+<CardGroup cols={2}>
+  <Card title="Use the hosted service" icon="cloud" href="#option-a-hosted-service-fastest">
+    Sign up and manage everything from the dashboard or the CLI. No infrastructure to run.
+    **Best for most people.**
+  </Card>
+  <Card title="Self-host with Docker" icon="server" href="#option-b-self-host-with-docker">
+    Run the full ChatterMate stack on your own infrastructure with the self-host CLI.
+  </Card>
+</CardGroup>
 
-The fastest way to get ChatterMate running is with our CLI tool:
+<Note>
+**Two different `chattermate` commands.** The **hosted CLI** (`pip install chattermate-cli`) signs
+you up and manages agents/knowledge against the ChatterMate API. The **self-host CLI**
+(`npm install -g chattermate-deploy`) scaffolds and runs the Docker stack. They are separate tools.
+</Note>
+
+## Option A — Hosted service (fastest)
+
+Create a free account and configure your first agent — no browser required.
 
 <Steps>
-  <Step title="Install CLI">
-    Install the ChatterMate CLI globally:
+  <Step title="Install the ChatterMate CLI">
     ```bash
-    npm install -g chattermate-cli
+    pip install chattermate-cli        # installs the `chattermate` command
+    ```
+    See the [CLI reference](/features/cli) for `pipx`/`uvx` options.
+  </Step>
+  <Step title="Sign up (or log in)">
+    ```bash
+    chattermate signup \
+      --name "Acme Inc" \
+      --domain acme.com \
+      --admin-email you@acme.com
+    # password is prompted securely — you're logged in automatically
+    ```
+    Prefer a browser? Sign up at [app.chattermate.chat](https://app.chattermate.chat) instead.
+  </Step>
+  <Step title="Create an agent & add knowledge">
+    ```bash
+    chattermate agent create --name "Support" --type customer_support -i "Be concise and friendly"
+    chattermate knowledge add-url --website https://docs.acme.com --agent-id <agent-id>
+    ```
+  </Step>
+  <Step title="Go live">
+    Embed the [chat widget](/features/widget) on your site, or let an AI agent drive everything via
+    the [MCP server](/features/mcp-server).
+  </Step>
+</Steps>
+
+<Card title="AI Agent & Automation Quickstart" icon="robot" href="/features/agents-quickstart">
+  A single copy-paste flow from signup to a live widget — built for AI agents and CI pipelines.
+</Card>
+
+## Option B — Self-host with Docker
+
+Run the entire stack on your own machine with the self-host CLI (`chattermate-deploy`).
+
+<Steps>
+  <Step title="Install the self-host CLI">
+    ```bash
+    npm install -g chattermate-deploy
     ```
   </Step>
   <Step title="Create Project">
     Initialize a new ChatterMate project:
     ```bash
-    chattermate init my-chattermate-project
+    chattermate-deploy init my-chattermate-project
     cd my-chattermate-project
     ```
   </Step>
   <Step title="Start Services">
     Start all services with Docker:
     ```bash
-    chattermate start
+    chattermate-deploy start
     ```
   </Step>
   <Step title="Access Dashboard">
@@ -39,20 +91,20 @@ The fastest way to get ChatterMate running is with our CLI tool:
   </Step>
 </Steps>
 
-### CLI Commands
+### Self-host CLI commands
 
 <CodeGroup>
 
 ```bash Project Management
-chattermate init <project-name>    # Initialize a new project
-chattermate reset                  # Reset and cleanup project
+chattermate-deploy init <project-name>    # Initialize a new project
+chattermate-deploy reset                  # Reset and cleanup project
 ```
 
 ```bash Service Management  
-chattermate start                  # Start all services
-chattermate stop                   # Stop all services
-chattermate status                 # Check service status
-chattermate logs                   # View service logs
+chattermate-deploy start                  # Start all services
+chattermate-deploy stop                   # Stop all services
+chattermate-deploy status                 # Check service status
+chattermate-deploy logs                   # View service logs
 ```
 
 </CodeGroup>

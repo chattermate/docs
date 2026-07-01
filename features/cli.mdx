@@ -14,22 +14,30 @@ The CLI and MCP server are part of the **enterprise/commercial edition**. They a
 [Personal Access Tokens](#personal-access-tokens), which require the enterprise backend.
 </Note>
 
+<Warning>
+**Not the tool you were looking for?** This page is the **account CLI** — it signs you up and
+manages agents, workflows, and knowledge against the ChatterMate API. If you want to **self-host
+ChatterMate with Docker**, you need the separate self-host CLI (`npm install -g chattermate-deploy`),
+documented in the [Quickstart → Self-host](/quickstart#option-b-self-host-with-docker). Both install
+a `chattermate` command, but they are different tools.
+</Warning>
+
 ## Installation
 
-The CLI is published as the `chattermate-sdk` Python package. It installs two commands:
+The CLI is published as the `chattermate-cli` Python package. It installs two commands:
 `chattermate` (with the alias `cmate`) and [`chattermate-mcp`](/features/mcp-server).
 
 <CodeGroup>
 ```bash pipx (recommended)
-pipx install chattermate-sdk
+pipx install chattermate-cli
 ```
 
 ```bash pip
-pip install chattermate-sdk
+pip install chattermate-cli
 ```
 
 ```bash uvx (no install)
-uvx --from chattermate-sdk chattermate --help
+uvx --from chattermate-cli chattermate --help
 ```
 </CodeGroup>
 

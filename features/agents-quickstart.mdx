@@ -1,0 +1,150 @@
+---
+title: 'AI Agent Quickstart'
+description: 'Sign up for ChatterMate and go live from the terminal — built for AI agents, CI, and automation'
+---
+
+# AI Agent & Automation Quickstart
+
+This is the fastest, copy-paste path from **nothing** to a **live ChatterMate agent** — designed to
+be run by an AI agent, a CI pipeline, or anyone scripting their setup. Every command supports
+`--json` for machine-readable output.
+
+<Note>
+Use the **ChatterMate CLI** (`chattermate`) for account, agent, workflow, and knowledge setup. It is
+installed from the `chattermate-cli` Python package. This is **not** the self-host Docker tool
+(`npm install -g chattermate-deploy`) — see [Quickstart → Self-host](/quickstart#option-b-self-host-with-docker)
+for that.
+</Note>
+
+## TL;DR
+
+```bash
+pip install chattermate-cli
+
+# 1. Create an account (community signup) — you're logged in automatically
+chattermate signup \
+  --name "Acme Inc" \
+  --domain acme.com \
+  --admin-email admin@acme.com \
+  --admin-name "Ada Admin"
+  # --admin-password is prompted securely (pass it explicitly for non-interactive use)
+
+# 2. Create an agent
+chattermate agent create \
+  --name "Support" \
+  --type customer_support \
+  -i "Be concise and friendly" \
+  -i "Escalate billing questions to a human" \
+  --json
+
+# 3. Feed it your knowledge (attach to the agent from step 2)
+chattermate knowledge add-url \
+  --website https://docs.acme.com \
+  --pdf-url https://acme.com/guide.pdf \
+  --agent-id <agent-id>
+
+# 4. (Optional) mint a long-lived token for headless / MCP use
+chattermate token create ci --expires-in-days 90
+```
+
+## Prerequisites
+
+- Python 3.10+ (`pipx install chattermate-cli` or `uvx --from chattermate-cli chattermate` also work)
+- Nothing else — the CLI targets the hosted API (`https://api.chattermate.chat`) by default. Set
+  `CHATTERMATE_API_URL=http://localhost:8000` to target a local/self-hosted backend.
+
+## Step 1 — Authenticate
+
+Pick one:
+
+<Tabs>
+  <Tab title="Sign up (new org)">
+    ```bash
+    chattermate signup --name "Acme Inc" --domain acme.com \
+      --admin-email admin@acme.com --admin-name "Ada Admin"
+    ```
+    Creates an organization + admin user and logs you in. Add `--json` to capture the result.
+  </Tab>
+  <Tab title="Personal Access Token (headless)">
+    Best for AI agents and CI. Create the token once (from an interactive login), then export it:
+    ```bash
+    export CHATTERMATE_TOKEN=cmat_xxxxxxxxxxxxxxxxxxxx
+    chattermate whoami --json
+    ```
+    See [CLI → Personal Access Tokens](/features/cli#personal-access-tokens).
+  </Tab>
+</Tabs>
+
+## Step 2 — Create an agent
+
+```bash
+chattermate agent create \
+  --name "Support" \
+  --type customer_support \
+  -i "Answer from the knowledge base; be concise" \
+  --json
+```
+
+`--type` is one of `customer_support`, `sales`, `tech_support`, `general`, `custom`. The `--json`
+output includes the new `id` — capture it for the next steps.
+
+## Step 3 — Add knowledge
+
+```bash
+chattermate knowledge add-url \
+  --website https://docs.acme.com \
+  --agent-id <agent-id> \
+  --json
+
+# Track ingestion progress
+chattermate knowledge status <queue-id>
+```
+
+## Step 4 — Go live with the widget
+
+Grab the agent's **widget ID** from the [dashboard](https://app.chattermate.chat) (or the agent
+API), then drop this snippet on any page:
+
+```html
+<script>
+  window.chattermateId='YOUR_WIDGET_ID';
+</script>
+<script src="https://app.chattermate.chat/webclient/chattermate.min.js"></script>
+```
+
+For **authenticated** widgets (per-user tokens), create a [Widget App](/features/widget-apps) to get
+an API key, then mint short-lived tokens server-side:
+
+```bash
+curl -X POST https://api.chattermate.chat/api/v1/generate-token \
+  -H "Authorization: Bearer $WIDGET_APP_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"widget_id":"YOUR_WIDGET_ID","customer_email":"user@customer.com","ttl_seconds":3600}'
+```
+
+## Drive it over MCP instead of the shell
+
+Prefer to let your AI agent configure ChatterMate through the Model Context Protocol? The same
+package ships an MCP server (`chattermate-mcp`). See the [MCP Server guide](/features/mcp-server) for
+a ready-to-paste client config — it authenticates with the same `cmat_` Personal Access Token.
+
+## Command reference
+
+| Step | Command |
+| --- | --- |
+| Install | `pip install chattermate-cli` |
+| Sign up | `chattermate signup --name … --domain … --admin-email … --admin-name …` |
+| Log in | `chattermate login --email you@acme.com` |
+| Token | `chattermate token create <name> [--expires-in-days N]` |
+| Agent | `chattermate agent create --name … --type … -i "…"` |
+| Knowledge | `chattermate knowledge add-url --website … [--agent-id …]` |
+| Workflow | `chattermate workflow create --agent-id … --name …` |
+
+<CardGroup cols={2}>
+  <Card title="CLI reference" icon="terminal" href="/features/cli">
+    Every command, flag, and environment variable.
+  </Card>
+  <Card title="MCP Server" icon="plug" href="/features/mcp-server">
+    Let an AI agent configure ChatterMate over MCP.
+  </Card>
+</CardGroup>

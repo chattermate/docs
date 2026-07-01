@@ -1,0 +1,108 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "ChatterMate",
+  "colors": {
+    "primary": "#f34611",
+    "light": "#62CFE5",
+    "dark": "#000000"
+  },
+  "favicon": "/images/favicon/favicon-32x32.png",
+  "navigation": {
+    "anchors": [
+      {
+        "anchor": "Documentation",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/organization",
+              "features/ai-configuration",
+              "features/ai-customization",
+              "features/workflow-builder",
+              "features/knowledge-base",
+              "features/mcp-tools",
+              "features/testing",
+              "features/widget",
+              "features/widget-apps",
+              "features/authentication",
+              "features/file-attachments",
+              "features/human-agents",
+              "features/roles",
+              "features/chat-management",
+              "features/jira-integration"
+            ]
+          },
+          {
+            "group": "Developer Tools",
+            "pages": [
+              "features/agents-quickstart",
+              "features/cli",
+              "features/mcp-server"
+            ]
+          },
+          {
+            "group": "Deployment",
+            "pages": [
+              "deployment/docker"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/chattermate/chattermate.chat",
+          "icon": "github"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": false
+  },
+  "background": {
+    "image": "/images/background.png",
+    "color": {
+      "dark": "#090014"
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@chattermate.chat"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.chattermate.chat"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/chattermate/chattermate.chat",
+      "discord": "https://discord.gg/XNCMg8jV8U"
+    }
+  },
+  "integrations": {
+    "gtm": {
+      "tagId": "GTM-57P2P2RW"
+    }
+  }
+}
