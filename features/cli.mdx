@@ -212,6 +212,22 @@ Every command supports a `--json` flag for machine-readable output, making the C
     ```
   </Accordion>
 
+  <Accordion title="AI model" icon="microchip">
+    ```bash
+    # New organizations already use the free ChatterMate model by default.
+    # Switch to your own provider/key at any time:
+    chattermate ai setup --model-type openai --model-name gpt-4o --api-key sk-...
+
+    # Or (re)apply the free ChatterMate model:
+    chattermate ai setup
+
+    # Show the current AI configuration
+    chattermate ai show
+    ```
+    Providers: `chattermate` (free managed), `openai`, `anthropic`, `google`, `groq`,
+    `mistral`, `ollama`, and more. Custom models require a Pro plan.
+  </Accordion>
+
   <Accordion title="Widgets" icon="code">
     ```bash
     # Create an embeddable widget for an agent — prints the widget id + embed snippet
@@ -239,6 +255,7 @@ Every command supports a `--json` flag for machine-readable output, making the C
 | `chattermate workflow get\|create\|update\|nodes\|set-nodes` | Manage workflows |
 | `chattermate knowledge add-file\|add-url\|list\|link\|unlink\|status` | Manage knowledge sources (local PDFs or URLs) |
 | `chattermate widget create\|list` | Create/list embeddable widgets and get the widget id to embed |
+| `chattermate ai setup\|show` | Set/show the org's AI model (defaults to the free ChatterMate model) |
 
 ## Configuration & environment
 
