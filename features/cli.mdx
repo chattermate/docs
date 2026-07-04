@@ -24,8 +24,9 @@ a `chattermate` command, but they are different tools.
 
 ## Installation
 
-The CLI is published as the `chattermate-cli` Python package. It installs two commands:
-`chattermate` (with the alias `cmate`) and [`chattermate-mcp`](/features/mcp-server).
+The CLI installs two commands: `chattermate` (with the alias `cmate`) and
+[`chattermate-mcp`](/features/mcp-server). Install it from **PyPI** (`chattermate-cli`) or **npm**
+(`chattermate-cli`, a thin wrapper that runs the Python CLI via `uvx`/`pipx`).
 
 <CodeGroup>
 ```bash pipx (recommended)
@@ -36,10 +37,17 @@ pipx install chattermate-cli
 pip install chattermate-cli
 ```
 
+```bash npm
+npm install -g chattermate-cli
+```
+
 ```bash uvx (no install)
 uvx --from chattermate-cli chattermate --help
 ```
 </CodeGroup>
+
+<Note>The npm package requires `uv` or `pipx` on your PATH (it launches the Python CLI). Prefer pure
+Python? Use `pip`/`pipx` directly.</Note>
 
 Verify the install:
 
