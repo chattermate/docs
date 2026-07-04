@@ -19,7 +19,8 @@ for that.
 ## TL;DR
 
 ```bash
-pip install chattermate-cli
+pip install chattermate-cli            # Python
+# or:  npm install -g chattermate-cli  # npm wrapper (needs uv or pipx on PATH)
 
 # 1. Create an account — a one-time code is emailed to --admin-email.
 #    Pass it with --otp (or enter at the prompt); you're logged in automatically.
@@ -52,7 +53,10 @@ chattermate token create ci --expires-in-days 90
 
 ## Prerequisites
 
-- Python 3.10+ (`pipx install chattermate-cli` or `uvx --from chattermate-cli chattermate` also work)
+- Install the CLI with **pip** (`pip install chattermate-cli`, or `pipx`/`uvx`) — needs Python 3.10+.
+  Prefer **npm**? `npm install -g chattermate-cli` installs the identical CLI as a wrapper that runs
+  the Python one via `uv`/`pipx`, so you need `uv` or `pipx` on your PATH. See the
+  [CLI reference](/features/cli#installation) for all install options.
 - Nothing else — the CLI targets the hosted API (`https://api.chattermate.chat`) by default. Set
   `CHATTERMATE_API_URL=http://localhost:8000` to target a local/self-hosted backend.
 
@@ -147,7 +151,7 @@ a ready-to-paste client config — it authenticates with the same `cmat_` Person
 
 | Step | Command |
 | --- | --- |
-| Install | `pip install chattermate-cli` |
+| Install | `pip install chattermate-cli` (or `npm install -g chattermate-cli`) |
 | Sign up | `chattermate signup --name … --domain … --admin-email … --admin-name …` |
 | AI model | auto-set to the free ChatterMate model at signup; switch with `chattermate ai setup --model-type … --api-key …` |
 | Log in | `chattermate login --email you@acme.com` |
