@@ -57,6 +57,30 @@ window.postMessage({
 }, '*');
 ```
 
+### Widget Position
+
+By default the launcher sits 20px from the bottom-right corner. To move it — for example, to clear a fixed bottom navigation bar — initialize the widget with `ChatterMate.init()` and pass a `position`. Both values are in pixels, measured from the bottom and right edges of the screen. The chat window stays anchored above the launcher, and the offset applies on mobile too.
+
+```html
+<script src="https://app.chattermate.chat/webclient/chattermate.min.js"></script>
+<script>
+  ChatterMate.init({
+    id: 'YOUR_WIDGET_ID',
+    position: { bottom: 100, right: 24 }
+  });
+</script>
+```
+
+You can also reposition the widget at any time after it has loaded — useful when your layout changes, such as a bottom bar appearing:
+
+```javascript
+ChatterMate.setPosition({ bottom: 100, right: 24 });
+```
+
+<Note>
+`position` and `setPosition()` accept `bottom` and `right` in pixels. On mobile the chat window opens full-screen, so the offset controls where the closed launcher button sits — handy for keeping it clear of a bottom navigation bar.
+</Note>
+
 ### Mobile Responsiveness
 The widget automatically adapts to different screen sizes:
 
