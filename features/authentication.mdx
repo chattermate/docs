@@ -1,11 +1,11 @@
 ---
 title: 'Widget Authentication'
-description: 'Secure your ChatterMate chat widget with token-based authentication, choosing public access for anonymous visitors or authenticated mode to verify your users.'
+description: 'Secure the ChatterMate chat widget with server-generated token authentication so signed-in users are identified and their conversations appear in the agent inbox.'
 ---
 
 # Widget Authentication
 
-Secure your embedded chat widget with flexible token-based authentication. ChatterMate supports both public and authenticated access modes to fit your application's needs.
+Secure your embedded chat widget with token-based authentication. ChatterMate supports both public and authenticated access modes to fit your application's needs.
 
 ## Authentication Modes
 
@@ -37,8 +37,8 @@ ChatterMate offers two authentication modes for your widget:
 
     **How it works:**
     - Widget requires a pre-generated token to initialize
-    - Token must be created server-side with user context
-    - Conversations are linked to authenticated users
+    - Your backend requests the token from ChatterMate with the user's details
+    - Conversations are linked to a stored customer (matched by email)
     - Previous conversation history loads automatically
 
     **Best for:**
@@ -55,107 +55,140 @@ ChatterMate offers two authentication modes for your widget:
 
 ## How Token Authentication Works
 
-### Token Structure
+Authenticated mode uses **server-to-server token generation**. Your backend calls ChatterMate's `/generate-token` endpoint with a **Widget App API key** and the user's details. ChatterMate creates (or matches) a customer record, then returns a short-lived JWT that the widget uses to start the chat.
 
-ChatterMate uses JWT (JSON Web Token) for secure widget authentication. Each token contains:
+<Note>
+You do **not** sign your own JWTs. ChatterMate issues and signs the token — that's how it registers the token for revocation and links the conversation to a stored customer. All you provide is your API key and the user's email/name. (Your `CONVERSATION_SECRET_KEY` is an internal server secret and is never used by integrators.)
+</Note>
 
-| Field | Description |
-|-------|-------------|
-| `widget_id` | Unique identifier for the widget |
-| `org_id` | Organization identifier |
-| `customer_id` | Customer/user identifier |
-| `source` | Optional tracking source |
-| `exp` | Token expiration timestamp |
-
-### Token Flow
+### What you need
 
 <Steps>
-  <Step title="Token Generation">
-    When a user visits your site, generate a token server-side using your secret key.
+  <Step title="Create a Widget App (API key)">
+    In the ChatterMate dashboard, open **Widget Apps** and create an app. Copy the API key — it is shown only once. Treat it as a server-side secret.
   </Step>
-  <Step title="Widget Initialization">
-    Pass the token to the widget during initialization.
+  <Step title="Require authentication (optional)">
+    Set `require_token_auth: true` on your agent to reject anonymous visitors so a token is always required.
   </Step>
-  <Step title="Token Validation">
-    ChatterMate validates the token on each request, verifying the signature and organization context.
+</Steps>
+
+### Token flow
+
+<Steps>
+  <Step title="Generate a token (server-side)">
+    When a signed-in user opens a page with the widget, your backend calls `POST /api/v1/generate-token` with your API key and the user's email and name.
   </Step>
-  <Step title="Session Management">
-    Valid tokens maintain conversation continuity across sessions and devices.
+  <Step title="Pass the token to the widget">
+    Return the token to your page and set `window.chattermateToken` before the widget script loads.
+  </Step>
+  <Step title="ChatterMate links the customer">
+    ChatterMate stores the email and name as a **customer** (matched by email) and links the conversation to it — so the user's email and name appear in the agent inbox, and their history reloads automatically.
   </Step>
 </Steps>
 
 ## Implementation
 
-### Server-Side Token Generation
+### 1. Generate a token on your backend
 
-Generate tokens on your backend to securely identify users:
+Call `/generate-token` with your Widget App API key in the `Authorization` header. ChatterMate returns a signed token bound to the customer.
 
 <CodeGroup>
+```bash cURL
+curl -X POST https://api.chattermate.chat/api/v1/generate-token \
+  -H "Authorization: Bearer YOUR_WIDGET_APP_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "widget_id": "YOUR_WIDGET_ID",
+    "customer_email": "user@example.com",
+    "customer_name": "John Doe",
+    "ttl_seconds": 3600
+  }'
+```
+
 ```javascript Node.js
-const jwt = require('jsonwebtoken');
-
-function generateWidgetToken(userId, email) {
-  const payload = {
-    widget_id: 'YOUR_WIDGET_ID',
-    org_id: 'YOUR_ORG_ID',
-    customer_id: userId,
-    email: email,
-    source: 'web_app'
-  };
-
-  return jwt.sign(payload, process.env.CONVERSATION_SECRET_KEY, {
-    expiresIn: '24h'
+async function generateWidgetToken(email, name) {
+  const res = await fetch('https://api.chattermate.chat/api/v1/generate-token', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.CHATTERMATE_WIDGET_APP_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      widget_id: 'YOUR_WIDGET_ID',
+      customer_email: email,   // stored as the customer + shown in the inbox
+      customer_name: name,
+      ttl_seconds: 3600,       // 60–86400 (default 3600)
+    }),
   });
+  const { data } = await res.json();
+  return data.token;
 }
 ```
 
 ```python Python
-import jwt
-from datetime import datetime, timedelta
+import os, requests
 
-def generate_widget_token(user_id: str, email: str) -> str:
-    payload = {
-        'widget_id': 'YOUR_WIDGET_ID',
-        'org_id': 'YOUR_ORG_ID',
-        'customer_id': user_id,
-        'email': email,
-        'source': 'web_app',
-        'exp': datetime.utcnow() + timedelta(hours=24)
-    }
-
-    return jwt.encode(payload, CONVERSATION_SECRET_KEY, algorithm='HS256')
+def generate_widget_token(email: str, name: str) -> str:
+    res = requests.post(
+        "https://api.chattermate.chat/api/v1/generate-token",
+        headers={"Authorization": f"Bearer {os.environ['CHATTERMATE_WIDGET_APP_API_KEY']}"},
+        json={
+            "widget_id": "YOUR_WIDGET_ID",
+            "customer_email": email,   # stored as the customer + shown in the inbox
+            "customer_name": name,
+            "ttl_seconds": 3600,        # 60–86400 (default 3600)
+        },
+    )
+    return res.json()["data"]["token"]
 ```
 </CodeGroup>
 
-### Client-Side Token Usage
+The response contains the token and its expiry:
 
-Pass the token when initializing the widget:
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGci...",
+    "widget_id": "YOUR_WIDGET_ID",
+    "expires_in": 3600,
+    "expires_at": "2026-07-06T18:00:00+00:00",
+    "created_at": "2026-07-06T17:00:00+00:00"
+  },
+  "message": "Token generated successfully. Expires in 3600 seconds."
+}
+```
+
+<Note>
+`customer_email` is optional — omit it and ChatterMate creates an anonymous customer. Passing it is what links the conversation to a named customer in the inbox, and if the same email returns later the existing customer (and their history) is reused. `customer_name` updates the stored name when it changes.
+</Note>
+
+### 2. Pass the token to the widget
+
+Set `window.chattermateToken` **before** the loader script runs:
 
 ```html
 <script>
   window.chattermateId = 'YOUR_WIDGET_ID';
-  window.chattermateToken = 'GENERATED_JWT_TOKEN';
+  window.chattermateToken = 'GENERATED_TOKEN';   // from /generate-token
 </script>
 <script src="https://app.chattermate.chat/webclient/chattermate.min.js"></script>
 ```
 
-### API Authentication
+The widget reads `window.chattermateToken`, sends it as a `Bearer` token, and ChatterMate resolves it back to the stored customer for the whole conversation.
 
-For direct API calls, include the token in headers:
+### What's inside the token
 
-<CodeGroup>
-```bash Authorization Header
-curl -X POST https://api.chattermate.chat/api/v1/chat \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json"
-```
+You don't build this yourself — ChatterMate signs it — but for reference the issued token carries:
 
-```bash Conversation Token Header
-curl -X POST https://api.chattermate.chat/api/v1/chat \
-  -H "X-Conversation-Token: YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json"
-```
-</CodeGroup>
+| Field | Description |
+|-------|-------------|
+| `sub` / `customer_id` | ChatterMate customer id (derived from the email) |
+| `widget_id` | The widget the token is bound to |
+| `customer_email` | Email you supplied (stored on the customer) |
+| `customer_name` | Name you supplied |
+| `jti` | Token id, used for revocation |
+| `exp` | Expiration timestamp |
 
 ## Security Features
 
@@ -169,51 +202,49 @@ curl -X POST https://api.chattermate.chat/api/v1/chat \
   <Card title="Widget Binding" icon="link">
     Tokens are bound to specific widgets, preventing cross-widget token reuse.
   </Card>
-  <Card title="Encrypted Storage" icon="lock">
-    Tokens are stored securely with encryption at rest.
+  <Card title="Revocable & Short-Lived" icon="lock">
+    Every token has a JTI and a TTL (60s–24h), so it can be revoked and expires quickly.
   </Card>
 </CardGroup>
 
 <Warning>
-Never expose your `CONVERSATION_SECRET_KEY` in client-side code. Always generate tokens on your backend server.
+Never expose your **Widget App API key** in client-side code. Call `/generate-token` only from your backend, and hand the browser just the short-lived token it returns.
 </Warning>
 
 ## Best Practices
 
 1. **Token Expiration**
-   - Set appropriate expiration times (recommended: 24 hours)
-   - Implement token refresh for long sessions
-   - Handle expired token errors gracefully
+   - Keep `ttl_seconds` short (default 1 hour); the range is 60s–24h
+   - Request a fresh token per page load or session rather than reusing long-lived ones
+   - Handle expired-token errors by re-requesting a token
 
 2. **Secure Generation**
-   - Generate tokens server-side only
-   - Use environment variables for secret keys
-   - Rotate secrets periodically
+   - Call `/generate-token` server-side only, with the API key in an environment variable
+   - Regenerate the key from **Widget Apps** if it is ever exposed
 
-3. **User Context**
-   - Include user identifiers for conversation continuity
-   - Add email for customer identification
-   - Use source tracking for analytics
+3. **Customer Identification**
+   - Always pass `customer_email` so conversations are attributed to a named customer in the inbox
+   - Keep the same email for a returning user so their history and customer record are reused
+   - Pass `customer_name` to show a friendly name to your agents
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Token validation failed">
-    - Verify your `CONVERSATION_SECRET_KEY` matches between token generation and ChatterMate config
-    - Check token hasn't expired
-    - Ensure `widget_id` in token matches the widget being used
+  <Accordion title="401 Unauthorized from /generate-token">
+    - Confirm the `Authorization: Bearer <API_KEY>` header uses a valid **Widget App** key (not your account password or the widget id)
+    - Make sure the key hasn't been regenerated/deactivated in the dashboard
+    - Check the `widget_id` in the body belongs to the same organization as the API key
   </Accordion>
 
-  <Accordion title="Widget not loading with token">
-    - Confirm token is set before the widget script loads
-    - Check browser console for JavaScript errors
-    - Verify token format is valid JWT
+  <Accordion title="Widget shows 'Token required' / won't load with a token">
+    - The agent has `require_token_auth: true`, so `window.chattermateToken` must be set **before** the loader script runs
+    - Verify the token isn't expired (check `expires_at`)
+    - Check the browser console for JavaScript errors
   </Accordion>
 
-  <Accordion title="Conversation history not loading">
-    - Ensure `customer_id` is consistent for the same user
-    - Check organization ID matches
-    - Verify token hasn't been regenerated with different customer ID
+  <Accordion title="Customer / email not showing in the inbox">
+    - You must pass `customer_email` (and ideally `customer_name`) to `/generate-token` — a self-signed JWT or a token without an email won't create a named customer
+    - Reuse the same email for the same user so the existing customer is matched instead of a new one being created
   </Accordion>
 </AccordionGroup>
 
