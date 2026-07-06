@@ -163,6 +163,27 @@ The response contains the token and its expiry:
 `customer_email` is optional — omit it and ChatterMate creates an anonymous customer. Passing it is what links the conversation to a named customer in the inbox, and if the same email returns later the existing customer (and their history) is reused. `customer_name` updates the stored name when it changes.
 </Note>
 
+### Passing extra customer metadata
+
+Pass `custom_data` to attach arbitrary fields to the customer — for example a student's name and coaching center for a tutoring app, or an account tier and plan for a SaaS app. ChatterMate stores these on the customer record and shows them to agents in the chat inbox, right alongside the name and email.
+
+```json
+{
+  "widget_id": "YOUR_WIDGET_ID",
+  "customer_email": "parent@example.com",
+  "customer_name": "Priya Krishnan",
+  "custom_data": {
+    "student_name": "Aarav Krishnan",
+    "center_name": "Special Academy U12"
+  },
+  "ttl_seconds": 3600
+}
+```
+
+<Note>
+`custom_data` is capped at 20 keys and 4KB serialized. Calling `/generate-token` again for the same customer **merges** new keys into what's already stored — existing keys are overwritten if present in the new call, and any keys you don't send are left untouched.
+</Note>
+
 ### 2. Pass the token to the widget
 
 Set `window.chattermateToken` **before** the loader script runs:
@@ -187,6 +208,7 @@ You don't build this yourself — ChatterMate signs it — but for reference the
 | `widget_id` | The widget the token is bound to |
 | `customer_email` | Email you supplied (stored on the customer) |
 | `customer_name` | Name you supplied |
+| `custom_data` | Extra fields you supplied (merged into the customer's stored metadata) |
 | `jti` | Token id, used for revocation |
 | `exp` | Expiration timestamp |
 
@@ -226,6 +248,7 @@ Never expose your **Widget App API key** in client-side code. Call `/generate-to
    - Always pass `customer_email` so conversations are attributed to a named customer in the inbox
    - Keep the same email for a returning user so their history and customer record are reused
    - Pass `customer_name` to show a friendly name to your agents
+   - Use `custom_data` for context agents need at a glance (e.g. account tier, plan, or in a tutoring app the student's name and center) — it shows up in the inbox next to the customer's name and email
 
 ## Troubleshooting
 
