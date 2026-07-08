@@ -1,0 +1,74 @@
+---
+title: 'Lead Capture'
+description: 'Let your AI agents collect and qualify visitor contact details naturally in conversation, then manage every lead and customer from the People page.'
+---
+
+# Lead Capture
+
+Lead Capture lets your AI agent collect a visitor's contact details **in the flow of conversation** — no forms. The agent helps first, then asks for details at a natural moment, qualifies the lead with an AI-written summary, and everyone captured shows up on the **People** page.
+
+<Note>
+Lead Capture and the People page are a **Pro** feature. On the Free and Base plans the tab and page are locked with an upgrade prompt.
+</Note>
+
+## How it works
+
+When enabled for an agent, Lead Capture behaves like transfer-to-human — a prompt-driven capability the agent decides when to use:
+
+1. **Help first.** The agent answers the visitor's question and delivers value.
+2. **Ask naturally.** At a good moment (usually right after being helpful) it asks for the details you configured — one at a time, never on the first message.
+3. **Validate & consent.** It only accepts a properly formatted email, and — when consent is required — asks for a clear "yes" before recording (GDPR).
+4. **Record & qualify.** The lead is saved with the captured fields and a short AI qualification summary, and the person is promoted from *Visitor* to *Lead*.
+
+## Configuring an agent
+
+Open an agent → **Lead Capture** tab:
+
+- **Enable lead capture** — the master toggle.
+- **What to collect** — pick the standard fields (email, name, company, phone) and add your own custom fields (with optional allowed values). Tap the **optional / required** pill on any field to control whether the agent insists on it before recording. Email is always required.
+- **Require consent (GDPR)** — the agent must get an explicit "yes" before recording. Recommended.
+- **Guidance** — optional freeform steer for *when* and *how* the agent asks (e.g. "be more proactive on the pricing page").
+
+Routing (assign-to / CRM sync / Slack) is shown as **Coming soon** — the config is saved for a future release but nothing is sent anywhere yet.
+
+## The People page
+
+**People** in the sidebar is an org-wide view of everyone your agents have touched:
+
+- **KPI strip** — total people, new leads (7d), customers.
+- **Stage tabs** — All / Visitors / Leads / Customers.
+- **Search** — by name, email or company.
+- **Detail drawer** — captured attributes, the AI qualification summary, the page a lead converted on, conversation history, and a **Mark as customer** action.
+
+<Note>
+If a returning visitor gives an email that already belongs to another person, the two profiles are automatically **merged** into one — history, sessions and captured details are combined, so you never see duplicate leads.
+</Note>
+
+## Configure from the CLI
+
+You can also configure lead capture with the [ChatterMate CLI](/features/cli):
+
+```bash
+# Turn it on and choose which details to collect
+chattermate lead-capture set <agent-id> --enable --fields email,name,company
+
+# Mark extra fields required and require consent
+chattermate lead-capture set <agent-id> --required email,company --consent
+
+# Show the current configuration
+chattermate lead-capture show <agent-id>
+```
+
+## Lifecycle stages
+
+<CardGroup cols={3}>
+  <Card title="Visitor" icon="eye">
+    Anyone who has chatted but not shared qualifying details yet.
+  </Card>
+  <Card title="Lead" icon="user-plus">
+    Set automatically once the agent records a qualifying capture (valid email + consent).
+  </Card>
+  <Card title="Customer" icon="user-check">
+    A manual promotion from the People detail drawer when a lead converts.
+  </Card>
+</CardGroup>
