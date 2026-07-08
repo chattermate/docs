@@ -32,6 +32,7 @@
               "features/testing",
               "features/widget",
               "features/widget-apps",
+              "features/lead-capture",
               "features/authentication",
               "features/file-attachments",
               "features/human-agents",

@@ -246,6 +246,26 @@ Every command supports a `--json` flag for machine-readable output, making the C
     ```
     The widget id is what goes in `window.chattermateId` — see [Widget integration](/features/widget).
   </Accordion>
+
+  <Accordion title="Lead capture" icon="user-plus">
+    ```bash
+    # Show an agent's lead-capture configuration
+    chattermate lead-capture show <agent-id>
+
+    # Turn lead capture on and choose which details to collect
+    chattermate lead-capture set <agent-id> --enable --fields email,name,company
+
+    # Mark extra fields required and require GDPR consent
+    chattermate lead-capture set <agent-id> --required email,company --consent
+
+    # Turn it off
+    chattermate lead-capture set <agent-id> --disable
+    ```
+    `set` fetches the current config, applies your flags, and saves the result
+    (custom fields configured in the dashboard are preserved). Email is always
+    collected and required. Lead capture is a **Pro** feature — see
+    [Lead capture](/features/lead-capture).
+  </Accordion>
 </AccordionGroup>
 
 ## Command reference
@@ -263,6 +283,7 @@ Every command supports a `--json` flag for machine-readable output, making the C
 | `chattermate workflow get\|create\|update\|nodes\|set-nodes` | Manage workflows |
 | `chattermate knowledge add-file\|add-url\|list\|link\|unlink\|status` | Manage knowledge sources (local PDFs or URLs) |
 | `chattermate widget create\|list` | Create/list embeddable widgets and get the widget id to embed |
+| `chattermate lead-capture show\|set` | Show/configure an agent's lead capture (Pro) |
 | `chattermate ai setup\|show` | Set/show the org's AI model (defaults to the free ChatterMate model) |
 
 ## Configuration & environment
