@@ -266,6 +266,39 @@ Every command supports a `--json` flag for machine-readable output, making the C
     collected and required. Lead capture is a **Pro** feature — see
     [Lead capture](/features/lead-capture).
   </Accordion>
+
+  <Accordion title="Chat customization" icon="palette">
+    ```bash
+    # Show an agent's chat widget appearance
+    chattermate customization show <agent-id>
+
+    # Colors + design theme
+    chattermate customization set <agent-id> --accent "#7c3aed" --style GLASS
+
+    # Welcome message, quick actions, and toggles
+    chattermate customization set <agent-id> \
+      --welcome-title "Hi there!" \
+      --quick-action "Pricing" --quick-action "Book a demo" \
+      --collect-email
+    ```
+    Options include colors (`--accent`, `--background`, `--bubble`, `--text`,
+    `--icon-color`), design theme `--style` (`CHATBOT`, `ASK_ANYTHING`, `GLASS`,
+    `TERMINAL`, `PLAYFUL`, `CALM_MINT`, `AURORA`, `SUNRISE`), `--position`
+    (`FLOATING`/`FIXED`), `--font`, `--custom-css`, welcome title/subtitle/message,
+    `--quick-action`, `--initiation-message`, `--show-citations` and
+    `--collect-email`. Only the options you pass change — the rest keep their
+    current values. See [Chat customization](/features/ai-customization).
+  </Accordion>
+
+  <Accordion title="Behaviour: transfer to human & ratings" icon="headset">
+    ```bash
+    # Let the agent hand off to a human, and ask visitors to rate the chat
+    chattermate agent update <agent-id> --transfer-to-human --ask-for-rating
+
+    # Turn them off
+    chattermate agent update <agent-id> --no-transfer-to-human --no-ask-for-rating
+    ```
+  </Accordion>
 </AccordionGroup>
 
 ## Command reference
@@ -279,7 +312,8 @@ Every command supports a `--json` flag for machine-readable output, making the C
 | `chattermate token create <name>` | Create a Personal Access Token |
 | `chattermate token list` | List your tokens |
 | `chattermate token revoke <id>` | Revoke a token |
-| `chattermate agent list\|get\|create\|update` | Manage AI agents |
+| `chattermate agent list\|get\|create\|update` | Manage AI agents (including `--transfer-to-human` / `--ask-for-rating`) |
+| `chattermate customization show\|set` | Show/configure an agent's chat widget appearance |
 | `chattermate workflow get\|create\|update\|nodes\|set-nodes` | Manage workflows |
 | `chattermate knowledge add-file\|add-url\|list\|link\|unlink\|status` | Manage knowledge sources (local PDFs or URLs) |
 | `chattermate widget create\|list` | Create/list embeddable widgets and get the widget id to embed |
