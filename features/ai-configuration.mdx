@@ -1,6 +1,6 @@
 ---
 title: 'Configure AI Provider'
-description: 'Configure your AI provider in ChatterMate, from OpenAI and Anthropic to Google, Groq, or self-hosted Ollama, to power intelligent 24/7 support with your model.'
+description: 'Configure your AI provider in ChatterMate — OpenAI, Anthropic (Claude), Google Gemini, Mistral, xAI Grok, DeepSeek, or Groq — with your own API key to power 24/7 support.'
 ---
 
 # AI Provider Configuration
@@ -17,64 +17,85 @@ ChatterMate supports multiple AI providers, giving you the flexibility to choose
 
 <CardGroup cols={3}>
   <Card title="OpenAI" icon="robot-astromech">
-    Industry-leading models like GPT-4
+    GPT-4.1, GPT-4o, and o-series models
   </Card>
-  <Card title="Anthropic" icon="brain-circuit">
-    Claude models for enhanced reasoning
+  <Card title="Anthropic (Claude)" icon="brain-circuit">
+    Claude Opus, Sonnet, and Haiku
   </Card>
-  <Card title="Google" icon="cloud">
-    Gemini and Vertex AI models
+  <Card title="Google Gemini" icon="cloud">
+    Gemini 2.5 Pro / Flash
   </Card>
   <Card title="Mistral" icon="wind">
-    Open-source high-performance models
+    Mistral Large, Medium, and Small
   </Card>
-  <Card title="Groq" icon="bolt-lightning">
-    Ultra-fast inference platform
+  <Card title="xAI (Grok)" icon="gear-complex">
+    Grok 4 and Grok 3
   </Card>
   <Card title="DeepSeek" icon="microchip">
-    Specialized language models
+    DeepSeek Chat and Reasoner
   </Card>
-  <Card title="HuggingFace" icon="code-branch">
-    Access to open-source models
-  </Card>
-  <Card title="Ollama" icon="server">
-    Self-hosted model deployment
-  </Card>
-  <Card title="xAI" icon="gear-complex">
-    Advanced AI capabilities
+  <Card title="Groq" icon="bolt-lightning">
+    Ultra-fast inference (GPT-OSS, Llama)
   </Card>
 </CardGroup>
+
+Every provider is **bring-your-own-key** — you supply your own API key, encrypted at rest. When you pick a provider, a **"Get your API key"** link points to that provider's console.
 
 ## Configuration Fields
 
 ### AI Provider
-Select your preferred AI provider from the dropdown menu. Each provider has its own strengths:
+Select your provider from the grid. All listed providers support tool calling and structured output, so any of them works with ChatterMate's agents, knowledge search, and workflows:
 - **OpenAI** (Recommended): Best-in-class models with consistent performance
-- **Anthropic**: Strong reasoning and analysis capabilities
-- **Google**: Integrated with Google's ecosystem
-- **Others**: Specialized use cases and self-hosting options
+- **Anthropic (Claude)**: Strong reasoning and analysis
+- **Google Gemini**: Large context windows, great price/performance
+- **Mistral / xAI (Grok) / DeepSeek / Groq**: Cost, speed, and self-hosting-friendly options
 
 ### Model Name
-Enter the model identifier for your chosen provider. Our recommendations:
+Pick a suggested model from the dropdown, or choose **"Custom model ID"** to type any model your provider supports (handy when a provider ships a new model before this list updates). Suggested models:
 
 <CodeGroup>
 ```bash OpenAI (Recommended)
-gpt-4-0125-preview  # Latest GPT-4 Turbo
-gpt-4               # Standard GPT-4
-gpt-3.5-turbo      # Cost-effective option
+gpt-4.1        # Strong general default
+gpt-4o         # Fast, capable
+gpt-4o-mini    # Cost-effective
+o4-mini        # Reasoning model
 ```
 
-```bash Anthropic
-claude-3-opus       # Most capable
-claude-3-sonnet    # Balanced performance
-claude-3-haiku     # Fast and efficient
+```bash Anthropic (Claude)
+claude-opus-4-8    # Most capable
+claude-sonnet-5    # Balanced performance
+claude-haiku-4-5   # Fast and efficient
 ```
 
-```bash Google
-gemini-pro         # Latest Gemini model
-vertex-ai          # Enterprise-grade option
+```bash Google Gemini
+gemini-2.5-pro     # Highest quality
+gemini-2.5-flash   # Best price/performance
+```
+
+```bash Mistral
+mistral-large-latest    # Flagship
+mistral-small-latest    # Cost-effective
+```
+
+```bash xAI (Grok)
+grok-4    # Flagship reasoning model
+grok-3    # Previous generation
+```
+
+```bash DeepSeek
+deepseek-chat       # General model
+deepseek-reasoner   # Reasoning model
+```
+
+```bash Groq
+openai/gpt-oss-120b        # Top quality on Groq
+llama-3.3-70b-versatile    # Fast, reliable
 ```
 </CodeGroup>
+
+<Note>
+  Model IDs change over time as providers release and retire models. If a suggested ID stops working, use **Custom model ID** and paste the current identifier from your provider's docs.
+</Note>
 
 ### API Key
 Your provider's API key for authentication. Security measures:
@@ -91,9 +112,9 @@ Your provider's API key for authentication. Security measures:
 ## Best Practices
 
 1. **Provider Selection**
-   - Start with OpenAI's GPT-4 for best overall performance
+   - Start with OpenAI's GPT-4.1 / GPT-4o for best overall performance
    - Consider Anthropic's Claude for complex reasoning tasks
-   - Use Ollama for self-hosted deployments
+   - Use Groq (GPT-OSS / Llama) when you want the fastest, lowest-cost inference
 
 2. **Model Choice**
    - Balance between capability and cost
