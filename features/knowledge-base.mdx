@@ -1,112 +1,127 @@
 ---
 title: 'Knowledge Base'
-description: 'Train ChatterMate AI agents on your knowledge by uploading PDFs and importing website URLs and docs, so the AI answers questions accurately and in context.'
+description: 'Train ChatterMate AI agents on your own content — crawl websites and sitemaps, upload PDFs, or paste text — then review, edit and re-embed every indexed page.'
 ---
 
 # Knowledge Base
 
-Train your AI agents with domain-specific knowledge to provide more accurate and contextual responses.
+Train your AI agents on your own content so they answer accurately and in context. ChatterMate crawls websites and sitemaps, ingests PDFs and pasted text, and lets you review, edit, and re-embed every page it learned from.
 
 <Frame>
-  <img src="/images/knowledge-sources.png" alt="Knowledge Sources Dashboard" />
+  <img src="/images/knowledge-sources.png" alt="Knowledge explorer — sources on the left, extracted page content on the right" />
 </Frame>
 
-## Adding Knowledge Sources
+## Where to manage knowledge
 
-ChatterMate supports multiple ways to add knowledge to your AI agents:
-
-<CardGroup cols={3}>
-  <Card title="PDF Upload" icon="file-pdf">
-    Upload PDF documentation, guides, and manuals
-  </Card>
-  <Card title="URL Import" icon="link">
-    Import knowledge from web pages and documentation sites
-  </Card>
-  <Card title="Link Existing" icon="link-simple">
-    Share knowledge sources between multiple agents
-  </Card>
-</CardGroup>
-
-## Knowledge Sharing
-
-ChatterMate allows multiple agents to share common knowledge sources through the "Link Existing" feature:
+There are two places to work with knowledge, both backed by the same content:
 
 <CardGroup cols={2}>
-  <Card title="Link Existing" icon="link-simple">
-    Connect agents to existing knowledge sources
+  <Card title="Agent → Knowledge tab" icon="robot">
+    The sources a single agent learns from. Add, review, and edit the content that grounds that agent's answers.
   </Card>
-  <Card title="Shared Access" icon="share-nodes">
-    Multiple agents can reference the same knowledge
+  <Card title="Knowledge base page" icon="book-open">
+    A dedicated page (in the main menu) to manage every source across your whole organization, with plan-usage meters.
   </Card>
 </CardGroup>
 
-### Benefits of Knowledge Sharing
-- Maintain consistency across different agent types
-- Reduce duplicate content processing
-- Centralized knowledge management
-- Easy updates propagate to all linked agents
+The layout is a **master–detail explorer**: sources (and their crawled sub-pages) on the left, the selected page's extracted content on the right.
 
-### Use Cases
-- Share company policies across all agents
-- Common product documentation for sales and support
-- Technical specifications for multiple specialist agents
-- FAQ content for general and specialized support
+## Adding a source
+
+Click **Add source** to open the source picker, choose a type, and configure it. Crawling happens in the background — you'll be notified when indexing finishes.
+
+<Frame>
+  <img src="/images/knowledge-add-source.png" alt="Add knowledge source dialog with Website, Sitemap, Document and Plain text options" />
+</Frame>
+
+<CardGroup cols={2}>
+  <Card title="Website" icon="globe">
+    A single page or a whole site. Choose the **crawl scope**: *This page only*, or *Follow links on this domain* to discover and queue linked pages.
+  </Card>
+  <Card title="Sitemap" icon="sitemap">
+    Point at a `sitemap.xml` and ChatterMate indexes every page it lists (including `sitemap-index` files) as one source.
+  </Card>
+  <Card title="Document" icon="file-pdf">
+    Upload a PDF (up to 25 MB). Text is extracted, split into sections, and indexed; scanned PDFs are run through OCR.
+  </Card>
+  <Card title="Plain text" icon="pen">
+    Paste a title and content directly. Indexed immediately — no crawling needed.
+  </Card>
+</CardGroup>
 
 <Note>
-When you update a shared knowledge source, all agents linked to it will automatically have access to the updated information without requiring reprocessing.
+Each website, sitemap, PDF, or text entry counts as **one knowledge source**. The number of pages a crawl stores per source is capped by your plan's sub-pages limit.
 </Note>
 
-## Knowledge Processing
+## Reviewing and editing pages
 
-### Batch Processing
-ChatterMate processes knowledge sources in batches to ensure system stability:
+Expand a source to see its crawled **sub-pages**, then select one to read exactly what the AI learned from it.
 
-- Maximum 20 subpages per batch
-- Processing occurs every 5 minutes
-- Queued items are processed in FIFO order
-- Status tracking for each knowledge source
+<CardGroup cols={2}>
+  <Card title="Edit & re-embed" icon="pen-to-square">
+    Fix or refine a page's extracted text. Saving re-embeds it immediately, so answers stay current.
+  </Card>
+  <Card title="Add a sub-page" icon="plus">
+    Manually add a page to a source with a title, content, and an optional source URL — useful for content a crawler can't reach.
+  </Card>
+  <Card title="Delete" icon="trash">
+    Remove an individual page or an entire source from the knowledge base.
+  </Card>
+  <Card title="Open the source" icon="arrow-up-right-from-square">
+    Jump to the original page URL to compare against the live content.
+  </Card>
+</CardGroup>
 
-<Note>
-Knowledge processing includes text extraction, chunking, embedding generation, and vector database indexing. This ensures optimal retrieval during customer interactions.
-</Note>
+## Source status
 
-### Processing States
+Each source shows its live status while it is being indexed:
 
 <AccordionGroup>
-  <Accordion title="Queued">
-    - Knowledge source is waiting to be processed
-    - Part of the next available batch
-    - Shows position in queue
+  <Accordion title="Pending">
+    Queued for crawling. It appears in the list immediately and updates as work starts.
   </Accordion>
-  
-  <Accordion title="Processing">
-    - Currently being analyzed and indexed
-    - Includes text extraction and embedding
-    - Progress indicator available
+  <Accordion title="Crawling">
+    Pages are being fetched, extracted, and embedded. Progress updates as each page completes.
   </Accordion>
-  
-  <Accordion title="Completed">
-    - Successfully processed and indexed
-    - Available for AI agent use
-    - Shows completion timestamp
+  <Accordion title="Synced">
+    Successfully indexed and available to the agent.
   </Accordion>
-  
   <Accordion title="Failed">
-    - Error during processing
-    - Detailed error message
-    - Option to retry processing
+    Something prevented indexing. The source shows the reason so you can act on it.
   </Accordion>
 </AccordionGroup>
 
+<Note>
+**Bot-protected sites.** If a site's bot protection (e.g. a Cloudflare / WordPress.com "Checking your browser" page) blocks automated crawling, the source fails with a clear message asking you to add the content manually — upload a PDF or paste the text instead.
+</Note>
+
+## Sharing knowledge between agents
+
+A source can ground more than one agent. From the dedicated Knowledge base page you manage every source in one place, and the same source can be linked to multiple agents.
+
+### Benefits
+- Maintain consistency across different agent types
+- Avoid duplicate content and processing
+- Central management — updates propagate to every linked agent
+
+### Use cases
+- Company policies shared across all agents
+- Product docs shared by sales and support
+- Technical specs for multiple specialist agents
+
+<Note>
+When you edit a page, it is re-embedded and every agent that uses that source immediately benefits — no manual reprocessing needed.
+</Note>
+
 ## Notifications
 
-When Firebase Cloud Messaging is enabled:
+When Firebase Cloud Messaging is enabled, ChatterMate notifies you when a source finishes processing:
 
 <CodeGroup>
 ```json Success
 {
   "title": "Knowledge Processing Complete",
-  "body": "Your knowledge source '[filename]' has been successfully processed",
+  "body": "Your knowledge source '[name]' has been successfully processed",
   "type": "knowledge_processed"
 }
 ```
@@ -114,81 +129,37 @@ When Firebase Cloud Messaging is enabled:
 ```json Error
 {
   "title": "Knowledge Processing Failed",
-  "body": "Failed to process '[filename]'. Click for details",
+  "body": "Failed to process '[name]'. Click for details",
   "type": "knowledge_failed"
 }
 ```
 </CodeGroup>
 
-- Notifications are sent only when processing completes
-- Success and failure states are reported
-- Click notification to view details
-- Configurable notification preferences
+## Best practices
 
-## Knowledge Source Management
-
-### Source Types
-- PDF Documents
-- Web Pages
-- HTML Content
-- Markdown Files
-- Plain Text
-
-### Source Details
-Each knowledge source shows:
-- Source name/URL
-- Number of subpages
-- Creation date
-- Processing status
-- Last updated timestamp
-
-## Best Practices
-
-1. **Document Preparation**
-   - Use clear, well-structured documents
-   - Break large documents into smaller sections
-   - Ensure text is extractable from PDFs
-   - Keep URLs accessible and stable
-
-2. **Processing Management**
-   - Monitor queue status
-   - Process during off-peak hours
-   - Keep documents under 100MB
-   - Use consistent formatting
-
-3. **Content Organization**
-   - Group related documents
-   - Use descriptive filenames
-   - Update outdated content
-   - Remove obsolete sources
+1. **Prefer a sitemap** when a site has one — it indexes exactly the pages you want, without following stray links.
+2. **Use crawl scope** — pick *This page only* for a single article, *Follow links* to capture a whole docs section.
+3. **Review after indexing** — open a few pages to confirm the extracted text is clean; edit anything that isn't.
+4. **Fill gaps manually** — paste content or add a sub-page for anything a crawler can't reach (paywalled, gated, or bot-protected pages).
+5. **Keep it current** — edit pages when your product changes; re-embedding is instant.
 
 ## Limitations
 
 <Warning>
-- Maximum 20 subpages per batch
-- Processing occurs every 5 minutes
-- PDF size limit: 100MB
-- URL must be publicly accessible
-- Text must be extractable (no scanned PDFs)
+- PDF size limit: 25 MB per file
+- Pages crawled per source are capped by your plan's sub-pages limit
+- URLs must be publicly reachable and return extractable text (no scanned-only content without OCR)
+- Sites behind strict bot protection may not be crawlable — add that content manually
 </Warning>
-
-## Monitoring Progress
-
-Track knowledge processing through:
-1. Dashboard status indicators
-2. Firebase notifications (if enabled)
-3. Processing history logs
-4. Error reports and retry options
 
 ## What's Next?
 
 After adding knowledge sources:
 
-1. Test AI responses with new knowledge
-2. Monitor response accuracy
-3. Update content as needed
-4. Configure notification preferences
+1. Test AI responses with the new knowledge
+2. Review and edit extracted pages for accuracy
+3. Keep content up to date as your product evolves
 
 <Card title="Testing" icon="vial" href="/features/testing">
   Next: Learn how to test your AI agent's knowledge
-</Card> 
+</Card>
