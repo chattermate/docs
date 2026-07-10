@@ -50,6 +50,15 @@ Select your provider from the grid. All listed providers support tool calling an
 - **Google Gemini**: Large context windows, great price/performance
 - **Mistral / xAI (Grok) / DeepSeek / Groq**: Cost, speed, and self-hosting-friendly options
 
+<Warning>
+  Features that depend on structured output — automatic **lead capture**, **ending
+  a resolved chat**, and **human handoff** — are most consistent on OpenAI and
+  Anthropic models. Smaller open models (e.g. Groq's GPT-OSS, some Grok variants)
+  handle these well most of the time but can occasionally miss a step. If you find
+  a model isn't capturing leads or closing chats reliably, switch to a stronger
+  model like GPT-4.1 or Claude.
+</Warning>
+
 ### Model Name
 Pick a suggested model from the dropdown, or choose **"Custom model ID"** to type any model your provider supports (handy when a provider ships a new model before this list updates). Suggested models:
 
