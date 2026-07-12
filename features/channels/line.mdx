@@ -1,0 +1,54 @@
+---
+title: 'LINE'
+description: 'Connect a LINE Official Account to ChatterMate with a channel secret and access token so your AI agent answers customers on LINE — popular across Japan, Thailand and Taiwan.'
+---
+
+# LINE
+
+Connect a **LINE Official Account** and your AI agent answers customers messaging you on LINE. LINE is one of the biggest messaging apps in Japan, Thailand, and Taiwan — prioritize it if that's where your customers are. Setup takes a channel secret and an access token; ChatterMate registers the webhook for you.
+
+## What you'll need
+
+- A [LINE Business ID](https://account.line.biz/) (free).
+- A **Messaging API channel** in the LINE Developers console.
+
+## Step 1 — Create a Messaging API channel and get your keys
+
+<Steps>
+  <Step title="Create a provider and channel">
+    Go to the [LINE Developers Console](https://developers.line.biz/) → create a **Provider** (your company) → **Create a Messaging API channel**. Fill in the channel name, description, and category.
+
+    This also creates a **LINE Official Account** you manage at [manager.line.biz](https://manager.line.biz/).
+  </Step>
+  <Step title="Copy the Channel secret">
+    On the channel's **Basic settings** tab, copy the **Channel secret**. ChatterMate uses it to verify incoming webhook signatures.
+  </Step>
+  <Step title="Issue a Channel access token">
+    On the **Messaging API** tab, issue a **long-lived Channel access token** and copy it. This lets ChatterMate send replies.
+  </Step>
+  <Step title="Turn off auto-reply">
+    In the [Official Account Manager](https://manager.line.biz/) → **Settings → Response settings**, turn **Auto-reply messages** off and enable **Webhooks**, so your AI agent (not LINE's canned replies) answers customers.
+  </Step>
+</Steps>
+
+## Step 2 — Connect in ChatterMate
+
+<Steps>
+  <Step title="Open the LINE card">
+    Go to **Settings → Integrations** and click **Connect** on the **LINE** card.
+  </Step>
+  <Step title="Paste your keys">
+    Enter the **Channel secret** and **Channel access token**. ChatterMate stores them encrypted and registers the webhook automatically — you don't need to paste a webhook URL into the LINE console.
+  </Step>
+  <Step title="Assign an AI agent">
+    Choose the AI agent that answers LINE and click **Assign agent**.
+  </Step>
+</Steps>
+
+## Step 3 — Test it
+
+Add your Official Account as a friend (scan its QR code from the Official Account Manager) and send a message. The AI agent replies — with a LINE loading animation while it thinks — and the chat appears in **Conversations** with a **LINE** badge.
+
+<Note>
+No heavy approval is needed to send and receive messages — a working Official Account is enough. A **Verified** or **Premium** badge (blue/green) is optional; apply for it in the Official Account Manager if you want the verified checkmark (LINE reviews the business over a few days).
+</Note>

@@ -1,0 +1,75 @@
+---
+title: 'WhatsApp'
+description: 'Connect WhatsApp Business to ChatterMate through the official Meta Cloud API so your AI agent answers customers on WhatsApp, with 24-hour windows and templates handled.'
+---
+
+# WhatsApp
+
+<Info>
+**Coming soon in the hosted app.** The WhatsApp card in **Settings → Integrations** currently shows **Soon** while ChatterMate finishes Meta app review for the Cloud offering. Self-hosters can already connect with their own Meta app and credentials. This page covers how to get those credentials so you're ready.
+</Info>
+
+ChatterMate connects to WhatsApp through the **official WhatsApp Cloud API** from Meta — not an unofficial bridge — so your business number stays compliant and never risks a ban. Your AI agent answers customer messages, and human agents can take over from the inbox.
+
+## How WhatsApp messaging works
+
+WhatsApp enforces a **24-hour customer service window**: you can reply freely for 24 hours after the customer's last message. Outside that window you can only send **pre-approved message templates**. ChatterMate tracks the window per conversation and tells you when a template is required.
+
+## Step 1 — Set up a Meta app
+
+All three Meta channels (WhatsApp, Messenger, Instagram) run on **one Meta app**. Do this once.
+
+<Steps>
+  <Step title="Create a Business app">
+    Go to [developers.facebook.com](https://developers.facebook.com) → **My Apps → Create App** → type **Business**. Name it (e.g. "Acme Support").
+  </Step>
+  <Step title="Business Verification">
+    In [business.facebook.com](https://business.facebook.com) → **Business Settings → Security Center**, submit your legal business details and a verification document, and verify your domain. This gates production access and takes a few days to ~2 weeks — start it first.
+  </Step>
+  <Step title="Add the WhatsApp product">
+    In the app dashboard, add the **WhatsApp** product. Meta gives you a test number immediately so you can build before approval.
+  </Step>
+  <Step title="Set the webhook">
+    Under **WhatsApp → Configuration**, set the callback URL to `https://<your-domain>/api/v1/webhooks/meta` and the verify token to your `META_WEBHOOK_VERIFY_TOKEN`. Subscribe to the **messages** field.
+  </Step>
+</Steps>
+
+## Step 2 — Copy your WhatsApp credentials
+
+From **WhatsApp → API Setup** in the app dashboard:
+
+| Credential | Where to find it |
+|---|---|
+| **Phone number ID** | Shown next to your WhatsApp number (a numeric ID, not the phone number itself). |
+| **Access token** | Generate a **permanent** token via a System User in Business Settings (temporary tokens expire in 24h). |
+| **WhatsApp Business Account ID** *(optional)* | The WABA ID — lets ChatterMate auto-subscribe the webhook. |
+
+## Step 3 — App Review (to message real customers)
+
+The test number only messages people with a role on the app. To go live, submit **App Review** for:
+
+- `whatsapp_business_messaging`
+- `whatsapp_business_management`
+
+Include a narrated **screencast** showing a customer messaging your number and ChatterMate replying. Also complete, per number:
+
+- **Display name review** (Business Manager → WhatsApp Accounts → Phone Numbers).
+- **Message template approval** for anything sent outside the 24-hour window (each template is reviewed individually).
+
+## Step 4 — Connect in ChatterMate
+
+<Steps>
+  <Step title="Open the WhatsApp card">
+    Go to **Settings → Integrations** and click **Connect** on the **WhatsApp** card (self-hosted / once available).
+  </Step>
+  <Step title="Enter your credentials">
+    Paste the **Phone number ID**, **Access token**, and optionally the **WhatsApp Business Account ID**. ChatterMate stores them encrypted and verifies webhook signatures on every inbound message.
+  </Step>
+  <Step title="Assign an AI agent">
+    Choose the AI agent that answers WhatsApp and click **Assign agent**.
+  </Step>
+</Steps>
+
+<Note>
+**ChatterMate Cloud** will offer **WhatsApp Embedded Signup**, so you can onboard your own number under ChatterMate's approved Meta app with a guided popup — no separate app or verification. A BSP (360dialog, Twilio) is an alternative that shortcuts parts of onboarding at a per-message cost.
+</Note>

@@ -1,0 +1,94 @@
+---
+title: 'Messaging Channels'
+description: 'Connect ChatterMate to Telegram, WhatsApp, Messenger, Instagram, Slack, Email, SMS and LINE so one AI agent answers every customer message in a single unified inbox.'
+---
+
+# Messaging Channels
+
+ChatterMate is omni-channel. The same AI agent — with your knowledge base, lead capture, and human handover — answers customers wherever they message you, and every conversation lands in one **unified inbox**.
+
+<Frame>
+  <img src="/images/channels-integrations.png" alt="ChatterMate Integrations page showing messaging channel cards" />
+</Frame>
+
+## Available channels
+
+<CardGroup cols={3}>
+  <Card title="Telegram" icon="telegram" href="/features/channels/telegram">
+    Paste a bot token from @BotFather. Live in minutes, no approval.
+  </Card>
+  <Card title="Slack" icon="slack" href="/features/channels/slack">
+    One-click OAuth. Answers @mentions and DMs in your workspace.
+  </Card>
+  <Card title="Email" icon="envelope" href="/features/channels/email">
+    Turn a support@ inbox into an AI-answered channel.
+  </Card>
+  <Card title="SMS" icon="comment-sms" href="/features/channels/sms">
+    Twilio, Vonage, MessageBird, Plivo, Brevo or AWS SNS.
+  </Card>
+  <Card title="LINE" icon="line" href="/features/channels/line">
+    Connect a LINE Official Account with a channel access token.
+  </Card>
+  <Card title="WhatsApp" icon="whatsapp" href="/features/channels/whatsapp">
+    Official WhatsApp Cloud API. <b>Coming soon</b> in the hosted app.
+  </Card>
+  <Card title="Messenger" icon="facebook-messenger" href="/features/channels/messenger">
+    Facebook Page DMs. <b>Coming soon</b> in the hosted app.
+  </Card>
+  <Card title="Instagram" icon="instagram" href="/features/channels/instagram">
+    Instagram DMs on a professional account. <b>Coming soon</b>.
+  </Card>
+</CardGroup>
+
+## How connecting works
+
+Every channel follows the same three steps. The credential-gathering (step 1) differs per platform — that's what each channel page walks you through.
+
+<Steps>
+  <Step title="Get your credentials">
+    Create the bot / app / number on the platform (Telegram, Meta, Twilio, LINE…) and copy the keys. Each channel page below has the exact clicks.
+  </Step>
+  <Step title="Connect in ChatterMate">
+    Open **Settings → Integrations**, find the channel card, and click **Connect**. Paste your credentials (or, for Slack, approve the OAuth popup). ChatterMate encrypts every credential at rest and — where the platform supports it — registers the inbound webhook for you automatically.
+  </Step>
+  <Step title="Assign an AI agent">
+    Right after connecting, ChatterMate asks which AI agent should answer this channel. Pick one and click **Assign agent**. You can change it any time from the card's **Manage** button.
+
+    <Frame>
+      <img src="/images/channels-connect-agent.png" alt="Choosing the AI agent that answers a channel" />
+    </Frame>
+  </Step>
+</Steps>
+
+## One inbox for every channel
+
+Once connected, messages from all channels flow into **Conversations**. Each chat carries a badge showing where it came from (Slack, Email, LINE…), and your team replies from the same place — whether the customer is on WhatsApp or the website widget.
+
+<Frame>
+  <img src="/images/channels-unified-inbox.png" alt="Unified Conversations inbox with per-channel badges" />
+</Frame>
+
+### Human handover reaches every channel
+
+When a teammate clicks **Take Over Chat**, their replies go back out on the customer's original channel — the Telegram chat, the Slack thread, the email thread — not just the widget. The AI steps aside until the conversation is handed back.
+
+## Good to know
+
+<CardGroup cols={2}>
+  <Card title="Credentials are encrypted" icon="lock">
+    All channel tokens and secrets are Fernet-encrypted at rest, and every inbound webhook is signature-verified before it's processed.
+  </Card>
+  <Card title="Bring your own accounts" icon="key">
+    Every channel is bring-your-own-credentials. Self-hosters create their own bots/apps; nothing depends on ChatterMate's own platform approvals.
+  </Card>
+  <Card title="Rating is widget-only" icon="star">
+    ChatterMate never asks customers to rate the conversation on external channels — the rating prompt is exclusive to the website chat widget.
+  </Card>
+  <Card title="Per-agent routing" icon="robot">
+    Each channel is answered by the AI agent you assign, so different products or brands can have their own agent and knowledge base.
+  </Card>
+</CardGroup>
+
+<Note>
+Self-hosting? Inbound webhooks need a **public HTTPS** URL. Set `BACKEND_URL` to your public backend domain so ChatterMate can build and register webhook URLs the platforms can reach.
+</Note>

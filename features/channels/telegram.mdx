@@ -1,0 +1,56 @@
+---
+title: 'Telegram'
+description: 'Connect a Telegram bot to ChatterMate in minutes — create it with BotFather, paste the token, and your AI agent starts answering customers on Telegram.'
+---
+
+# Telegram
+
+Telegram is the fastest channel to go live — no review, no approval. You create a bot with Telegram's **@BotFather**, paste its token into ChatterMate, and your AI agent answers every message the bot receives.
+
+## What you'll need
+
+- A Telegram account (to talk to @BotFather).
+- Two minutes.
+
+## Step 1 — Create a bot and copy the token
+
+<Steps>
+  <Step title="Open BotFather">
+    In any Telegram app, search for **@BotFather** (the one with the blue verified checkmark) and open a chat with it.
+  </Step>
+  <Step title="Create the bot">
+    Send `/newbot`. BotFather asks for:
+    - a **display name** (e.g. "Acme Support") — what customers see.
+    - a **username** ending in `bot` (e.g. `acme_support_bot`) — must be unique.
+  </Step>
+  <Step title="Copy the token">
+    BotFather replies with a token that looks like `123456789:AAF...`. Copy it — this is the only credential ChatterMate needs.
+
+    <Warning>
+    Treat the token like a password. Anyone with it can control your bot. If it leaks, send `/revoke` to BotFather and reconnect with the new token.
+    </Warning>
+  </Step>
+</Steps>
+
+<Tip>
+Optional polish, all via BotFather: `/setdescription`, `/setabouttext`, and `/setuserpic` to give the bot a description and avatar. `/setprivacy` → **Disable** lets the bot read all messages in group chats (leave enabled for one-to-one support).
+</Tip>
+
+## Step 2 — Connect in ChatterMate
+
+<Steps>
+  <Step title="Open the Telegram card">
+    Go to **Settings → Integrations** and click **Connect** on the **Telegram** card.
+  </Step>
+  <Step title="Paste the token and pick an agent">
+    Paste the bot token, choose the AI agent that should answer, and confirm. ChatterMate validates the token with Telegram, then registers the webhook automatically — there's nothing to configure on Telegram's side.
+  </Step>
+</Steps>
+
+<Note>
+**Self-hosting:** Telegram delivers messages via webhook, so it needs to reach your backend over **public HTTPS**. Make sure `BACKEND_URL` is your public domain (not `localhost`) before connecting — ChatterMate surfaces Telegram's exact error if the webhook can't be set.
+</Note>
+
+## Step 3 — Test it
+
+Open your bot in Telegram (search its username), send a message, and your assigned AI agent replies. The conversation appears in **Conversations** with a **Telegram** badge. To hand off to a human, open the chat and click **Take Over Chat** — your replies go straight back to the customer on Telegram.
