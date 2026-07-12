@@ -1,0 +1,75 @@
+---
+title: 'Slack'
+description: 'Connect a Slack workspace to ChatterMate with one-click OAuth so your AI agent answers @mentions and direct messages, with full human handover into the thread.'
+---
+
+# Slack
+
+Connect a Slack workspace and your AI agent answers **@mentions** in channels and **direct messages** to the bot. Replies stay in-thread, teammates can take over from the ChatterMate inbox, and the agent shows real display names and a typing indicator.
+
+## Two ways to connect
+
+- **ChatterMate Cloud** — click **Connect**, approve the OAuth popup, done. No app to create. Skip to [Connect in ChatterMate](#connect-in-chattermate).
+- **Self-hosted** — create your own Slack app once (below), set three environment variables, then connect via OAuth.
+
+## Step 1 — Create a Slack app (self-hosted only)
+
+<Steps>
+  <Step title="Create the app">
+    Go to [api.slack.com/apps](https://api.slack.com/apps) → **Create New App** → **From scratch**. Name it **ChatterMate** and pick your workspace.
+  </Step>
+  <Step title="Add bot scopes">
+    Under **OAuth & Permissions → Bot Token Scopes**, add:
+
+    `app_mentions:read`, `chat:write`, `im:history`, `im:read`, `im:write`, `users:read`
+
+    (`users:read` lets the agent resolve real display names instead of raw user IDs.)
+  </Step>
+  <Step title="Set the OAuth redirect URL">
+    Still under **OAuth & Permissions**, add a **Redirect URL**:
+
+    `https://<your-domain>/api/v1/channels/slack/callback`
+  </Step>
+  <Step title="Enable Event Subscriptions">
+    Under **Event Subscriptions**, turn it on and set the **Request URL** to:
+
+    `https://<your-domain>/api/v1/webhooks/slack`
+
+    Then subscribe to bot events **`app_mention`** and **`message.im`**. Slack sends a one-time challenge to verify the URL — ChatterMate answers it automatically.
+  </Step>
+  <Step title="Copy the app credentials">
+    From **Basic Information**, copy the **Client ID**, **Client Secret**, and **Signing Secret**, and set them as environment variables:
+
+    ```bash
+    SLACK_CLIENT_ID=...
+    SLACK_CLIENT_SECRET=...
+    SLACK_SIGNING_SECRET=...
+    ```
+  </Step>
+</Steps>
+
+<Note>
+No Slack approval is required to install your own app. A **Slack Marketplace** listing (to appear in the public directory) is optional and Cloud-only — it triggers Slack's security review and takes a few weeks. Self-hosters never need it.
+</Note>
+
+## Step 2 — Connect in ChatterMate
+
+<Steps>
+  <Step title="Start OAuth">
+    Go to **Settings → Integrations** and click **Connect** on the **Slack** card. A Slack authorization popup opens.
+  </Step>
+  <Step title="Approve and choose the workspace">
+    Approve the requested permissions and pick the workspace to install into. ChatterMate stores the bot token encrypted — no manual credential entry.
+  </Step>
+  <Step title="Assign an AI agent">
+    After the popup closes, ChatterMate asks which AI agent answers this workspace. Choose one and click **Assign agent**. You can change it later from the card's **Manage** button.
+  </Step>
+</Steps>
+
+## Step 3 — Test it
+
+Invite the bot to a channel and **@mention** it, or send it a direct message. The AI agent replies in-thread and the conversation appears in **Conversations** with a **Slack** badge. Click **Take Over Chat** to reply as a human — your messages post back into the same Slack thread.
+
+<Tip>
+Because Slack has no native bot "typing…" indicator, ChatterMate posts a brief placeholder message and edits it into the reply, so customers see immediate feedback while the agent thinks.
+</Tip>

@@ -1,0 +1,77 @@
+---
+title: 'Email'
+description: 'Turn a support@ inbox into an AI-answered channel — point your provider inbound-parse webhook at ChatterMate and optionally send replies from your own SMTP.'
+---
+
+# Email
+
+Connect a shared support inbox (like `support@yourcompany.com`) and your AI agent answers email the same way it answers chat — threaded, in the unified inbox, with human handover. There's no approval process; you just need a way to deliver inbound mail to ChatterMate as a webhook and (optionally) an SMTP path for replies.
+
+## How email flows
+
+- **Inbound:** your mail provider forwards each incoming email to a ChatterMate webhook URL (via "inbound parse" or plain forwarding).
+- **Outbound:** ChatterMate sends replies over SMTP — either your own per-inbox SMTP, or the platform's default mail server. Replies keep the `Message-ID`/`References` headers so they thread correctly in the customer's mailbox.
+
+## Step 1 — Connect the inbox in ChatterMate
+
+Do this first — connecting generates the webhook URL you'll paste into your mail provider.
+
+<Steps>
+  <Step title="Open the Email card">
+    Go to **Settings → Integrations** and click **Connect** on the **Email** card.
+  </Step>
+  <Step title="Enter your support address">
+    Enter the **support email address** customers write to (e.g. `support@yourcompany.com`).
+  </Step>
+  <Step title="Optional — add outbound SMTP">
+    Leave the SMTP fields blank to send replies via the platform mail server, or fill them in to send from your own domain (better deliverability with your SPF/DKIM):
+
+    | Field | Example |
+    |---|---|
+    | SMTP host | `smtp.yourprovider.com` |
+    | SMTP port | `587` (STARTTLS) or `465` (SSL) |
+    | SMTP username | `apikey` / your login |
+    | SMTP password | your SMTP password or API key |
+    | From address | defaults to the support address |
+  </Step>
+  <Step title="Copy the webhook URL">
+    After connecting, ChatterMate shows an inbound webhook URL like:
+
+    `https://<your-domain>/api/v1/webhooks/email/<account-id>?token=<secret>`
+
+    Keep it handy for step 2. The token authenticates the inbound mail — don't share it.
+  </Step>
+  <Step title="Assign an AI agent">
+    Pick the AI agent that should answer this inbox and click **Assign agent**.
+  </Step>
+</Steps>
+
+## Step 2 — Point your mail provider at ChatterMate
+
+Pick whichever matches your setup:
+
+<AccordionGroup>
+  <Accordion title="SendGrid Inbound Parse">
+    1. Point an MX record for a subdomain (e.g. `parse.yourcompany.com`) at SendGrid (`mx.sendgrid.net`).
+    2. In SendGrid → **Settings → Inbound Parse → Add Host & URL**, set the host to that subdomain and the **Destination URL** to the webhook URL from step 1.
+    3. Forward `support@yourcompany.com` to an address on the parse subdomain (or receive directly on it).
+  </Accordion>
+  <Accordion title="Brevo Inbound">
+    Configure Brevo's inbound email parsing and set the destination URL to the ChatterMate webhook URL from step 1.
+  </Accordion>
+  <Accordion title="Any forwarder / mailbox rule">
+    If your provider can POST inbound mail to a webhook (or forward to a parse service), point it at the ChatterMate URL. A simple mailbox forward into a SendGrid/Brevo parse address works too.
+  </Accordion>
+</AccordionGroup>
+
+## Step 3 — Deliverability (recommended)
+
+If you send replies from your own domain, publish **SPF**, **DKIM**, and **DMARC** DNS records for the sending domain so replies land in the inbox, not spam.
+
+<Note>
+**Gmail / Google Workspace SMTP:** use an **App Password**, not your normal account password (which Google blocks for SMTP). Create one at [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords) with 2-Step Verification enabled. ChatterMate shows this hint automatically if SMTP auth fails.
+</Note>
+
+## Test it
+
+Send an email to your support address. The AI agent replies, and the thread appears in **Conversations** with an **Email** badge. **Take Over Chat** lets a human reply in the same email thread.

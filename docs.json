@@ -42,6 +42,20 @@
             ]
           },
           {
+            "group": "Channels",
+            "pages": [
+              "features/channels/overview",
+              "features/channels/telegram",
+              "features/channels/slack",
+              "features/channels/email",
+              "features/channels/sms",
+              "features/channels/line",
+              "features/channels/whatsapp",
+              "features/channels/messenger",
+              "features/channels/instagram"
+            ]
+          },
+          {
             "group": "Developer Tools",
             "pages": [
               "features/agents-quickstart",

@@ -1,0 +1,100 @@
+---
+title: 'SMS'
+description: 'Connect SMS to ChatterMate through Twilio, Vonage, MessageBird, Plivo, Brevo or AWS SNS — bring your own provider account and let your AI agent answer text messages.'
+---
+
+# SMS
+
+Let customers text your AI agent. SMS is a single ChatterMate channel backed by **six providers** — pick the one you already use (or the one with the best rates in your country), bring your own account, and enter its API credentials.
+
+| Provider | Credentials ChatterMate asks for |
+|---|---|
+| **Twilio** | Account SID, Auth token |
+| **Vonage (Nexmo)** | API key, API secret, Signature secret *(optional)* |
+| **MessageBird (Bird)** | Access key, Signing key *(optional)* |
+| **Plivo** | Auth ID, Auth token |
+| **Brevo** | API key |
+| **AWS SNS** | AWS access key ID, AWS secret access key, Region, Topic ARN *(optional)* |
+
+The *(optional)* signing fields enable webhook signature verification — recommended in production so only your provider can post messages to ChatterMate.
+
+## Step 1 — Get your provider credentials
+
+<AccordionGroup>
+  <Accordion title="Twilio">
+    1. Sign in at [console.twilio.com](https://console.twilio.com).
+    2. From the dashboard, copy your **Account SID** and **Auth Token**.
+    3. Buy or choose an SMS-capable **phone number** (Phone Numbers → Manage → Active numbers), in E.164 format (e.g. `+14155551234`).
+  </Accordion>
+  <Accordion title="Vonage (Nexmo)">
+    1. Sign in at [dashboard.nexmo.com](https://dashboard.nexmo.com).
+    2. Copy your **API key** and **API secret** from the dashboard.
+    3. (Recommended) Under **Settings**, set the signature method to **SHA-256 HMAC** and copy the **Signature secret** so ChatterMate can verify inbound webhooks.
+    4. Have a Vonage virtual **number** ready.
+  </Accordion>
+  <Accordion title="MessageBird (Bird)">
+    1. Sign in at [dashboard.messagebird.com](https://dashboard.messagebird.com).
+    2. Create and copy a live **Access key** (Developers → API access).
+    3. (Recommended) Copy your **Signing key** for webhook verification.
+    4. Have a purchased **number** ready.
+  </Accordion>
+  <Accordion title="Plivo">
+    1. Sign in at [console.plivo.com](https://console.plivo.com).
+    2. Copy your **Auth ID** and **Auth Token** from the overview page.
+    3. Buy an SMS-capable **number** (Phone Numbers → Buy Numbers).
+  </Accordion>
+  <Accordion title="Brevo">
+    1. Sign in at [app.brevo.com](https://app.brevo.com).
+    2. Create an **API key** (Settings → SMS/API keys).
+    3. Set up a **sender** / number for transactional SMS.
+  </Accordion>
+  <Accordion title="AWS SNS">
+    1. In the [AWS Console](https://console.aws.amazon.com), create an IAM user with SNS publish permissions and copy its **Access key ID** and **Secret access key**.
+    2. Note your **region** (e.g. `us-east-1`).
+    3. For inbound (two-way) SMS, create an **SNS topic** for incoming messages and copy its **Topic ARN**.
+  </Accordion>
+</AccordionGroup>
+
+## Step 2 — Connect in ChatterMate
+
+<Steps>
+  <Step title="Open the SMS card">
+    Go to **Settings → Integrations** and click **Connect** on the **SMS** card.
+  </Step>
+  <Step title="Choose provider and enter credentials">
+    Select your **provider** from the dropdown — the credential fields update to match it (see the table above). Enter your sending **phone number** (E.164) and the API credentials.
+  </Step>
+  <Step title="Copy the inbound webhook URL">
+    After connecting, ChatterMate shows an inbound webhook URL like:
+
+    `https://<your-domain>/api/v1/webhooks/sms/<provider>/<account-id>`
+  </Step>
+  <Step title="Assign an AI agent">
+    Pick the AI agent that answers SMS and click **Assign agent**.
+  </Step>
+</Steps>
+
+## Step 3 — Point your number's inbound webhook at ChatterMate
+
+Set the URL from step 2 as your number's incoming-message webhook:
+
+- **Twilio** — Phone number → Messaging → **"A message comes in"** → Webhook (HTTP POST).
+- **Vonage** — set the number's **Inbound SMS webhook**.
+- **MessageBird / Plivo** — attach the number to an application/flow whose inbound URL is the ChatterMate webhook.
+- **Brevo** — set the inbound SMS webhook URL.
+- **AWS SNS** — subscribe your inbound SMS topic to the ChatterMate URL as an **HTTPS subscription**. ChatterMate confirms the subscription automatically.
+
+## Carrier registration (important for the US)
+
+Carriers filter unregistered traffic. To send reliably in the US:
+
+- **A2P 10DLC** — register a **Brand** and **Campaign** with your provider (a Twilio/Plivo/etc. console step). Approval takes days to ~2 weeks.
+- **Toll-free** — submit toll-free verification instead.
+
+<Note>
+This registration is done by the number's owner (you), on the provider side — it isn't a ChatterMate step. Requirements outside the US vary by country (sender IDs, local number rules) — check your provider's country guidelines.
+</Note>
+
+## Test it
+
+Text your connected number. The AI agent replies, and the conversation appears in **Conversations** with an **SMS** badge. **Take Over Chat** hands the conversation to a human, whose replies go back out as SMS.

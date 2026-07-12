@@ -1,0 +1,73 @@
+---
+title: 'Messenger'
+description: 'Connect Facebook Messenger to ChatterMate through the Meta Graph API so your AI agent answers Page direct messages, with human handover into the same conversation.'
+---
+
+# Messenger
+
+<Info>
+**Coming soon in the hosted app.** The Messenger card in **Settings → Integrations** shows **Soon** while ChatterMate finishes Meta app review for the Cloud offering. Self-hosters can connect now with their own Meta app and Page access token.
+</Info>
+
+Connect a Facebook **Page** and your AI agent answers direct messages sent to it on Messenger. Messenger uses the same Meta app as WhatsApp and Instagram, so if you've set one up already you only need the Page-specific steps.
+
+## How Messenger messaging works
+
+Messages come in as **PSIDs** (Page-scoped user IDs). Messenger has a **24-hour standard messaging window** — you can reply for 24 hours after the customer's last message; outside it, only specific message tags are allowed.
+
+## Step 1 — Set up a Meta app
+
+If you already created a Meta app for WhatsApp or Instagram, skip to step 2.
+
+<Steps>
+  <Step title="Create a Business app">
+    Go to [developers.facebook.com](https://developers.facebook.com) → **My Apps → Create App** → **Business**.
+  </Step>
+  <Step title="Business Verification">
+    Complete Business Verification in [business.facebook.com](https://business.facebook.com) → **Security Center** (a few days to ~2 weeks). Start it first.
+  </Step>
+  <Step title="Add the Messenger product">
+    Add the **Messenger** product in the app dashboard and link your Facebook **Page**.
+  </Step>
+  <Step title="Set the webhook">
+    Under **Messenger → Settings → Webhooks**, set the callback URL to `https://<your-domain>/api/v1/webhooks/meta` with your `META_WEBHOOK_VERIFY_TOKEN`, and subscribe your Page to the **messages** and **messaging_postbacks** fields.
+  </Step>
+</Steps>
+
+## Step 2 — Copy your Page credentials
+
+From **Messenger → Settings** in the app dashboard:
+
+| Credential | Where to find it |
+|---|---|
+| **Facebook Page ID** | Your Page's numeric ID (Page → About, or the Messenger settings panel). |
+| **Page access token** | Generate a Page access token for the linked Page (use a System User token for a permanent one). |
+
+## Step 3 — App Review (to message real customers)
+
+To message people who don't have a role on the app, submit **App Review** for:
+
+- `pages_messaging`
+- `pages_manage_metadata`
+- `pages_show_list`
+- `business_management`
+
+Include a narrated **screencast** showing a customer messaging your Page and ChatterMate replying.
+
+## Step 4 — Connect in ChatterMate
+
+<Steps>
+  <Step title="Open the Messenger card">
+    Go to **Settings → Integrations** and click **Connect** on the **Messenger** card (self-hosted / once available).
+  </Step>
+  <Step title="Enter your credentials">
+    Paste the **Facebook Page ID** and **Page access token**. ChatterMate encrypts them and verifies every inbound webhook signature.
+  </Step>
+  <Step title="Assign an AI agent">
+    Choose the AI agent that answers Messenger and click **Assign agent**.
+  </Step>
+</Steps>
+
+## Test it
+
+Message your Page from a Facebook account with a role on the app (before approval) or any account (after approval). The AI agent replies, and the chat appears in **Conversations** with a **Messenger** badge and full human handover.

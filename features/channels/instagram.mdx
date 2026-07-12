@@ -1,0 +1,75 @@
+---
+title: 'Instagram'
+description: 'Connect Instagram DMs to ChatterMate through the Meta Graph API so your AI agent answers direct messages on a professional Instagram account, with human handover.'
+---
+
+# Instagram
+
+<Info>
+**Coming soon in the hosted app.** The Instagram card in **Settings → Integrations** shows **Soon** while ChatterMate finishes Meta app review for the Cloud offering. Self-hosters can connect now with their own Meta app and linked Page token.
+</Info>
+
+Connect a **professional Instagram account** and your AI agent answers Instagram direct messages. Instagram DMs run on the same Meta app and webhook as Messenger, so setup is nearly identical — the account just has to be a Business or Creator account linked to a Facebook Page.
+
+## Prerequisites
+
+- An Instagram **Business** or **Creator** account (not personal).
+- The Instagram account **linked to a Facebook Page** (Instagram → Settings → linked accounts, or from the Page's settings).
+
+## Step 1 — Set up a Meta app
+
+If you already created a Meta app for WhatsApp or Messenger, skip to step 2.
+
+<Steps>
+  <Step title="Create a Business app">
+    Go to [developers.facebook.com](https://developers.facebook.com) → **My Apps → Create App** → **Business**.
+  </Step>
+  <Step title="Business Verification">
+    Complete Business Verification in [business.facebook.com](https://business.facebook.com) → **Security Center**. Start it first — it gates production access.
+  </Step>
+  <Step title="Add Instagram + Messenger">
+    Add the **Instagram** product and link your professional account (Instagram messaging is configured through the Messenger/Instagram settings).
+  </Step>
+  <Step title="Set the webhook">
+    Set the callback URL to `https://<your-domain>/api/v1/webhooks/meta` with your `META_WEBHOOK_VERIFY_TOKEN`, and subscribe to Instagram **messages**.
+  </Step>
+</Steps>
+
+## Step 2 — Copy your credentials
+
+| Credential | Where to find it |
+|---|---|
+| **Instagram account ID** | The IG account's numeric ID (e.g. `17841400000000000`), from the Graph API or the linked-account settings. |
+| **Linked Page access token** | The access token for the Facebook Page the Instagram account is linked to (System User token for a permanent one). |
+
+## Step 3 — App Review (to message real customers)
+
+Submit **App Review** for:
+
+- `instagram_basic`
+- `instagram_manage_messages`
+- (plus `pages_show_list`, `business_management`)
+
+Include a narrated **screencast** showing a customer DMing your Instagram account and ChatterMate replying.
+
+## Step 4 — Connect in ChatterMate
+
+<Steps>
+  <Step title="Open the Instagram card">
+    Go to **Settings → Integrations** and click **Connect** on the **Instagram** card (self-hosted / once available).
+  </Step>
+  <Step title="Enter your credentials">
+    Paste the **Instagram account ID** and the **linked Page access token**. ChatterMate encrypts them and verifies inbound webhook signatures.
+  </Step>
+  <Step title="Assign an AI agent">
+    Choose the AI agent that answers Instagram and click **Assign agent**.
+  </Step>
+</Steps>
+
+<Note>
+If the account isn't a professional account linked to a Page, connecting fails — ChatterMate surfaces the reason so you can fix the link and retry.
+</Note>
+
+## Test it
+
+DM your Instagram account. The AI agent replies, and the conversation appears in **Conversations** with an **Instagram** badge and human handover.
