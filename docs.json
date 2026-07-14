@@ -28,6 +28,7 @@
               "features/ai-customization",
               "features/workflow-builder",
               "features/knowledge-base",
+              "features/help-center",
               "features/mcp-tools",
               "features/testing",
               "features/widget",

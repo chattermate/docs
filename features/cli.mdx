@@ -303,6 +303,36 @@ Every command supports a `--json` flag for machine-readable output, making the C
     chattermate agent update <agent-id> --no-transfer-to-human --no-ask-for-rating
     ```
   </Accordion>
+
+  <Accordion title="Help center & FAQs" icon="circle-question">
+    Manage the public [Help Center](/features/help-center) — FAQs, imports, branding, and
+    custom domain. (Generating FAQs from the knowledge base stays in the dashboard.)
+    ```bash
+    # Create, list and publish FAQs
+    chattermate help-center faq create \
+      --question "How do I reset my password?" \
+      --answer "Open **Settings → Security**." --status published
+    chattermate help-center faq list --status published
+    chattermate help-center faq publish <faq-id> [<faq-id> ...]
+
+    # Import from a URL (qa = AI extraction, articles = crawl as-is) or a PDF
+    chattermate help-center import url https://help.acme.com --mode articles
+    chattermate help-center import pdf ./faqs.pdf
+
+    # Brand the site and set a logo
+    chattermate help-center configure --title "Acme Help" --brand-color "#4338CA" --enable
+    chattermate help-center logo set ./logo.png
+
+    # Connect and verify a custom domain (prints the DNS records to add)
+    chattermate help-center domain set help.acme.com
+    chattermate help-center domain status
+    chattermate help-center domain verify
+
+    # Track a background import
+    chattermate help-center jobs list
+    ```
+    The help center is a **Pro/Enterprise** feature. See [Help Center](/features/help-center).
+  </Accordion>
 </AccordionGroup>
 
 ## Command reference
@@ -323,6 +353,7 @@ Every command supports a `--json` flag for machine-readable output, making the C
 | `chattermate widget create\|list` | Create/list embeddable widgets and get the widget id to embed |
 | `chattermate lead-capture show\|set` | Show/configure an agent's lead capture (Pro) |
 | `chattermate ai setup\|show` | Set/show the org's AI model (defaults to the free ChatterMate model) |
+| `chattermate help-center faq\|import\|configure\|logo\|domain\|jobs` | Manage the public [help center](/features/help-center) — FAQs, imports, branding, custom domain (Pro) |
 
 ## Configuration & environment
 
