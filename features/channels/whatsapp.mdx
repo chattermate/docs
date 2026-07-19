@@ -1,75 +1,134 @@
 ---
 title: 'WhatsApp'
-description: 'Connect WhatsApp Business to ChatterMate through the official Meta Cloud API so your AI agent answers customers on WhatsApp, with 24-hour windows and templates handled.'
+description: 'Connect WhatsApp Business to ChatterMate through the official Meta Cloud API so your AI agent answers customers on WhatsApp, with the 24-hour window and message templates handled for you.'
 ---
 
 # WhatsApp
 
-<Info>
-**Coming soon in the hosted app.** The WhatsApp card in **Settings → Integrations** currently shows **Soon** while ChatterMate finishes Meta app review for the Cloud offering. Self-hosters can already connect with their own Meta app and credentials. This page covers how to get those credentials so you're ready.
-</Info>
+ChatterMate connects through the **official WhatsApp Cloud API** from Meta — not an unofficial bridge — so your business number stays compliant and never risks a ban. Your AI agent answers customer messages, and a human can take over from the same inbox.
 
-ChatterMate connects to WhatsApp through the **official WhatsApp Cloud API** from Meta — not an unofficial bridge — so your business number stays compliant and never risks a ban. Your AI agent answers customer messages, and human agents can take over from the inbox.
+There are two ways to connect:
+
+<CardGroup cols={2}>
+  <Card title="Sign in with Facebook" icon="facebook">
+    ChatterMate Cloud. Embedded Signup onboards your number under ChatterMate's Meta app — no app of your own, no tokens.
+  </Card>
+  <Card title="Enter credentials manually" icon="key">
+    Self-hosted, or anyone using their own Meta app. Paste a phone number ID and access token.
+  </Card>
+</CardGroup>
+
+<Info>
+**On ChatterMate Cloud, signing in with Facebook is rolling out as Meta completes app review.** If the WhatsApp card doesn't offer it yet, use the manual path below with your own Meta app — that works today either way.
+</Info>
 
 ## How WhatsApp messaging works
 
-WhatsApp enforces a **24-hour customer service window**: you can reply freely for 24 hours after the customer's last message. Outside that window you can only send **pre-approved message templates**. ChatterMate tracks the window per conversation and tells you when a template is required.
+WhatsApp enforces a **24-hour customer service window**: you can reply freely for 24 hours after the customer's last message. Outside it you may only send **pre-approved message templates**. ChatterMate tracks the window per conversation and tells an agent when a template is required.
 
-## Step 1 — Set up a Meta app
+## Connect by signing in with Facebook
 
-All three Meta channels (WhatsApp, Messenger, Instagram) run on **one Meta app**. Do this once.
+<Steps>
+  <Step title="Open the WhatsApp card">
+    Go to **Settings → Integrations** and click **Connect** on the **WhatsApp** card, then **Continue with Facebook**.
+
+    <Frame>
+      <img src="/images/whatsapp-connect-facebook.webp" alt="The Connect WhatsApp dialog offering Continue with Facebook" />
+    </Frame>
+  </Step>
+  <Step title="Complete Embedded Signup">
+    Meta's signup opens in a popup. Choose your business portfolio, then the WhatsApp Business Account and phone number you want to connect. If you don't have a number yet, you can add one here.
+  </Step>
+  <Step title="Assign an AI agent">
+    Choose the agent that answers this number and click **Assign agent**.
+
+    <Frame>
+      <img src="/images/whatsapp-assign-agent.webp" alt="Choosing which AI agent answers the connected WhatsApp number" />
+    </Frame>
+  </Step>
+</Steps>
+
+<Note>
+ChatterMate verifies that the number belongs to the account you just granted, registers it for the Cloud API, and subscribes the webhooks for you.
+</Note>
+
+## Connect with your own Meta app
+
+Use this if you self-host, or would rather keep the integration under your own Meta app. All three Meta channels share **one** app, so if you've already set one up for Messenger or Instagram, skip to step 2.
+
+### Step 1 — Set up a Meta app
 
 <Steps>
   <Step title="Create a Business app">
-    Go to [developers.facebook.com](https://developers.facebook.com) → **My Apps → Create App** → type **Business**. Name it (e.g. "Acme Support").
+    Go to [developers.facebook.com](https://developers.facebook.com) → **My Apps → Create App** → **Business**.
   </Step>
   <Step title="Business Verification">
-    In [business.facebook.com](https://business.facebook.com) → **Business Settings → Security Center**, submit your legal business details and a verification document, and verify your domain. This gates production access and takes a few days to ~2 weeks — start it first.
+    In [business.facebook.com](https://business.facebook.com) → **Business Settings → Security Center**, submit your legal business details and a verification document, and verify your domain. This gates production access and takes a few days to about two weeks — start it first.
   </Step>
   <Step title="Add the WhatsApp product">
-    In the app dashboard, add the **WhatsApp** product. Meta gives you a test number immediately so you can build before approval.
+    In the app dashboard, add the **WhatsApp** product. Meta gives you a test number immediately, so you can build before approval.
   </Step>
   <Step title="Set the webhook">
     Under **WhatsApp → Configuration**, set the callback URL to `https://<your-domain>/api/v1/webhooks/meta` and the verify token to your `META_WEBHOOK_VERIFY_TOKEN`. Subscribe to the **messages** field.
   </Step>
 </Steps>
 
-## Step 2 — Copy your WhatsApp credentials
+### Step 2 — Copy your credentials
 
-From **WhatsApp → API Setup** in the app dashboard:
+From **WhatsApp → API Setup**:
 
 | Credential | Where to find it |
 |---|---|
-| **Phone number ID** | Shown next to your WhatsApp number (a numeric ID, not the phone number itself). |
-| **Access token** | Generate a **permanent** token via a System User in Business Settings (temporary tokens expire in 24h). |
-| **WhatsApp Business Account ID** *(optional)* | The WABA ID — lets ChatterMate auto-subscribe the webhook. |
+| **Phone number ID** | Shown next to your WhatsApp number — a numeric ID, not the phone number itself. |
+| **Access token** | Generate a **permanent** token via a System User in Business Settings; temporary tokens expire in 24 hours. |
+| **WhatsApp Business Account ID** *(optional)* | The WABA ID. Without it the number still sends and receives, but ChatterMate cannot manage templates. |
 
-## Step 3 — App Review (to message real customers)
+Open the **WhatsApp** card in **Settings → Integrations**, choose **Enter credentials manually instead**, and paste them. ChatterMate stores them encrypted and verifies the signature on every inbound webhook.
 
-The test number only messages people with a role on the app. To go live, submit **App Review** for:
+### Step 3 — App Review
+
+A test number can only message people who have a role on your app. To reach real customers, submit **App Review** for:
 
 - `whatsapp_business_messaging`
 - `whatsapp_business_management`
 
 Include a narrated **screencast** showing a customer messaging your number and ChatterMate replying. Also complete, per number:
 
-- **Display name review** (Business Manager → WhatsApp Accounts → Phone Numbers).
-- **Message template approval** for anything sent outside the 24-hour window (each template is reviewed individually).
+- **Display name review** (Business Manager → WhatsApp Accounts → Phone Numbers)
+- **Message template approval** for anything sent outside the 24-hour window — each template is reviewed individually
 
-## Step 4 — Connect in ChatterMate
+<Warning>
+A Meta **test number** can only message recipients you have added and verified in **WhatsApp → API Setup**. If a send fails with a recipient error, that list is the first thing to check.
+</Warning>
 
-<Steps>
-  <Step title="Open the WhatsApp card">
-    Go to **Settings → Integrations** and click **Connect** on the **WhatsApp** card (self-hosted / once available).
-  </Step>
-  <Step title="Enter your credentials">
-    Paste the **Phone number ID**, **Access token**, and optionally the **WhatsApp Business Account ID**. ChatterMate stores them encrypted and verifies webhook signatures on every inbound message.
-  </Step>
-  <Step title="Assign an AI agent">
-    Choose the AI agent that answers WhatsApp and click **Assign agent**.
-  </Step>
-</Steps>
+## Message templates
 
-<Note>
-**ChatterMate Cloud** will offer **WhatsApp Embedded Signup**, so you can onboard your own number under ChatterMate's approved Meta app with a guided popup — no separate app or verification. A BSP (360dialog, Twilio) is an alternative that shortcuts parts of onboarding at a per-message cost.
-</Note>
+Templates reopen a conversation once the customer's 24-hour window has closed. You write them in **WhatsApp Manager**; once Meta approves one it appears in ChatterMate and your agents can send it. Open them from **Templates** on the WhatsApp card.
+
+<Frame>
+  <img src="/images/whatsapp-templates.webp" alt="The WhatsApp templates dialog listing an approved template" />
+</Frame>
+
+Each template has a **category**, and the category decides where it can be used:
+
+| Category | Reopen a conversation | Start a new one |
+|---|---|---|
+| **Utility** | Yes | Yes |
+| **Authentication** | Yes | Yes |
+| **Marketing** | Yes | No |
+
+That is why a Marketing template appears under **Send template** in an existing conversation but not in **New conversation** — Meta only reliably delivers Utility and Authentication templates to someone who has not messaged you, and Marketing carries per-user caps.
+
+## Test it
+
+Message your connected number from WhatsApp — before app review, from a number with a role on the app; after, from any number.
+
+<Frame>
+  <img src="/images/whatsapp-customer-chat.webp" alt="A customer messaging the business on WhatsApp and the AI agent replying" />
+</Frame>
+
+The AI agent replies, and the conversation appears in **Conversations** with a **WhatsApp** badge, the customer's phone number, and full human handover.
+
+<Tip>
+Nothing arriving in the inbox? Check that the number you messaged is the one you connected — a WhatsApp Business Account can hold several numbers, and ChatterMate only answers for the one you selected.
+</Tip>
