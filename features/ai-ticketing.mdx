@@ -1,6 +1,6 @@
 ---
 title: 'AI Ticketing'
-description: 'Native AI-first support tickets that auto-triage, investigate against your logs and databases, document a root cause with cited evidence, and resolve — with staged autonomy you control.'
+description: 'AI-first support tickets that auto-triage, investigate your logs and databases, and document a root cause with cited evidence — under staged autonomy you control.'
 ---
 
 # AI Ticketing
@@ -12,7 +12,7 @@ and writes a **root-cause analysis with cited evidence** — all in the open, wi
 you decide.
 
 <Frame>
-  <img src="/images/ai-ticketing-workspace.png" alt="ChatterMate AI Ticketing workspace — ticket list with priority, AI state, SLA and stat chips" />
+  <img src="/images/ai-ticketing-workspace.jpg" alt="ChatterMate AI Ticketing workspace — ticket list with priority, AI state, SLA and stat chips" />
 </Frame>
 
 <Note>AI Ticketing is a **Pro / Enterprise** feature. On the community (self-hosted) edition it is fully open.</Note>
@@ -51,7 +51,7 @@ watch it happen. It proposes **hypotheses**, tests each against your tools, mark
 result behind each conclusion.
 
 <Frame>
-  <img src="/images/ai-ticketing-investigation.png" alt="Ticket detail — AI triage summary, investigation hypotheses with confidence bars, and the approved-resolution banner" />
+  <img src="/images/ai-ticketing-investigation.jpg" alt="Ticket detail — AI triage summary, investigation hypotheses with confidence bars, and the approved-resolution banner" />
 </Frame>
 
 The result is a versioned **root-cause analysis** — summary, impact, timeline, contributing
@@ -64,7 +64,7 @@ recorded, so you can audit exactly what the AI looked at.
 The AI never exceeds the level you choose, and every level still logs its actions for audit.
 
 <Frame>
-  <img src="/images/ai-ticketing-autonomy.png" alt="Ticketing settings — L1/L2/L3 autonomy cards with capability checklists and SLA targets" />
+  <img src="/images/ai-ticketing-autonomy.jpg" alt="Ticketing settings — L1/L2/L3 autonomy cards with capability checklists and SLA targets" />
 </Frame>
 
 <Steps>
@@ -82,10 +82,25 @@ The AI never exceeds the level you choose, and every level still logs its action
   </Step>
 </Steps>
 
+## Customer communications
+
+Ticket-created and ticket-resolved messages use editable templates with `[customer]` and `[ticket]`
+placeholders and a live preview, so customers hear from you in your own voice. You can collect CSAT
+after resolution, and auto-close a resolved ticket after a set number of hours without a reply.
+
+<Note>
+  Customer emails are sent from your **connected email inbox** — connect one under Integrations to
+  send from your own domain; otherwise ChatterMate's address is used.
+</Note>
+
 ## Connecting investigation sources
 
 Under **Settings → Ticketing**, attach read-only sources for the investigation agent (they never
 touch the customer-facing chat agent):
+
+<Frame>
+  <img src="/images/ai-ticketing-connectors.jpg" alt="Ticketing settings — customer message templates with live preview, and Grafana / Elasticsearch / Sentry / CloudWatch investigation connectors" />
+</Frame>
 
 <AccordionGroup>
   <Accordion title="Observability platforms (MCP)" icon="chart-line">
@@ -98,6 +113,13 @@ touch the customer-facing chat agent):
     and optionally restrict a table to the ticket customer's own rows.
   </Accordion>
 </AccordionGroup>
+
+Each saved connector shows exactly what it exposes — how many tables are allowlisted, how many
+columns are masked, and how many are scoped to the ticket's own customer.
+
+<Frame>
+  <img src="/images/ai-ticketing-database.jpg" alt="Ticketing settings — guardrailed database connector with allowlist and masking counts, alert webhook intake URL, and one-way Jira escalation" />
+</Frame>
 
 ### Database guardrails
 
