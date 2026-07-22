@@ -29,6 +29,7 @@
               "features/workflow-builder",
               "features/knowledge-base",
               "features/help-center",
+              "features/ai-ticketing",
               "features/mcp-tools",
               "features/testing",
               "features/widget",
