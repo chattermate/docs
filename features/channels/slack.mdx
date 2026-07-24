@@ -7,9 +7,13 @@ description: 'Connect a Slack workspace to ChatterMate with one-click OAuth so y
 
 Connect a Slack workspace and your AI agent answers **@mentions** in channels and **direct messages** to the bot. Replies stay in-thread, teammates can take over from the ChatterMate inbox, and the agent shows real display names and a typing indicator.
 
+<Frame caption="@mention the bot in any channel — it answers in the thread.">
+  <img src="/images/slack-thread.webp" alt="ChatterMate answering an @mention inside a Slack thread" />
+</Frame>
+
 ## Two ways to connect
 
-- **ChatterMate Cloud** — click **Connect**, approve the OAuth popup, done. No app to create. Skip to [Connect in ChatterMate](#connect-in-chattermate).
+- **ChatterMate Cloud** — click **Connect**, approve the OAuth popup, done. No app to create; skip Step 1 below.
 - **Self-hosted** — create your own Slack app once (below), set three environment variables, then connect via OAuth.
 
 ## Step 1 — Create a Slack app (self-hosted only)
@@ -19,11 +23,11 @@ Connect a Slack workspace and your AI agent answers **@mentions** in channels an
     Go to [api.slack.com/apps](https://api.slack.com/apps) → **Create New App** → **From scratch**. Name it **ChatterMate** and pick your workspace.
   </Step>
   <Step title="Add bot scopes">
-    Under **OAuth & Permissions → Bot Token Scopes**, add:
+    Under **OAuth & Permissions → Bot Token Scopes**, add exactly these four:
 
-    `app_mentions:read`, `chat:write`, `im:history`, `im:read`, `im:write`, `users:read`
+    `app_mentions:read`, `chat:write`, `im:history`, `users:read`
 
-    (`users:read` lets the agent resolve real display names instead of raw user IDs.)
+    That's the full set ChatterMate uses — receive @mentions, post replies, read direct messages, and resolve real display names instead of raw user IDs. Nothing more is requested.
   </Step>
   <Step title="Set the OAuth redirect URL">
     Still under **OAuth & Permissions**, add a **Redirect URL**:
@@ -35,7 +39,20 @@ Connect a Slack workspace and your AI agent answers **@mentions** in channels an
 
     `https://<your-domain>/api/v1/webhooks/slack`
 
-    Then subscribe to bot events **`app_mention`** and **`message.im`**. Slack sends a one-time challenge to verify the URL — ChatterMate answers it automatically.
+    Then subscribe to these bot events:
+
+    | Event | Why |
+    |---|---|
+    | `app_mention` | Answer when the bot is @mentioned in a channel |
+    | `message.im` | Answer direct messages to the bot |
+    | `app_home_opened` | Show the Home tab and send the first-open welcome |
+    | `app_uninstalled` | Purge the stored token when the app is removed |
+    | `tokens_revoked` | Purge the stored token when access is revoked |
+
+    Slack sends a one-time challenge to verify the URL — ChatterMate answers it automatically.
+  </Step>
+  <Step title="Turn on the App Home">
+    Under **App Home**, enable the **Home Tab** and the **Messages Tab** (leave *Allow users to send Slash commands and messages from the messages tab* on). This powers the [App Home](#the-app-home) card and the welcome message.
   </Step>
   <Step title="Copy the app credentials">
     From **Basic Information**, copy the **Client ID**, **Client Secret**, and **Signing Secret**, and set them as environment variables:
@@ -73,3 +90,13 @@ Invite the bot to a channel and **@mention** it, or send it a direct message. Th
 <Tip>
 Because Slack has no native bot "typing…" indicator, ChatterMate posts a brief placeholder message and edits it into the reply, so customers see immediate feedback while the agent thinks.
 </Tip>
+
+## The App Home
+
+Open the app from the Slack sidebar to see its **Home** tab — a quick summary of what ChatterMate does, which AI agent is connected to the workspace and whether it's online, how to reach it, and a link straight to your dashboard.
+
+<Frame caption="The Home tab: what ChatterMate does, the connected agent, and how to use it.">
+  <img src="/images/slack-home.webp" alt="ChatterMate Slack App Home tab showing the connected agent and usage tips" />
+</Frame>
+
+The first time a teammate opens the bot's **Messages** tab, ChatterMate sends a one-time welcome DM naming the connected agent, so people know they can just message the bot to get an answer.
