@@ -193,6 +193,58 @@ docker-compose logs -f redis
 docker ps
 ```
 
+## Help Center custom domains (self-hosted)
+
+The [Help Center](/features/help-center) can be served on your customers' own
+domains with automatic HTTPS. The `chattermate-deploy` CLI bundles a **Caddy edge
+proxy** that terminates TLS and issues certificates automatically — no manual
+`certbot` or nginx.
+
+<Steps>
+  <Step title="Deploy with a domain">
+    Run `chattermate-deploy init` and answer **yes** to the domain prompt. Enter your
+    app domain (e.g. `app.example.com`) and, optionally, a Help Center base domain
+    (e.g. `help.example.com`) for org subdomains. Then `chattermate-deploy start`.
+  </Step>
+  <Step title="Point DNS at your server">
+    Add an **A/AAAA** record for your app domain to the server's IP. For Help Center
+    org subdomains, add a wildcard `*.help.example.com` A/AAAA record too. Certificates
+    are issued automatically on the first HTTPS request.
+  </Step>
+  <Step title="Add a customer's custom domain">
+    In **Customization → Custom domain**, add the domain and create the **TXT** record
+    shown. Add a **CNAME** from the customer's domain to your **app domain** (which
+    already resolves to your server), then click **Verify**.
+  </Step>
+</Steps>
+
+Under the hood the edge only requests a certificate for a hostname the backend
+confirms it serves (a verified custom domain or an org subdomain), so a random
+domain pointed at your server cannot trigger certificate issuance.
+
+### TLS options
+
+When you give `init` a domain, it asks how HTTPS should be handled:
+
+- **Automatic** *(default)* — Caddy obtains and renews free Let's Encrypt
+  certificates, and issues Help Center custom-domain certs on demand.
+- **Bring your own certificate** — provide a cert + key (PEM); they're copied
+  into `./certs` and served by Caddy, with no calls to Let's Encrypt. For Help
+  Center domains, add a block per domain (or a wildcard) — the generated
+  `Caddyfile` includes a commented example.
+- **Terminated upstream** — your own reverse proxy / load balancer handles TLS
+  and forwards plain HTTP to the stack. It **must preserve the `Host` header** so
+  the backend can dispatch Help Center domains.
+
+<Note>
+  Renewal is automatic — Caddy renews certificates well before expiry with no
+  cron or certbot. Certificates and the ACME account are stored in the
+  `caddy_data` Docker volume, so keep it across restarts and upgrades — deleting
+  it forces re-issuance and can hit Let's Encrypt rate limits. If a custom domain
+  sits behind Cloudflare, set the record to **DNS only** (grey cloud) for
+  verification, or the CNAME check fails.
+</Note>
+
 ## Troubleshooting
 
 Common issues and solutions:
@@ -243,4 +295,16 @@ small root volume the build overflows with `No space left on device`.
 - This only affects building the image yourself — the prebuilt Docker Hub
   images (`chattermate/backend`, `chattermate/frontend`) avoid it entirely.
 - Slow-link download timeouts are already handled in the Dockerfiles
-  (`PIP_DEFAULT_TIMEOUT=120` and `pip --retries 10`). 
+  (`PIP_DEFAULT_TIMEOUT=120` and `pip --retries 10`).
+
+6. Help Center custom domain stuck on "SSL Provisioning" / returns 404:
+
+The domain never reached the edge, so no certificate was issued.
+
+- Deploy with the `chattermate-deploy` CLI **and a domain** (see
+  [Help Center custom domains](#help-center-custom-domains-self-hosted)) — a plain
+  localhost deploy has no TLS edge and can't serve custom domains.
+- Check the domain resolves to your server (`CNAME` to your app domain) and that
+  ports **80 and 443** are open — Let's Encrypt validates over both.
+- The certificate is issued on the first HTTPS request; give it a few seconds,
+  then re-check `Verify`. Inspect the edge with `docker compose logs caddy`. 
