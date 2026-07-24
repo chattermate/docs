@@ -237,10 +237,12 @@ When you give `init` a domain, it asks how HTTPS should be handled:
   the backend can dispatch Help Center domains.
 
 <Note>
-  Certificates are stored in the `caddy_data` Docker volume — keep it across
-  restarts, or the edge re-requests certificates and can hit Let's Encrypt rate
-  limits. If a custom domain sits behind Cloudflare, set the record to **DNS only**
-  (grey cloud) for verification, or the CNAME check fails.
+  Renewal is automatic — Caddy renews certificates well before expiry with no
+  cron or certbot. Certificates and the ACME account are stored in the
+  `caddy_data` Docker volume, so keep it across restarts and upgrades — deleting
+  it forces re-issuance and can hit Let's Encrypt rate limits. If a custom domain
+  sits behind Cloudflare, set the record to **DNS only** (grey cloud) for
+  verification, or the CNAME check fails.
 </Note>
 
 ## Troubleshooting
