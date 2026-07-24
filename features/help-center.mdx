@@ -106,6 +106,24 @@ Serve the help center on your own domain (e.g. `help.acme.com`) instead of the d
   </Step>
 </Steps>
 
+<Accordion title="Self-hosted setup">
+  On the ChatterMate cloud this is fully managed. On a self-hosted install the
+  same **Verify** flow works and TLS is still issued automatically — as long as
+  you deployed with the [`chattermate-deploy`](/deployment/docker#help-center-custom-domains-self-hosted)
+  CLI and gave it a domain. The bundled edge proxy issues a certificate on demand
+  for any domain you verify.
+
+  1. Deploy with a domain: `chattermate-deploy init` → answer **yes** to the domain
+     prompt and enter your app domain (and optionally a Help Center base domain).
+  2. In the dashboard, add your custom domain and create the **TXT** record shown.
+  3. Add a **CNAME** from your custom domain to your **app domain** (it already
+     resolves to your server), then click **Verify**. The certificate is issued on
+     the first request — allow a few seconds.
+
+  See [Docker Deployment → Help Center custom domains](/deployment/docker#help-center-custom-domains-self-hosted)
+  for the full walkthrough.
+</Accordion>
+
 ## Manage it from the CLI
 
 Everything above (except knowledge-base generation) can be scripted with the
