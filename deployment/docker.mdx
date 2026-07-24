@@ -231,4 +231,16 @@ docker-compose logs redis
 
 # Verify Redis connection
 docker-compose exec redis redis-cli ping
-``` 
+```
+
+5. Backend build fails with `No space left on device` or pip `ReadTimeoutError`:
+
+The backend image pulls several GB of ML wheels (torch, opencv, onnxruntime),
+and the amd64/x86_64 wheels are noticeably larger than the arm64 ones. On a
+small root volume the build overflows with `No space left on device`.
+
+- Give the host **at least ~15 GB free disk** when building from source.
+- This only affects building the image yourself — the prebuilt Docker Hub
+  images (`chattermate/backend`, `chattermate/frontend`) avoid it entirely.
+- Slow-link download timeouts are already handled in the Dockerfiles
+  (`PIP_DEFAULT_TIMEOUT=120` and `pip --retries 10`). 
