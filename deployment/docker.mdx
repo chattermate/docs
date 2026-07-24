@@ -222,6 +222,20 @@ Under the hood the edge only requests a certificate for a hostname the backend
 confirms it serves (a verified custom domain or an org subdomain), so a random
 domain pointed at your server cannot trigger certificate issuance.
 
+### TLS options
+
+When you give `init` a domain, it asks how HTTPS should be handled:
+
+- **Automatic** *(default)* — Caddy obtains and renews free Let's Encrypt
+  certificates, and issues Help Center custom-domain certs on demand.
+- **Bring your own certificate** — provide a cert + key (PEM); they're copied
+  into `./certs` and served by Caddy, with no calls to Let's Encrypt. For Help
+  Center domains, add a block per domain (or a wildcard) — the generated
+  `Caddyfile` includes a commented example.
+- **Terminated upstream** — your own reverse proxy / load balancer handles TLS
+  and forwards plain HTTP to the stack. It **must preserve the `Host` header** so
+  the backend can dispatch Help Center domains.
+
 <Note>
   Certificates are stored in the `caddy_data` Docker volume — keep it across
   restarts, or the edge re-requests certificates and can hit Let's Encrypt rate
