@@ -70,7 +70,8 @@ live. Bulk-select to publish, unpublish, or delete many at once.
 Under **Customization** you control how the public site looks and behaves:
 
 - **Logo** and **brand color** — applied across buttons, links, search and highlights.
-- **Title** and **description** — heading and SEO metadata.
+- **Favicon** — the icon shown in the browser tab.
+- **Title** and **description** — heading and site-wide SEO metadata.
 - **Header links** — up to six nav links back to your website.
 - **AI quick summary in search** — an instant AI answer above search results, grounded in your published FAQs.
 - **Chat widget** — embed an agent's chat widget so visitors can start a conversation.
@@ -79,14 +80,52 @@ Changes apply instantly to your published site.
 
 ## The public site
 
-Once enabled, your help center is live at `https://{your-slug}.help.chattermate.chat`. Visitors get:
+On ChatterMate Cloud your help center is live at `https://{your-slug}.help.chattermate.chat`.
+Self-hosted installs serve it by path on your own backend instead — `https://your-app.com/help/{your-slug}` —
+so it works immediately without extra DNS or certificates. Either way the exact URL is shown in
+**Customization** once you enable the site.
+
+Visitors get:
 
 - **Instant search** across your published FAQs, with an optional **AI answer** on top.
 - **Browse by topic** — articles grouped by category.
-- **Article pages** with clean, shareable URLs and a **"Was this helpful?"** vote on each one.
+- **Article pages** with clean, shareable URLs, a breadcrumb trail, related articles and a **"Was this helpful?"** vote.
 - The embedded **chat widget** when they need a human.
 
-Everything is server-rendered for SEO, with a sitemap and per-article structured data.
+## SEO
+
+Every page is server-rendered, so search engines and AI answer engines see your full content
+without running any JavaScript. Out of the box each help center gets:
+
+- A self-referencing **canonical URL**, plus `sitemap.xml` and `robots.txt`.
+- **Open Graph and Twitter card tags** — links shared into Slack, LinkedIn or X show a title,
+  description and your logo instead of a bare URL.
+- **Structured data (JSON-LD)**: one `@graph` per page wiring together `Organization`, `WebSite`,
+  `WebPage`, `BreadcrumbList` and `TechArticle` on articles, and `FAQPage` on the landing page.
+- A **breadcrumb trail** (Home › Category › Article) on every article, matching its markup.
+
+### Per-article SEO
+
+Open an FAQ in the editor and expand **SEO & URL** to override what search engines show for that
+article:
+
+| Field | Controls | If you leave it empty |
+| --- | --- | --- |
+| **URL slug** | The `/a/{slug}` part of the article's URL | Generated from the question |
+| **Meta title** | The page `<title>` and `og:title` | The question, plus your help center name |
+| **Meta description** | The meta description and `og:description` | The opening of the answer |
+
+Every field is optional. Character counters mark where search engines typically truncate — around
+60 characters for a title and 160 for a description — but you can go longer.
+
+Slugs are normalized automatically (lowercased, spaces and symbols become hyphens) and must be
+unique within your help center; if the one you want is taken, ChatterMate appends a number.
+
+<Warning>
+  Changing the slug of an article that is already published **changes its URL**. Existing links,
+  bookmarks and search results pointing at the old URL will stop working, so rename early — ideally
+  before you publish.
+</Warning>
 
 ## Custom domain
 
