@@ -1,0 +1,107 @@
+---
+title: 'Pipedrive'
+description: 'Push captured leads from ChatterMate into Pipedrive as a person, organization and lead, deduplicated by email, with the AI qualification summary attached as a note.'
+---
+
+# Pipedrive
+
+Send the leads your agents capture straight into Pipedrive. When a visitor is captured (see [Lead Capture](/features/lead-capture)), ChatterMate creates or updates the matching **person** — deduplicated by email — links them to their **organization**, opens a **lead**, and attaches the AI qualification summary as a note.
+
+It's a **one-way push** (ChatterMate → Pipedrive). Nothing is read back or overwritten in ChatterMate.
+
+<Note>
+On ChatterMate Cloud, CRM Sync is a **Pro** feature. Self-hosted deployments have it built in — you just register your own Pipedrive app (see [Self-hosted setup](#self-hosted-setup)).
+</Note>
+
+## What gets pushed
+
+| ChatterMate | Pipedrive |
+| --- | --- |
+| Email (dedupe key) | Person, matched by email |
+| Name, phone | Person fields |
+| Company | Organization, linked to the person |
+| Lifecycle | An open **Lead** on the person |
+| AI summary, custom fields, source page | Note on the lead |
+
+Repeat captures of the same email **update** the existing person instead of creating duplicates, and ChatterMate won't open a second lead if the person already has one open — so a returning visitor never spams your leads inbox.
+
+## Connecting Pipedrive (Cloud)
+
+Go to **Settings → Integrations**, find the **CRM** section, and:
+
+1. Click **Connect** on the Pipedrive card.
+2. Authorize ChatterMate in Pipedrive's OAuth screen.
+3. You're returned to the Integrations page and the card shows **Connected** with your company name.
+
+<Note>
+One Pipedrive account connects to one ChatterMate organization. Connecting requires the **Manage Organization** permission.
+</Note>
+
+## Turning on sync for an agent
+
+Connecting Pipedrive doesn't move any leads on its own — you choose per agent which CRM its captured leads go to.
+
+Open an agent → **Lead Capture** tab → **Sync to CRM** → **Pipedrive**. Every lead that agent captures is then queued for Pipedrive automatically.
+
+<Tip>
+The agent's selection is respected on **automatic** sync — a lead only goes to the CRM you picked for that agent. If you pick Pipedrive before connecting it, the choice is saved and syncing starts once you connect.
+</Tip>
+
+## Manual "Sync now" for a person
+
+Open **People**, select a person, and use **Sync to CRM** in the detail drawer to push them on demand. This sends them to every connected CRM and shows where they've already been synced, with a link to the created record. Use it to backfill people captured before Pipedrive was connected.
+
+## Failure handling
+
+CRM problems never interrupt a conversation. Syncs run in the background and retry with backoff:
+
+- **Not connected** — no lead is queued; the agent's Lead Capture tab shows an inline warning.
+- **Temporary errors** (rate limits, network) — retried automatically.
+- **Expired connection** — the Pipedrive card shows **Reconnect**; reconnecting automatically re-queues leads that failed while it was down.
+- **Permanent failures** — surfaced as a recent-failure count on the card.
+
+---
+
+## Self-hosted setup
+
+Self-hosted ChatterMate has CRM Sync built in with **no plan restriction** — you bring your own Pipedrive app so tokens stay in your infrastructure.
+
+### 1. Register a Pipedrive app
+
+Create an app in the [Pipedrive Developer Hub](https://developers.pipedrive.com):
+
+- **Callback URL:** `https://<your-backend-domain>/api/v1/crm/pipedrive/callback`
+- **Scopes:** `contacts:full`, `leads:full`, `search:read`
+
+The callback URL is derived from your `BACKEND_URL`, so make sure that's set to your public backend origin. Copy the app's **Client ID** and **Client Secret**.
+
+### 2. Set the credentials
+
+Add to `backend/.env`:
+
+```bash
+PIPEDRIVE_CLIENT_ID=your-pipedrive-client-id
+PIPEDRIVE_CLIENT_SECRET=your-pipedrive-client-secret
+```
+
+### 3. Run the sync worker
+
+CRM pushes are processed by a dedicated worker. Add it to your Compose stack alongside the backend:
+
+```yaml
+crm_sync:
+  image: chattermate/backend:latest
+  command: python -m app.workers.crm_sync
+  env_file:
+    - ./backend/.env
+  depends_on:
+    db:
+      condition: service_healthy
+  restart: always
+```
+
+<Note>
+The worker polls a database queue — no Celery or extra broker needed. It also runs a periodic token-refresh sweep so idle Pipedrive connections don't lapse (Pipedrive refresh tokens expire after 60 idle days). The same worker handles [HubSpot](/features/hubspot) too.
+</Note>
+
+Once the credentials are set and the worker is running, connect and configure exactly as in the Cloud sections above — the Pipedrive card appears on Settings → Integrations automatically.

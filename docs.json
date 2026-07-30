@@ -40,7 +40,8 @@
               "features/roles",
               "features/chat-management",
               "features/jira-integration",
-              "features/crm-sync"
+              "features/hubspot",
+              "features/pipedrive"
             ]
           },
           {
