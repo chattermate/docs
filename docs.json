@@ -40,7 +40,9 @@
               "features/human-agents",
               "features/roles",
               "features/chat-management",
-              "features/jira-integration"
+              "features/jira-integration",
+              "features/hubspot",
+              "features/pipedrive"
             ]
           },
           {
