@@ -1,11 +1,11 @@
 ---
 title: 'Widget Integration'
-description: 'Add the ChatterMate AI chat widget to any website in minutes with a one-line script snippet or iframe embed, with no code changes beyond pasting the snippet.'
+description: 'Add the ChatterMate AI chat widget to any site with one script tag, then place it as a bubble, sidebar or search bar and control it from your own JavaScript.'
 ---
 
 # Widget Integration
 
-Add the ChatterMate chat widget to your website using either direct script integration or iframe embedding.
+Add the ChatterMate chat widget to your website using either direct script integration or iframe embedding, then choose where it sits and how visitors open it.
 
 <Frame>
   <img src="/images/widget-integration.png" alt="Widget Integration Options" />
@@ -44,50 +44,101 @@ Alternatively, embed the chat widget using an iframe:
 The iframe method is useful for testing or when you need more control over the widget's placement and dimensions.
 </Note>
 
-## Widget Configuration
+## Placement
 
-### Customization
-```javascript
-// Update chat bubble color
-window.postMessage({
-  type: 'CUSTOMIZATION_UPDATE',
-  data: {
-    chat_bubble_color: '#f34611'  // Your brand color
-  }
-}, '*');
-```
+By default the launcher is a round bubble 20px from the bottom-right corner, and the chat window opens above it. You can change that in two places:
 
-### Widget Position
+- **In the dashboard** — the **Widget placement** section of your agent's *Customization* tab. These are the defaults for every site the agent is embedded on.
+- **In the embed snippet** — anything you set on the page wins over the dashboard, so one agent can look different on your pricing page than in your docs.
 
-By default the launcher sits 20px from the bottom-right corner. To move it — for example, to clear a fixed bottom navigation bar — initialize the widget with `ChatterMate.init()` and pass a `position`. Both values are in pixels, measured from the bottom and right edges of the screen. The chat window stays anchored above the launcher, and the offset applies on mobile too.
+Colours, fonts and the chat design itself are set in the same *Customization* tab; placement is only about where the widget sits and how it opens.
 
-```html
-<script src="https://app.chattermate.chat/webclient/chattermate.min.js"></script>
-<script>
-  ChatterMate.init({
-    id: 'YOUR_WIDGET_ID',
-    position: { bottom: 100, right: 24 }
-  });
-</script>
-```
+### Ways to present the widget
 
-You can also reposition the widget at any time after it has loaded — useful when your layout changes, such as a bottom bar appearing:
-
-```javascript
-ChatterMate.setPosition({ bottom: 100, right: 24 });
-```
+<CardGroup cols={2}>
+  <Card title="Floating bubble" icon="comment">
+    `displayMode: 'floating'` — the default, on the left or right, with a chat window above it.
+  </Card>
+  <Card title="Sidebar drawer" icon="table-columns">
+    `displayMode: 'sidebar-left'` or `'sidebar-right'` — a full-height panel sliding in from that edge.
+  </Card>
+  <Card title="Search bar" icon="magnifying-glass">
+    `displayMode: 'search-bar'` — the launcher becomes a search-style bar that opens a centered palette.
+  </Card>
+  <Card title="No launcher" icon="eye-slash">
+    `launcher: false` — nothing is drawn until you open the chat from your own button.
+  </Card>
+</CardGroup>
 
 <Note>
-`position` and `setPosition()` accept `bottom` and `right` in pixels. On mobile the chat window opens full-screen, so the offset controls where the closed launcher button sits — handy for keeping it clear of a bottom navigation bar.
+The **search bar** mode needs the **Ask Anything** or **Aurora** chat design, because those are the two designs that open as a command palette. The dashboard greys the option out for other designs.
 </Note>
 
-### Mobile Responsiveness
-The widget automatically adapts to different screen sizes:
+### Setting placement on the page
+
+Set `window.chattermateConfig` before the loader script. No JavaScript calls needed:
+
+```html
+<script>
+  window.chattermateId = 'YOUR_WIDGET_ID';
+  window.chattermateConfig = {
+    displayMode: 'sidebar-right',
+    sidebarWidth: 460
+  };
+</script>
+<script src="https://app.chattermate.chat/webclient/chattermate.min.js"></script>
+```
+
+`ChatterMate.init()` takes exactly the same options if you prefer to configure the widget after the script has loaded:
+
+```javascript
+ChatterMate.init({
+  id: 'YOUR_WIDGET_ID',
+  displayMode: 'floating',
+  position: { side: 'left', bottom: 90, offset: 24 },
+  width: 520,
+  height: 700
+});
+```
+
+### Options
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `id` | string | — | Your widget ID. Same value as `window.chattermateId`. |
+| `displayMode` | `'floating'` · `'sidebar-left'` · `'sidebar-right'` · `'search-bar'` | `'floating'` | How the widget is presented. |
+| `position.side` | `'left'` · `'right'` | `'right'` | Which edge the launcher and window hug. |
+| `position.bottom` | number (px) | `20` | Distance from the bottom edge. Raise it to clear a fixed bottom bar. |
+| `position.offset` | number (px) | `20` | Distance from the chosen side edge. |
+| `width` | number (px) | `400` | Chat window width in floating mode (280–800). |
+| `height` | number (px) | `560` | Chat window height in floating mode (400–900). |
+| `sidebarWidth` | number (px) | `420` | Drawer width in the sidebar modes (320–640). |
+| `searchBar.placeholder` | string | `'Ask anything...'` | Text shown in the search bar, up to 80 characters. |
+| `searchBar.width` | number (px) | `320` | Width of the search bar trigger. |
+| `launcher` | boolean | `true` | `false` hides the built-in launcher — see [Using your own button](#using-your-own-button). |
+| `trigger` | CSS selector | — | Elements that toggle the chat when clicked. |
+| `zIndex` | number | `999999` | Stacking base, if the widget collides with your own overlays. |
+| `hotkey` | boolean | `true` | `false` releases ⌘K / Ctrl+K, if your site already uses it. |
+| `baseUrl` | string | cloud API | Self-hosted only — your API URL. Usually set via `window.chattermateBaseUrl`. |
+
+<Note>
+The legacy form `position: { bottom, right }` still works — `right` is treated as `offset` — so existing installations need no changes.
+</Note>
+
+You can also reposition the widget after it has loaded, which is useful when your layout changes:
+
+```javascript
+ChatterMate.setPosition({ side: 'left', bottom: 100, offset: 24 });
+```
+
+### Mobile
+
+On small screens the chat always opens full-screen, whichever display mode you choose. Your offsets still control where the closed launcher sits, so it can be kept clear of a bottom navigation bar.
 
 <CodeGroup>
 ```css Desktop
 width: 400px;
-height: 600px;
+height: 560px;
 border-radius: 24px;
 ```
 
@@ -97,6 +148,95 @@ height: 100vh;
 border-radius: 0;
 ```
 </CodeGroup>
+
+## Using your own button
+
+Hide the built-in launcher and open the chat from an element of your own. There are three ways, and none of them requires you to write an event handler.
+
+<Tabs>
+  <Tab title="data-chattermate-open">
+    Add the attribute to any element. It works for elements added to the page later, too.
+
+    ```html
+    <button data-chattermate-open>Chat with us</button>
+    ```
+  </Tab>
+
+  <Tab title="A CSS selector">
+    Point `trigger` at your own selector — handy when you cannot change the markup.
+
+    ```html
+    <script>
+      window.chattermateId = 'YOUR_WIDGET_ID';
+      window.chattermateConfig = {
+        launcher: false,
+        trigger: '.js-support-link'
+      };
+    </script>
+    <script src="https://app.chattermate.chat/webclient/chattermate.min.js"></script>
+    ```
+  </Tab>
+
+  <Tab title="The JS API">
+    Call the API from your own code.
+
+    ```javascript
+    document.querySelector('#help').addEventListener('click', () => {
+      ChatterMate.open();
+    });
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+With the launcher hidden there is nowhere to show the unread badge or the greeting nudge. Listen for the [`unread` event](#events) if you want to show a count on your own button.
+</Warning>
+
+## JavaScript API
+
+`window.ChatterMate` is available as soon as the loader script runs. Calls that arrive before the widget has finished loading are queued and applied once it is ready, so you do not have to wait.
+
+| Method | Description |
+| --- | --- |
+| `ChatterMate.init(options)` | Configure the widget. Same options as `window.chattermateConfig`. |
+| `ChatterMate.open(options?)` | Open the chat. Pass `{ message }` to prefill the input. |
+| `ChatterMate.close()` | Close the chat. |
+| `ChatterMate.toggle()` | Open if closed, close if open. |
+| `ChatterMate.isOpen()` | `true` while the chat is open. |
+| `ChatterMate.showLauncher()` | Show the built-in launcher. |
+| `ChatterMate.hideLauncher()` | Hide the built-in launcher. |
+| `ChatterMate.setPosition(position)` | Move the widget: `{ side, bottom, offset }`. |
+| `ChatterMate.on(event, handler)` | Subscribe to an event. |
+| `ChatterMate.off(event, handler)` | Unsubscribe. |
+
+### Prefilling a message
+
+`open({ message })` puts text in the input without sending it, so the visitor can edit it or just press enter. Good for "Ask about pricing" links next to a plan:
+
+```javascript
+ChatterMate.open({ message: 'Tell me about the Pro plan' });
+```
+
+### Events
+
+| Event | Fires when | Payload |
+| --- | --- | --- |
+| `ready` | The widget has loaded and the API is live | — |
+| `open` | The chat opens | — |
+| `close` | The chat closes | — |
+| `unread` | The unread agent-message count changes | `count` (number) |
+
+```javascript
+ChatterMate.on('ready', () => console.log('widget ready'));
+ChatterMate.on('open', () => analytics.track('chat_opened'));
+ChatterMate.on('unread', (count) => {
+  document.querySelector('#chat-badge').textContent = count || '';
+});
+```
+
+<Note>
+`ready` fires only once. If you subscribe after it has already happened — for example from consent-gated or lazily loaded code — your handler is called immediately rather than never.
+</Note>
 
 ## Event Handling
 
@@ -169,7 +309,7 @@ We provide a sample test project at `github.com/chattermate/chattermate.chat/tre
 1. Clone and setup:
 ```bash
 git clone https://github.com/chattermate/chattermate.chat
-cd chattermate-test
+cd chattermate.chat/chattermate-test
 npm install
 ```
 
@@ -185,6 +325,15 @@ The test project demonstrates:
 - Token management
 - Style customization
 - Mobile responsiveness
+
+### Placement gallery
+
+`http://localhost:3000/ui-options.html` is a gallery of every placement option — one card per scenario, each opening a page with the widget configured that way and buttons wired to the JS API.
+
+Each card runs in one of two modes, chosen at the top of the gallery:
+
+- **Stub** fakes the widget entirely, so you can check placement, the JS API and the events with no backend running.
+- **Real** loads your actual widget — fill in your widget ID and API URL first.
 
 ## Best Practices
 
@@ -221,6 +370,16 @@ The test project demonstrates:
     - Verify mobile breakpoints
     - Test iframe dimensions
     - Validate color codes
+  </Accordion>
+
+  <Accordion title="Nothing appears on the page">
+    - Check whether **Hide launcher** is on in the *Widget placement* section — with no launcher, the chat only opens from your own button or `ChatterMate.open()`
+    - If your site has a high-stacking header or modal, raise `zIndex`
+    - Confirm the loader script actually loaded and `window.ChatterMate` is defined
+  </Accordion>
+
+  <Accordion title="The search bar mode is greyed out">
+    - It needs the **Ask Anything** or **Aurora** chat design, set under *Customization → Chat design*
   </Accordion>
   
   <Accordion title="Connection Issues">

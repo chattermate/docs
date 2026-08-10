@@ -59,28 +59,37 @@ Your AI agent can operate in two different modes:
     </Frame>
     ## Visual Customization
 
-    ### Chat Style
-    Choose from different chat interface styles:
+    ### Chat Design
+    Choose the look of the chat interface:
 
-    #### Chatbot Style 💬
-    - Traditional customer support interface
-    - Features agent branding and formal layout
-    - Best for business customer support scenarios
-    - Standard email collection and greeting flow
+    | Design | Description |
+    | --- | --- |
+    | **Legacy** | The original look — light, neutral, classic chatbot. |
+    | **Ask Anything** | Modern AI assistant style for general queries. |
+    | **Aurora** | Dark, with a glowing aurora orb avatar. |
+    | **Glass** | Frosted dark glass with soft glow and rounded bubbles. |
+    | **Terminal** | Monospace developer style, square corners. |
+    | **Playful** | Light, friendly and very rounded with warm accents. |
+    | **Calm Mint** | Clean dark-teal with subtle borders. |
+    | **Sunrise** | Bright, warm and airy — a light theme with a soft coral accent. |
 
-    #### Ask Anything Style 🤖
-    - Modern AI assistant interface
-    - Larger, more prominent design with welcome message
-    - Perfect for general-purpose AI assistants
-    - Features customizable welcome title and subtitle
-    - Clean, conversation-focused layout
+    #### The Ask AI panel
+
+    **Ask Anything** and **Aurora** do not open as a chat window in the corner. They open as a centered command palette over a dimmed page — press ⌘K (Ctrl+K on Windows and Linux), Esc or a click outside to dismiss it.
+
+    - One input at the top, with suggested questions while it is empty
+    - Answers written as prose, with their sources listed underneath
+    - The answer types out as it arrives, and the panel grows to fit it
+    - Customizable welcome title and subtitle
+
+    These are also the only two designs that can use the **search bar** placement, which replaces the launcher bubble with an "Ask anything" bar. See [Widget Integration](/features/widget#placement).
 
     <Note>
-    The "Ask Anything" style provides additional customization options for welcome messages and uses a wider chat interface optimized for AI conversations.
+    Every other design opens as a normal chat window and works in any placement.
     </Note>
 
-    ### Welcome Message (Ask Anything Style)
-    When using the "Ask Anything" chat style, you can customize:
+    ### Welcome Message (Ask Anything and Aurora)
+    When using the Ask Anything or Aurora design, you can customize:
 
     #### Welcome Title
     - Personalized greeting for your AI assistant
@@ -110,9 +119,30 @@ Your AI agent can operate in two different modes:
 
     ### Typography
     #### Font Family
-    - Choose from system fonts: Inter, system-ui, sans-serif
+    - Choose from Inter, Instrument Sans, Space Grotesk, JetBrains Mono or your system font
     - Ensure readability and brand alignment
     - Consistent typography across all chat elements
+
+    ### Chat Behaviour
+
+    | Setting | Default | What it does |
+    | --- | --- | --- |
+    | **Show citations** | On | Lists the knowledge sources an answer came from. |
+    | **Collect email before chat** | Off | Requires visitors to enter their email before they can start chatting. |
+    | **Show AI disclaimer** | On | Adds "AI can make mistakes" to the widget footer. Hidden automatically once a human agent takes over. |
+    | **Let visitors start a new chat** | Off | Adds a **New chat** control that ends the conversation and starts a fresh one. |
+
+    #### Let visitors start a new chat
+
+    A conversation normally continues where the visitor left off, which is what most people want — they come back and their history is still there. Turn this on when they might arrive with an unrelated question and would rather start clean.
+
+    The control asks for confirmation before discarding the conversation, and is hidden while a human agent is handling the chat so a visitor cannot accidentally end a live conversation with your team.
+
+    ### Widget Placement
+
+    The **Widget placement** section sets where the widget sits on your site — a floating bubble, a full-height drawer or a search bar — and whether it uses the built-in launcher at all. Anything set in your embed snippet overrides these defaults for that page.
+
+    See [Widget Integration](/features/widget#placement) for the full list of options and the JavaScript API.
 
     <Note>
     All customizations are instantly reflected in the chat preview on the right side of the interface.

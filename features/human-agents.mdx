@@ -19,8 +19,26 @@ Configure and manage human agents to provide seamless customer support alongside
    - Full Name
    - Email Address
    - Role Selection
+   - Chat access
    - Active Status
    - Password (for new users)
+
+### Chat Access
+
+Two checkboxes next to the role dropdown decide which conversations the person can work on, so you do not have to visit the Roles screen first:
+
+- **All AI chats** — ticked by default. They can pick up any conversation the AI is handling, not only the ones assigned to them.
+- **All chats in the organization** — off by default. Useful for covering a colleague on leave.
+
+Permissions still live on roles rather than on people. If a role with exactly the right permissions already exists, it is reused; a new one is created only when none matches. The role your other teammates are on is never widened, and the boxes always reflect what the selected role already grants.
+
+<Note>
+You cannot grant a permission you do not hold yourself. The checkboxes are hidden for a role where they would grant nothing, such as `super_admin`.
+</Note>
+
+### Resetting a Password
+
+An admin can reset a teammate's password from the Human Agents list without the person going through the forgotten-password flow. The same strength rules below apply.
 
 ### Password Security
 - Minimum 8 characters required

@@ -56,6 +56,22 @@ Create specialized roles with:
   </Accordion>
 </AccordionGroup>
 
+## How Permissions Are Enforced
+
+Every permission is checked in two places, and both have to agree:
+
+- **The interface** hides pages, menu items and actions a role cannot use. A denied navigation lands on a "no access" page rather than somewhere unexpected.
+- **The API** rejects the request regardless of what the interface showed, so nothing is protected by hiding a button alone.
+
+Two rules apply to managing roles themselves:
+
+- You cannot grant a permission you do not hold yourself.
+- Only roles with the relevant management permission can read or edit roles at all.
+
+<Note>
+A role marked as the organization's default cannot be edited or deleted, so a workspace can never be left without one to assign new users.
+</Note>
+
 ## Role Features
 
 ### Role Creation
