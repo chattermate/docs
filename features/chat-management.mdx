@@ -42,9 +42,12 @@ Monitor and manage customer conversations with advanced filtering, seamless huma
 
 ## Chat Actions & Control
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
   <Card title="Take Over" icon="user-switch">
     Human agents can instantly take control of AI-handled conversations
+  </Card>
+  <Card title="Hand to My Team" icon="users">
+    Stop the AI on a chat and queue it for whoever is free
   </Card>
   <Card title="Reassign" icon="user-arrows">
     Transfer chats between human agents with notifications
@@ -54,11 +57,39 @@ Monitor and manage customer conversations with advanced filtering, seamless huma
   </Card>
 </CardGroup>
 
+### Who is handling a chat
+Every conversation in the list is labelled, so you can tell at a glance who is on it:
+
+| Label | Meaning |
+| --- | --- |
+| **AI** | The AI agent is answering |
+| **Waiting for human** | Queued for your team — nobody has picked it up yet |
+| **You** | You took it over |
+| *Teammate's name* | A colleague is handling it |
+
+A chat reads **Waiting for human** when the AI has handed it over, when someone used
+Hand to My Team, or when the agent is in [human mode](/features/ai-customization#let-ai-answer).
+
 ### Human Takeover
 - **Smart Permissions**: Only available for open chats handled by AI
 - **Instant Transfer**: Seamless transition from AI to human agent
 - **Real-time Updates**: UI refreshes automatically after takeover
 - **Status Sync**: Chat assignment updated across all interfaces
+
+### Hand to My Team
+Takes the AI out of a conversation without making it yours. Use it when the AI is
+heading the wrong way but you are not the right person to answer.
+
+- Available from the chat itself and from the chat information panel
+- Only shown while the AI is still handling the chat
+- The chat is queued for the team, not assigned to you — anyone can take it over
+- The customer is told someone will be with them shortly
+- Requires the same permission as taking a chat over
+
+<Note>
+Taking a chat over assigns it to you. Hand to My Team leaves it unassigned, so use it
+when the conversation needs a person but not specifically you.
+</Note>
 
 ### Chat Reassignment
 - **User Selection**: Easy dropdown with agent names and emails
