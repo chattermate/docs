@@ -18,6 +18,9 @@ Your AI agent can operate in two different modes:
 - **AI Mode**: Traditional AI-powered conversations with customizable instructions
 - **Workflow**: Advanced workflow-based responses with conditional logic and automation
 
+Either can also be switched off entirely with **Let AI Answer**, which hands every
+conversation to your team instead. See [Let AI Answer](#let-ai-answer) below.
+
 <Tabs>
   <Tab title="Agent">
     <Frame>
@@ -32,8 +35,32 @@ Your AI agent can operate in two different modes:
     - Establish response patterns and tone
     - Use the "Generate with AI" feature for intelligent instruction creation
 
+    ### Let AI Answer
+    On by default. Turn it off to put the agent in **human mode**: it never answers
+    with AI, and every conversation goes straight to your inbox for a person to reply
+    to, from the customer's first message.
+
+    Use it when you want ChatterMate as a shared inbox for your team, or while you're
+    still writing an agent's instructions and don't want it talking to customers yet.
+
+    In human mode:
+    - The model is never called, so the conversation costs you nothing in AI usage
+    - The customer gets a short acknowledgement, then waits for your team
+    - Your team gets the usual new-chat notification
+    - The conversation shows as **Waiting for human** in the inbox until someone takes it
+    - The widget header follows your [business hours](/features/organization) instead of
+      promising an instant reply, and the AI disclaimer is hidden
+
+    <Note>
+    Human mode is not a transfer — there was no AI in the conversation to hand it on.
+    Customers see no "connecting you to a teammate" message and no handoff form.
+    </Note>
+
+    Pick the groups that should handle these chats under **Transfer Groups**, which stays
+    available in human mode.
+
     ### Transfer to Human
-    Enable automatic transfer to human agents when:
+    Only applies while the AI is answering. Enable automatic transfer to human agents when:
     - AI agent can't handle the query
     - Customer specifically requests human support
     - Complex issues require human intervention

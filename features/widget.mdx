@@ -281,11 +281,20 @@ window.postMessage({
 
 ### Chat Interface
 - Real-time message updates
-- Typing indicators
+- Typing indicators, shown only while a reply is actually being written
 - Message status tracking
 - File attachment support
 - Markdown formatting support
 - Emoji support
+
+### Availability
+The line under the agent's name reflects who is answering.
+
+- While the AI is answering it reads **Online · replies instantly**, which holds at any hour
+- When a person has to answer — an agent in [human mode](/features/ai-customization#let-ai-answer),
+  or a chat a teammate has taken over — it follows your organization's
+  [business hours](/features/organization): *usually replies in a few minutes* while you are
+  open, *we'll reply when we're back* outside them
 
 ### Styling
 The widget uses CSS variables for consistent theming:
