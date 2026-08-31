@@ -198,6 +198,11 @@ Set `window.chattermateToken` **before** the loader script runs:
 
 The widget reads `window.chattermateToken`, sends it as a `Bearer` token, and ChatterMate resolves it back to the stored customer for the whole conversation.
 
+`window.chattermateToken` is only read when the widget loads. If your app signs people in
+and out without reloading the page, call `ChatterMate.identify(token)` after login and
+`ChatterMate.logout()` after logout instead — see
+[login and logout in a single-page app](/features/widget#login-and-logout-in-a-single-page-app).
+
 ### What's inside the token
 
 You don't build this yourself — ChatterMate signs it — but for reference the issued token carries:
