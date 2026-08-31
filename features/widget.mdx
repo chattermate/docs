@@ -206,6 +206,10 @@ With the launcher hidden there is nowhere to show the unread badge or the greeti
 | `ChatterMate.showLauncher()` | Show the built-in launcher. |
 | `ChatterMate.hideLauncher()` | Hide the built-in launcher. |
 | `ChatterMate.setPosition(position)` | Move the widget: `{ side, bottom, offset }`. |
+| `ChatterMate.identify(token)` | Switch to the visitor the token identifies (SPA login). |
+| `ChatterMate.logout()` | Drop the current identity and conversation, back to anonymous. |
+| `ChatterMate.destroy()` | Remove the widget from the page entirely. |
+| `ChatterMate.reload()` | Rebuild the widget, and bring back a destroyed one. |
 | `ChatterMate.on(event, handler)` | Subscribe to an event. |
 | `ChatterMate.off(event, handler)` | Unsubscribe. |
 
@@ -216,6 +220,43 @@ With the launcher hidden there is nowhere to show the unread badge or the greeti
 ```javascript
 ChatterMate.open({ message: 'Tell me about the Pro plan' });
 ```
+
+### Login and logout in a single-page app
+
+The widget's identity is fixed when it loads — the token it starts with decides whose
+conversation it shows. An app that signs a visitor in or out without reloading the page
+has to say so, or the widget keeps the identity it had when the script first ran:
+anonymous after a login, the previous user after a logout.
+
+```javascript
+// After login — token from your backend's /generate-token call
+ChatterMate.identify(token);
+
+// After logout — back to a fresh anonymous visitor
+ChatterMate.logout();
+```
+
+Both rebuild the widget in place: the chat closes, the previous conversation goes with
+it, and the widget reloads as the new visitor. `identify()` with the token the widget is
+already running on does nothing, so it is safe to call on every route change.
+
+Two more lifecycle methods:
+
+```javascript
+ChatterMate.destroy();   // take the widget off the page completely
+ChatterMate.reload();    // rebuild it — also brings back a destroyed widget
+```
+
+`destroy()` removes the launcher, the chat frame, the injected styles, and every listener
+and timer the loader added, so nothing of ours is left on the page. It does not clear the
+stored identity — a later `reload()` comes back as the same visitor, so use `logout()` if
+that is what you want.
+
+<Note>
+With [token authentication](/features/authentication) required, `logout()` leaves the
+widget without a token and it cannot load. Pair it with `hideLauncher()`, or call
+`destroy()` instead.
+</Note>
 
 ### Events
 
@@ -376,6 +417,11 @@ Each card runs in one of two modes, chosen at the top of the gallery:
     - Check whether **Hide launcher** is on in the *Widget placement* section — with no launcher, the chat only opens from your own button or `ChatterMate.open()`
     - If your site has a high-stacking header or modal, raise `zIndex`
     - Confirm the loader script actually loaded and `window.ChatterMate` is defined
+  </Accordion>
+
+  <Accordion title="The widget still shows the previous user after login or logout">
+    - In a single-page app the widget keeps the identity it loaded with — call `ChatterMate.identify(token)` after login and `ChatterMate.logout()` after logout (see [login and logout in a single-page app](#login-and-logout-in-a-single-page-app))
+    - `identify()` ignores an empty token, so check yours is a real string and not `undefined` stringified by your auth store
   </Accordion>
 
   <Accordion title="The search bar mode is greyed out">
