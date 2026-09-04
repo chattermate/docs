@@ -203,6 +203,18 @@ and out without reloading the page, call `ChatterMate.identify(token)` after log
 `ChatterMate.logout()` after logout instead — see
 [login and logout in a single-page app](/features/widget#login-and-logout-in-a-single-page-app).
 
+### Tokens renew themselves
+
+You do not have to keep the token alive. The widget renews it before it expires, keeping
+the same customer and the same TTL, so a page left open longer than `ttl_seconds` still
+has a signed-in visitor — and a chat they start hours later is still them in your inbox.
+
+Renewal stops when you revoke the token, and cannot continue past 30 days from the
+original `/generate-token` call. If the widget is left with no live token to renew — a
+tab asleep past the expiry, or a revoked token — it asks your page for a new one through
+[`tokenProvider`](/features/widget#staying-signed-in-on-a-long-lived-page), and falls
+back to an anonymous visitor if you have not configured one.
+
 ### What's inside the token
 
 You don't build this yourself — ChatterMate signs it — but for reference the issued token carries:
@@ -243,7 +255,7 @@ Never expose your **Widget App API key** in client-side code. Call `/generate-to
 1. **Token Expiration**
    - Keep `ttl_seconds` short (default 1 hour); the range is 60s–24h
    - Request a fresh token per page load or session rather than reusing long-lived ones
-   - Handle expired-token errors by re-requesting a token
+   - Configure [`tokenProvider`](/features/widget#staying-signed-in-on-a-long-lived-page) so the widget can replace an identity it can no longer renew
 
 2. **Secure Generation**
    - Call `/generate-token` server-side only, with the API key in an environment variable
@@ -273,6 +285,12 @@ Never expose your **Widget App API key** in client-side code. Call `/generate-to
   <Accordion title="Customer / email not showing in the inbox">
     - You must pass `customer_email` (and ideally `customer_name`) to `/generate-token` — a self-signed JWT or a token without an email won't create a named customer
     - Reuse the same email for the same user so the existing customer is matched instead of a new one being created
+  </Accordion>
+
+  <Accordion title="A signed-in visitor shows up as anonymous">
+    - The widget's token ran out and nothing could replace it. Listen for [`identityExpired`](/features/widget#events) to confirm, and configure [`tokenProvider`](/features/widget#staying-signed-in-on-a-long-lived-page) so it can ask your page for a new one
+    - Check the token you handed the widget came from `/generate-token` with a `customer_email` — a token without one is an anonymous visitor by definition
+    - `ChatterMate.on('chatCreated', …)` reports `authenticated: false` for each conversation that starts without a live identity, which is the quickest way to catch this in the browser
   </Accordion>
 </AccordionGroup>
 

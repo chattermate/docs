@@ -120,6 +120,7 @@ ChatterMate.init({
 | `zIndex` | number | `999999` | Stacking base, if the widget collides with your own overlays. |
 | `hotkey` | boolean | `true` | `false` releases ⌘K / Ctrl+K, if your site already uses it. |
 | `baseUrl` | string | cloud API | Self-hosted only — your API URL. Usually set via `window.chattermateBaseUrl`. |
+| `tokenProvider` | async function | — | Returns a fresh `/generate-token` token when the widget can no longer renew the visitor's identity — see [Staying signed in](#staying-signed-in-on-a-long-lived-page). |
 
 <Note>
 The legacy form `position: { bottom, right }` still works — `right` is treated as `offset` — so existing installations need no changes.
@@ -236,9 +237,14 @@ ChatterMate.identify(token);
 ChatterMate.logout();
 ```
 
-Both rebuild the widget in place: the chat closes, the previous conversation goes with
-it, and the widget reloads as the new visitor. `identify()` with the token the widget is
-already running on does nothing, so it is safe to call on every route change.
+A change of visitor rebuilds the widget in place: the chat closes, the previous
+conversation is closed on the server too, and the widget reloads as the new person.
+`identify()` with the token the widget is already running on does nothing, so it is safe
+to call on every route change.
+
+Handing `identify()` a **fresher token for the same visitor** is not a change of
+identity: the widget takes the new token and keeps the conversation open, so
+re-authenticating never costs someone the chat they are in the middle of.
 
 Two more lifecycle methods:
 
@@ -258,6 +264,39 @@ widget without a token and it cannot load. Pair it with `hideLauncher()`, or cal
 `destroy()` instead.
 </Note>
 
+### Staying signed in on a long-lived page
+
+A token from `/generate-token` lasts as long as you asked for — an hour by default. The
+widget renews it on its own well before it lapses, so a tab left open all day keeps the
+visitor signed in, and a new chat they start hours later still arrives in your inbox as
+that person, with their `custom_data`.
+
+Renewal keeps the same customer and the same lifetime, and stops if you revoke the
+token. It cannot run forever: after 30 days your app has to identify the visitor again.
+
+That only leaves the case where the widget has no live token to renew — the tab was
+asleep past the expiry, or the token was revoked. The widget cannot mint one itself
+(that needs your API key), so give it a way to ask:
+
+```javascript
+window.chattermateConfig = {
+  tokenProvider: async () => {
+    const res = await fetch('/api/chattermate-token');   // your endpoint
+    return (await res.json()).token;                     // from /generate-token
+  }
+};
+```
+
+`tokenProvider` is called only when the widget needs a token you alone can issue. The
+replacement is handed to the running widget, so the visitor keeps the conversation they
+were in. Without one, the widget falls back to an anonymous visitor and fires
+[`identityExpired`](#events) so you can react yourself.
+
+<Note>
+Return a token for the **same** person. `tokenProvider` replaces an identity that ran
+out; it is not a way to switch visitors — use `identify()` for that.
+</Note>
+
 ### Events
 
 | Event | Fires when | Payload |
@@ -266,6 +305,8 @@ widget without a token and it cannot load. Pair it with `hideLauncher()`, or cal
 | `open` | The chat opens | — |
 | `close` | The chat closes | — |
 | `unread` | The unread agent-message count changes | `count` (number) |
+| `chatCreated` | A new conversation starts — the visitor used **New chat**, or this is their first of the visit | `{ sessionId, authenticated }` |
+| `identityExpired` | The token the widget was identified with has run out and cannot be renewed | — |
 
 ```javascript
 ChatterMate.on('ready', () => console.log('widget ready'));
@@ -273,7 +314,15 @@ ChatterMate.on('open', () => analytics.track('chat_opened'));
 ChatterMate.on('unread', (count) => {
   document.querySelector('#chat-badge').textContent = count || '';
 });
+
+ChatterMate.on('chatCreated', ({ sessionId, authenticated }) => {
+  if (!authenticated) console.warn('new chat started as an anonymous visitor');
+});
 ```
+
+`authenticated` is `false` when the conversation belongs to an anonymous visitor rather
+than the person you identified — a signal that the widget is running without a live
+token from `/generate-token`.
 
 <Note>
 `ready` fires only once. If you subscribe after it has already happened — for example from consent-gated or lazily loaded code — your handler is called immediately rather than never.
@@ -431,6 +480,7 @@ Each card runs in one of two modes, chosen at the top of the gallery:
   <Accordion title="The widget still shows the previous user after login or logout">
     - In a single-page app the widget keeps the identity it loaded with — call `ChatterMate.identify(token)` after login and `ChatterMate.logout()` after logout (see [login and logout in a single-page app](#login-and-logout-in-a-single-page-app))
     - `identify()` ignores an empty token, so check yours is a real string and not `undefined` stringified by your auth store
+    - Handing `identify()` a fresher token for the same person keeps their conversation rather than rebuilding — use `reload()` if you actually want a rebuild
   </Accordion>
 
   <Accordion title="The search bar mode is greyed out">
