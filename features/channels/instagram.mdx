@@ -1,22 +1,67 @@
 ---
 title: 'Instagram'
-description: 'Connect Instagram DMs to ChatterMate through the Meta Graph API so your AI agent answers direct messages on a professional Instagram account, with human handover.'
+description: 'Connect Instagram DMs to ChatterMate as an official Meta integration — sign in with Instagram to connect a professional account in a few clicks, or use your own Meta app when self-hosting.'
 ---
 
 # Instagram
 
-<Info>
-**Coming soon in the hosted app.** The Instagram card in **Settings → Integrations** shows **Soon** while ChatterMate finishes Meta app review for the Cloud offering. Self-hosters can connect now with their own Meta app and linked Page token.
-</Info>
+ChatterMate is an **official Meta integration** for Instagram. Connect a **professional Instagram account** and your AI agent answers the direct messages people send it, in the same **Conversations** inbox as every other channel, with human handover.
 
-Connect a **professional Instagram account** and your AI agent answers Instagram direct messages. Instagram DMs run on the same Meta app and webhook as Messenger, so setup is nearly identical — the account just has to be a Business or Creator account linked to a Facebook Page.
+There are two ways to connect:
+
+<CardGroup cols={2}>
+  <Card title="Sign in with Instagram" icon="instagram">
+    ChatterMate Cloud. Instagram Business Login connects your account — no Meta app, no tokens, and no Facebook Page needed.
+  </Card>
+  <Card title="Enter credentials manually" icon="key">
+    Self-hosted, or anyone using their own Meta app. Paste an Instagram account ID and the linked Page's access token.
+  </Card>
+</CardGroup>
+
+<Info>
+**On ChatterMate Cloud, connecting is a few clicks.** Instagram Business Login connects
+your account under ChatterMate's reviewed app, so there is **no Meta app to create, no
+access token to generate, and no webhook to configure** — sign in with Instagram,
+assign an agent, and you're live. It's open to every Cloud account. The manual path
+below is for self-hosters and anyone who prefers their own Meta app.
+</Info>
 
 ## Prerequisites
 
 - An Instagram **Business** or **Creator** account (not personal).
-- The Instagram account **linked to a Facebook Page** (Instagram → Settings → linked accounts, or from the Page's settings).
+- **Only for the manual path:** the account must also be **linked to a Facebook Page** (Instagram → Settings → linked accounts, or from the Page's settings), because the manual path authenticates with that Page's token.
 
-## Step 1 — Set up a Meta app
+<Note>
+Signing in with Instagram needs **no Facebook Page at all**. It's Instagram Business Login — a different sign-in from the Facebook one WhatsApp and Messenger use — so the business signs in with Instagram itself and the resulting token belongs to the Instagram account.
+</Note>
+
+## Connect by signing in with Instagram
+
+<Steps>
+  <Step title="Open the Instagram card">
+    Go to **Settings → Integrations** and click **Connect** on the **Instagram** card, then **Continue with Instagram**.
+  </Step>
+  <Step title="Sign in and grant access">
+    Instagram's sign-in opens in a popup. Sign in as the professional account you want ChatterMate to answer for, and approve access to read the account and manage its messages.
+  </Step>
+  <Step title="Assign an AI agent">
+    Instagram Login grants exactly one account, so there's nothing to pick — choose the agent that answers these DMs and click **Assign agent**.
+  </Step>
+</Steps>
+
+<Note>
+ChatterMate subscribes the account to the Instagram messaging webhooks for you, so there is nothing to configure in the Meta dashboard. The connection shows up as your `@username`.
+</Note>
+
+<Tip>
+Instagram access tokens expire eventually, unlike a System User token. If DMs stop reaching the inbox after a long stretch, reconnect from the Instagram card — signing in again refreshes the credentials in place.
+</Tip>
+
+## Connect with your own Meta app
+
+Use this if you self-host, or would rather keep the integration under your own Meta app. This path uses the Facebook Graph API and the linked Page's token, so the Instagram account **must** be linked to a Facebook Page.
+
+### Step 1 — Set up a Meta app
 
 If you already created a Meta app for WhatsApp or Messenger, skip to step 2.
 
@@ -35,14 +80,14 @@ If you already created a Meta app for WhatsApp or Messenger, skip to step 2.
   </Step>
 </Steps>
 
-## Step 2 — Copy your credentials
+### Step 2 — Copy your credentials
 
 | Credential | Where to find it |
 |---|---|
 | **Instagram account ID** | The IG account's numeric ID (e.g. `17841400000000000`), from the Graph API or the linked-account settings. |
 | **Linked Page access token** | The access token for the Facebook Page the Instagram account is linked to (System User token for a permanent one). |
 
-## Step 3 — App Review (to message real customers)
+### Step 3 — App Review (to message real customers)
 
 Submit **App Review** for:
 
@@ -52,11 +97,11 @@ Submit **App Review** for:
 
 Include a narrated **screencast** showing a customer DMing your Instagram account and ChatterMate replying.
 
-## Step 4 — Connect in ChatterMate
+### Step 4 — Connect in ChatterMate
 
 <Steps>
   <Step title="Open the Instagram card">
-    Go to **Settings → Integrations** and click **Connect** on the **Instagram** card (self-hosted / once available).
+    Go to **Settings → Integrations** and click **Connect** on the **Instagram** card, then **Enter credentials manually instead**.
   </Step>
   <Step title="Enter your credentials">
     Paste the **Instagram account ID** and the **linked Page access token**. ChatterMate encrypts them and verifies inbound webhook signatures.
@@ -72,4 +117,6 @@ If the account isn't a professional account linked to a Page, connecting fails �
 
 ## Test it
 
-DM your Instagram account. The AI agent replies, and the conversation appears in **Conversations** with an **Instagram** badge and human handover.
+DM your Instagram account. If you signed in with Instagram on ChatterMate Cloud, DM it from any account — app review is already done. If you connected with **your own** Meta app, only accounts with a role on that app can reach it until your own app review completes.
+
+The AI agent replies, and the conversation appears in **Conversations** with an **Instagram** badge and human handover.
