@@ -1,6 +1,6 @@
 ---
 title: 'Configure AI Provider'
-description: 'Configure your AI provider in ChatterMate — OpenAI, Anthropic (Claude), Google Gemini, Mistral, xAI Grok, DeepSeek, or Groq — with your own API key to power 24/7 support.'
+description: 'Configure your AI provider in ChatterMate — OpenAI, Anthropic (Claude), Google Gemini, Mistral, xAI Grok, DeepSeek, Groq, or any OpenAI-compatible endpoint (self-hosted, Ollama, vLLM, OpenRouter) — with your own API key.'
 ---
 
 # AI Provider Configuration
@@ -37,18 +37,29 @@ ChatterMate supports multiple AI providers, giving you the flexibility to choose
   <Card title="Groq" icon="bolt-lightning">
     Ultra-fast inference (GPT-OSS, Llama)
   </Card>
+  <Card title="OpenAI-compatible" icon="server" href="/deployment/self-hosted-models">
+    Self-hosted or gateway endpoints — Ollama, vLLM, llama.cpp, OpenRouter, LiteLLM
+  </Card>
 </CardGroup>
 
-Every provider is **bring-your-own-key** — you supply your own API key, encrypted at rest. When you pick a provider, a **"Get your API key"** link points to that provider's console.
+Every provider is **bring-your-own-key** — you supply your own API key, encrypted at rest. When you pick a provider, a **"Get your API key"** link points to that provider's console. The exception is **OpenAI-compatible**, which has no hosted console: you point ChatterMate at an endpoint you control or subscribe to, so the key comes from that endpoint.
+
+<Note>
+  **Want to keep inference on your own hardware?** Pick **OpenAI-compatible** and give
+  ChatterMate the base URL of your own server. See
+  [Self-hosted and gateway models](/deployment/self-hosted-models) for worked
+  Ollama, vLLM, llama.cpp, OpenRouter, and LiteLLM setups.
+</Note>
 
 ## Configuration Fields
 
 ### AI Provider
-Select your provider from the grid. All listed providers support tool calling and structured output, so any of them works with ChatterMate's agents, knowledge search, and workflows:
+Select your provider from the grid. The seven hosted providers all support tool calling and structured output, so any of them works with ChatterMate's agents, knowledge search, and workflows:
 - **OpenAI** (Recommended): Best-in-class models with consistent performance
 - **Anthropic (Claude)**: Strong reasoning and analysis
 - **Google Gemini**: Large context windows, great price/performance
-- **Mistral / xAI (Grok) / DeepSeek / Groq**: Cost, speed, and self-hosting-friendly options
+- **Mistral / xAI (Grok) / DeepSeek / Groq**: Cost and speed options
+- **OpenAI-compatible**: Any endpoint that speaks the OpenAI chat-completions API — your own server (Ollama, vLLM, llama.cpp) or a gateway (OpenRouter, LiteLLM). This is the option to pick when the model should run on your own hardware.
 
 <Warning>
   Features that depend on structured output — automatic **lead capture**, **ending
@@ -57,10 +68,46 @@ Select your provider from the grid. All listed providers support tool calling an
   handle these well most of the time but can occasionally miss a step. If you find
   a model isn't capturing leads or closing chats reliably, switch to a stronger
   model like GPT-4.1 or Claude.
+
+  This applies with much more force to **OpenAI-compatible** endpoints, because the
+  model behind them is whatever you chose to run. Many small local models have weak
+  tool calling or none at all, and a server that doesn't implement `tools` or
+  `response_format` will make knowledge search, lead capture, chat-ending, and
+  handoff fail rather than degrade quietly. Pick a model whose card explicitly
+  claims tool-calling support, and test those flows before you go live.
 </Warning>
 
+### Base URL
+**Only shown for the OpenAI-compatible provider** — the other seven have no base URL field, because ChatterMate already knows where to reach them.
+
+Enter the root of your endpoint's OpenAI-compatible API, including the version segment. ChatterMate appends the rest of the path itself:
+
+```bash
+http://host.docker.internal:11434/v1   # Ollama on the Docker host
+http://vllm:8000/v1                    # vLLM on the same Docker network
+https://openrouter.ai/api/v1           # OpenRouter
+https://litellm.internal.example.com/v1  # LiteLLM proxy
+```
+
+<Note>
+  Trailing slashes and a trailing `/chat/completions` are trimmed for you, so pasting
+  the full completions URL works too. The URL must be reachable **from the ChatterMate
+  backend**, not from your browser — see
+  [Self-hosted and gateway models](/deployment/self-hosted-models) for the Docker
+  networking details.
+</Note>
+
 ### Model Name
-Pick a suggested model from the dropdown, or choose **"Custom model ID"** to type any model your provider supports (handy when a provider ships a new model before this list updates). Suggested models:
+Pick a suggested model from the dropdown, or choose **"Custom model ID"** to type any model your provider supports (handy when a provider ships a new model before this list updates).
+
+<Note>
+  **OpenAI-compatible has no suggested models.** The model list belongs to your
+  endpoint, not to ChatterMate, so the dropdown offers only **"Custom model ID…"** —
+  select it and type the exact model ID your server reports. `ollama list`, or
+  `curl <base-url>/models -H "Authorization: Bearer <key>"`, tells you what to enter.
+</Note>
+
+Suggested models for the hosted providers:
 
 <CodeGroup>
 ```bash OpenAI (Recommended)
@@ -118,17 +165,31 @@ Your provider's API key for authentication. Security measures:
   Never share your API keys or commit them to version control. ChatterMate encrypts and stores them securely.
 </Note>
 
+An API key is **always required**, including for OpenAI-compatible endpoints. If your
+server doesn't check authentication — the default for Ollama and `llama-server` — enter
+any non-empty placeholder (`ollama` is the conventional one). The value is sent as a
+bearer token and ignored by a server that isn't looking at it.
+
+<Note>
+  Saving the form runs a **live test message** against the provider with the key, model
+  ID, and base URL you entered. A save that fails with "Invalid API key" on an
+  OpenAI-compatible endpoint usually means the backend couldn't reach the URL, or the
+  model ID doesn't exist on that server — not that the key itself is wrong.
+</Note>
+
 ## Best Practices
 
 1. **Provider Selection**
    - Start with OpenAI's GPT-4.1 / GPT-4o for best overall performance
    - Consider Anthropic's Claude for complex reasoning tasks
    - Use Groq (GPT-OSS / Llama) when you want the fastest, lowest-cost inference
+   - Use **OpenAI-compatible** when prompts and customer messages must not leave your infrastructure
 
 2. **Model Choice**
    - Balance between capability and cost
    - Test different models before production
    - Monitor usage and adjust as needed
+   - On a self-hosted model, verify tool calling works before going live — see [Self-hosted and gateway models](/deployment/self-hosted-models)
 
 3. **Security**
    - Use environment-specific API keys
@@ -144,6 +205,11 @@ After configuring your AI provider:
 3. Add domain knowledge to improve responses
 4. Set up human handoff rules
 
-<Card title="Customize AI Agent" icon="wand-magic-sparkles" href="/features/ai-customization">
-  Next: Learn how to customize your AI agent's behavior
-</Card> 
+<CardGroup cols={2}>
+  <Card title="Customize AI Agent" icon="wand-magic-sparkles" href="/features/ai-customization">
+    Next: Learn how to customize your AI agent's behavior
+  </Card>
+  <Card title="Self-hosted and gateway models" icon="server" href="/deployment/self-hosted-models">
+    Run the model on your own hardware with an OpenAI-compatible endpoint
+  </Card>
+</CardGroup> 

@@ -1,0 +1,229 @@
+---
+title: 'Self-Hosted and Gateway Models'
+description: 'Point ChatterMate at your own OpenAI-compatible endpoint — Ollama, vLLM, llama.cpp, OpenRouter, or LiteLLM — so prompts and customer messages never leave your infrastructure.'
+---
+
+# Self-Hosted and Gateway Models
+
+ChatterMate's **OpenAI-compatible** provider points the whole product at an endpoint
+you control. Self-host the stack with [Docker](/deployment/docker) and self-host the
+model here, and no prompt, customer message, or knowledge-base excerpt ever leaves
+your infrastructure.
+
+The name describes the wire protocol, not a specific vendor: anything that serves the
+OpenAI `chat/completions` API works. That covers local runtimes (**Ollama**, **vLLM**,
+**llama.cpp**) and multi-model gateways (**OpenRouter**, **LiteLLM**) alike.
+
+## What you configure
+
+Three fields under **Settings → AI Configuration**, with the provider set to
+**OpenAI-compatible (self-hosted, OpenRouter, Ollama…)**:
+
+<Steps>
+  <Step title="Base URL">
+    The root of your endpoint's API, including the version segment — for example
+    `http://host.docker.internal:11434/v1`. This field appears **only** for this
+    provider. It must be reachable from the ChatterMate **backend container**.
+  </Step>
+  <Step title="Model Name">
+    There are no suggested models, because the catalog belongs to your server. Choose
+    **"Custom model ID…"** in the dropdown and type the exact ID your endpoint reports.
+  </Step>
+  <Step title="API Key">
+    Always required. If your server doesn't enforce auth, enter a placeholder such as
+    `ollama` — it's sent as a bearer token and ignored.
+  </Step>
+</Steps>
+
+Saving runs a **live test message** against the endpoint, so a successful save means
+the URL resolved, the key was accepted, and the model ID exists.
+
+<Tip>
+  Before filling in the form, confirm the endpoint from a shell:
+
+  ```bash
+  curl http://localhost:11434/v1/models -H "Authorization: Bearer ollama"
+  ```
+
+  The `id` values in the response are exactly what belongs in **Model Name**.
+</Tip>
+
+## Worked examples
+
+<Tabs>
+  <Tab title="Ollama">
+    Ollama binds to loopback by default, so a container can't reach it. Bind it to all
+    interfaces and restart it:
+
+    ```bash
+    OLLAMA_HOST=0.0.0.0 ollama serve
+    ```
+
+    Pull a model that supports tool calling, then list what you have:
+
+    ```bash
+    ollama pull llama3.1:8b
+    ollama list
+    ```
+
+    | Field | Value |
+    | --- | --- |
+    | Base URL | `http://host.docker.internal:11434/v1` |
+    | Model Name | the `NAME` column from `ollama list`, e.g. `llama3.1:8b` |
+    | API Key | `ollama` (any non-empty value) |
+  </Tab>
+
+  <Tab title="vLLM">
+    ```bash
+    vllm serve meta-llama/Llama-3.1-8B-Instruct \
+      --api-key my-secret-key \
+      --port 8001
+    ```
+
+    | Field | Value |
+    | --- | --- |
+    | Base URL | `http://host.docker.internal:8001/v1` |
+    | Model Name | the model you served, e.g. `meta-llama/Llama-3.1-8B-Instruct` |
+    | API Key | whatever you passed to `--api-key` |
+
+    <Warning>
+      vLLM defaults to port **8000**, which the ChatterMate backend already uses. On a
+      single host, give vLLM another port (`--port 8001` above) or the two will clash.
+    </Warning>
+  </Tab>
+
+  <Tab title="llama.cpp">
+    ```bash
+    llama-server -m ./models/your-model.gguf --host 0.0.0.0 --port 8080
+    ```
+
+    | Field | Value |
+    | --- | --- |
+    | Base URL | `http://host.docker.internal:8080/v1` |
+    | Model Name | the `id` from `curl http://localhost:8080/v1/models` |
+    | API Key | any non-empty value, unless you started the server with `--api-key` |
+  </Tab>
+
+  <Tab title="OpenRouter">
+    A hosted gateway — nothing to run, but inference is not local.
+
+    | Field | Value |
+    | --- | --- |
+    | Base URL | `https://openrouter.ai/api/v1` |
+    | Model Name | the model ID from [openrouter.ai/models](https://openrouter.ai/models), e.g. `openai/gpt-4.1` |
+    | API Key | your `sk-or-v1-…` key |
+
+    Useful for reaching a model ChatterMate has no direct provider for, or for failing
+    over between vendors behind one key.
+  </Tab>
+
+  <Tab title="LiteLLM">
+    Run the LiteLLM proxy in front of several providers or local servers:
+
+    ```bash
+    litellm --config config.yaml --port 4000
+    ```
+
+    | Field | Value |
+    | --- | --- |
+    | Base URL | `http://host.docker.internal:4000/v1` |
+    | Model Name | a `model_name` from your LiteLLM config |
+    | API Key | your LiteLLM virtual key or master key |
+
+    This is the usual way to add per-team budgets, rate limits, and request logging in
+    front of whatever ChatterMate is calling.
+  </Tab>
+</Tabs>
+
+## Reaching your endpoint from Docker
+
+The backend runs in a container, so `localhost` in the Base URL means *the backend
+container itself* — not your machine. Pick the form that matches where the model runs:
+
+| Where the model runs | Base URL to enter |
+| --- | --- |
+| On the Docker host (Docker Desktop, macOS/Windows) | `http://host.docker.internal:11434/v1` |
+| On the Docker host (Linux) | `http://host.docker.internal:11434/v1`, after the change below |
+| As a service on ChatterMate's Compose network | `http://<service-name>:11434/v1` |
+| On another machine, or a hosted gateway | its normal URL, e.g. `https://openrouter.ai/api/v1` |
+
+On Linux, `host.docker.internal` isn't defined by default. Add it to the `backend`
+service in your Compose file:
+
+```yaml
+  backend:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+```
+
+Then recreate the backend so the change takes effect:
+
+```bash
+docker compose up -d --force-recreate backend
+```
+
+<Note>
+  Running ChatterMate outside Docker? Then `http://localhost:11434/v1` is correct as-is.
+</Note>
+
+## Choosing a model
+
+Every ChatterMate feature beyond plain replies is built on **tool calling** and
+**structured output**: knowledge-base search, [lead capture](/features/lead-capture),
+ending a resolved chat, [human handoff](/features/human-agents), and
+[MCP tools](/features/mcp-tools).
+
+<Warning>
+  Small local models frequently have weak tool calling or none at all. Unlike the
+  hosted providers — where these features occasionally miss a step — an endpoint that
+  doesn't implement `tools` or `response_format` makes them fail outright. Choose a
+  model whose documentation explicitly claims tool-calling support, and test a real
+  conversation end to end before you put it in front of customers.
+</Warning>
+
+Practical checks after connecting:
+
+1. Ask something only your knowledge base can answer — confirms tool calling works.
+2. Let the conversation reach a point where lead capture should fire.
+3. Ask to speak to a human — confirms handoff.
+
+If any of those silently do nothing, the model is the most likely cause. Try a larger
+one before debugging anything else.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Saving fails with &quot;Invalid API key&quot;">
+    The save runs a real request, so this error covers every way that request can fail
+    — an unreachable base URL and a non-existent model ID included. Check, in order:
+    the backend can reach the URL (`docker compose exec backend curl <base-url>/models`),
+    the model ID appears in that response, and the key matches what the server expects.
+  </Accordion>
+
+  <Accordion title="&quot;A base URL is required for the selected provider&quot;">
+    The Base URL field was left empty. It's mandatory for OpenAI-compatible and unused
+    by every other provider.
+  </Accordion>
+
+  <Accordion title="Connection refused from the backend container">
+    Either the server is bound to loopback only (start Ollama with `OLLAMA_HOST=0.0.0.0`,
+    `llama-server` with `--host 0.0.0.0`), or `localhost` was used where
+    `host.docker.internal` or a Compose service name is needed. See
+    [Reaching your endpoint from Docker](#reaching-your-endpoint-from-docker).
+  </Accordion>
+
+  <Accordion title="Replies work, but the agent never searches the knowledge base">
+    The model isn't calling tools. This is a model capability problem, not a
+    configuration one — switch to a model that supports tool calling.
+  </Accordion>
+
+  <Accordion title="The Base URL field doesn't appear">
+    It renders only when **OpenAI-compatible (self-hosted, OpenRouter, Ollama…)** is the
+    selected provider. If bring-your-own-model is locked behind an upgrade prompt, the
+    form isn't available on your plan.
+  </Accordion>
+</AccordionGroup>
+
+<Card title="AI Provider Configuration" icon="sliders" href="/features/ai-configuration">
+  Back to the full provider reference, including the seven hosted providers
+</Card>

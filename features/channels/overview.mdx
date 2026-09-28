@@ -30,15 +30,26 @@ ChatterMate is omni-channel. The same AI agent — with your knowledge base, lea
     Connect a LINE Official Account with a channel access token.
   </Card>
   <Card title="WhatsApp" icon="whatsapp" href="/features/channels/whatsapp">
-    Official WhatsApp Cloud API. <b>Coming soon</b> in the hosted app.
+    Official WhatsApp Cloud API. Sign in with Facebook and pick your number.
   </Card>
   <Card title="Messenger" icon="facebook-messenger" href="/features/channels/messenger">
-    Facebook Page DMs. <b>Coming soon</b> in the hosted app.
+    Official Meta integration. Sign in with Facebook and pick your Page.
   </Card>
   <Card title="Instagram" icon="instagram" href="/features/channels/instagram">
-    Instagram DMs on a professional account. <b>Coming soon</b>.
+    Official Meta integration. Sign in with Instagram to connect a professional account.
   </Card>
 </CardGroup>
+
+<Note>
+  **WhatsApp, Messenger and Instagram are official Meta integrations** — not unofficial
+  bridges, so your number, Page and account stay compliant. On ChatterMate Cloud all
+  three connect in a few clicks: sign in (with Facebook for WhatsApp and Messenger,
+  with Instagram for Instagram), choose the number or Page, and you're live.
+  ChatterMate onboards it under its own reviewed Meta app and registers the webhooks
+  for you, so there is **no Meta app to create, no access token to generate, and
+  nothing to configure in the Meta dashboard**. Self-hosters can still connect all
+  three with their own Meta app — every channel page covers both paths.
+</Note>
 
 ## How connecting works
 
@@ -46,7 +57,9 @@ Every channel follows the same three steps. The credential-gathering (step 1) di
 
 <Steps>
   <Step title="Get your credentials">
-    Create the bot / app / number on the platform (Telegram, Meta, Twilio, LINE…) and copy the keys. Each channel page below has the exact clicks.
+    Create the bot / app / number on the platform (Telegram, Twilio, LINE…) and copy the keys. Each channel page below has the exact clicks.
+
+    **The Meta channels on ChatterMate Cloud skip this step entirely** — signing in with Facebook (WhatsApp, Messenger) or Instagram issues the credentials for you.
   </Step>
   <Step title="Connect in ChatterMate">
     Open **Settings → Integrations**, find the channel card, and click **Connect**. Paste your credentials — or, for Slack and the Meta channels, approve the sign-in popup and pick the account. ChatterMate encrypts every credential at rest and — where the platform supports it — registers the inbound webhook for you automatically.

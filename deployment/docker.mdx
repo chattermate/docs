@@ -193,6 +193,23 @@ docker-compose logs -f redis
 docker ps
 ```
 
+## Keeping inference self-hosted
+
+Self-hosting the stack still sends prompts to a hosted AI provider by default. To keep
+model inference in your own infrastructure too, configure the **OpenAI-compatible**
+provider and give ChatterMate the base URL of your own endpoint — Ollama, vLLM, or
+llama.cpp locally, or a gateway such as OpenRouter or LiteLLM.
+
+<Card title="Self-hosted and gateway models" icon="server" href="/deployment/self-hosted-models">
+  Worked setups, Docker networking, and the tool-calling caveats
+</Card>
+
+<Note>
+  The base URL is resolved from inside the **backend container**, so `localhost` points
+  at the container, not your host. Use `host.docker.internal` or a Compose service name
+  instead.
+</Note>
+
 ## Help Center custom domains (self-hosted)
 
 The [Help Center](/features/help-center) can be served on your customers' own
