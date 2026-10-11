@@ -64,7 +64,8 @@
             "pages": [
               "features/agents-quickstart",
               "features/cli",
-              "features/mcp-server"
+              "features/mcp-server",
+              "features/app-integrations"
             ]
           },
           {

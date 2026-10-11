@@ -1,0 +1,294 @@
+---
+title: 'App integrations'
+description: 'Connect your own app to ChatterMate WhatsApp numbers: answer messages first, receive signed message and receipt webhooks, send buttons, lists and templates, and read usage.'
+---
+
+# App integrations
+
+An app integration connects **your own product** to one or more of your organization's WhatsApp
+numbers. Your app:
+
+- is **asked first** about each customer message and can answer it itself (for example a button tap
+  that marks attendance), leaving everything else to the AI agent and your inbox;
+- receives **signed webhooks** for messages, delivery receipts and every message sent;
+- **sends** text, reply buttons, lists, link buttons and approved templates through the app API;
+- links customers to **its own user ids**, and opts them out of its messages;
+- reads **usage** per day, number and price to reconcile its WhatsApp bill.
+
+<Note>
+App integrations are part of the **enterprise/commercial edition** and are available on the **Pro**
+and **Enterprise** plans. Messages your app sends don't count toward your AI message quota.
+</Note>
+
+## Connect an app
+
+1. Go to **Settings → App integrations** and click **Connect an app**.
+2. Give it a name, your **webhook URL** (public `https`), the events you want, and the WhatsApp numbers
+   it should drive. A number can be driven by one app at a time.
+3. Copy the **API key** (`cmai_…`) and the **webhook signing secret** (`whsec_…`). They are shown once.
+4. Click **Test** to send a signed `ping` to your webhook.
+
+From the same page you can pause the app, rotate its key (the old key stops working at once) or its
+signing secret (the old secret keeps signing for 24 hours), and see recent deliveries and resend
+failed ones.
+
+<Warning>
+Untick **Messages received** and your app is no longer asked first: the AI and your inbox answer
+everything on its numbers.
+</Warning>
+
+## Receive webhooks
+
+Every request to your webhook is a `POST` with a JSON body and these headers:
+
+| Header | Value |
+| --- | --- |
+| `X-ChatterMate-Event-Id` | The event's id. Deliveries are at least once: **dedupe on it**. |
+| `X-ChatterMate-Signature` | `t=<unix seconds>,v1=<hex>` — during a secret rotation, two `v1` values. |
+
+### Verify the signature
+
+Each `v1` is `HMAC-SHA256(secret, "<t>.<raw body>")` in hex. Accept the request when any `v1` matches,
+and reject a `t` more than **5 minutes** away from your clock. Always verify the **raw** body, before
+parsing it.
+
+<CodeGroup>
+```python Python
+import hashlib, hmac, time
+
+def verified(raw_body: bytes, header: str, secret: str) -> bool:
+    parts = [p.split("=", 1) for p in header.split(",")]
+    timestamp = next((v for k, v in parts if k == "t"), "0")
+    if abs(time.time() - int(timestamp)) > 300:
+        return False
+    expected = hmac.new(secret.encode(), f"{timestamp}.".encode() + raw_body, hashlib.sha256).hexdigest()
+    return any(k == "v1" and hmac.compare_digest(expected, v) for k, v in parts)
+```
+
+```javascript Node.js
+import crypto from 'node:crypto'
+
+export function verified(rawBody, header, secret) {
+  const parts = header.split(',').map((p) => p.split('='))
+  const timestamp = parts.find(([k]) => k === 't')?.[1] ?? '0'
+  if (Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return false
+  const expected = crypto.createHmac('sha256', secret).update(`${timestamp}.`).update(rawBody).digest('hex')
+  return parts.some(([k, v]) => k === 'v1' && v.length === expected.length &&
+    crypto.timingSafeEqual(Buffer.from(v), Buffer.from(expected)))
+}
+```
+</CodeGroup>
+
+### Answer first
+
+When a customer writes on one of your app's numbers, and nobody on your team is handling that chat,
+ChatterMate first sends your webhook the `message.received` event with `"handled_by": null`. Answer
+within **3 seconds** with a 2xx and
+
+```json
+{"handled": true}
+```
+
+to keep it: the AI won't reply, the message still shows in the inbox, and the customer sees it as read.
+Anything else (`{"handled": false}`, another status, a timeout) lets the AI or your team answer as usual.
+Reply to the customer yourself through the [app API](#send-messages), not in the webhook response.
+
+If your webhook keeps failing, ChatterMate stops asking it first for a minute at a time so customers
+aren't kept waiting; its events still queue.
+
+### Events
+
+Every event has `event_id`, `type`, `occurred_at`, `channel_account_id` (the WhatsApp number),
+`session_id` and `customer` — `{id, wa_phone, name, external_user_id, opted_out}`.
+
+<CodeGroup>
+```json message.received
+{
+  "event_id": "8f2c…:wamid.HBgM…",
+  "type": "message.received",
+  "occurred_at": "2026-10-11T09:30:02+00:00",
+  "channel_account_id": "8f2c…",
+  "session_id": "151b…",
+  "customer": {"id": "df12…", "wa_phone": "+447700900123", "name": "Sam",
+               "external_user_id": "player-42", "opted_out": false},
+  "message": {
+    "id": "wamid.HBgM…",
+    "text": "Present",
+    "reply_to": "wamid.HBgN…",
+    "interactive": {"type": "button_reply", "id": "attend:42", "title": "Present"},
+    "location": null
+  },
+  "handled_by": "app"
+}
+```
+
+```json message.status
+{
+  "event_id": "8f2c…:wamid.HBgN…:read",
+  "type": "message.status",
+  "occurred_at": "2026-10-11T09:31:00+00:00",
+  "channel_account_id": "8f2c…",
+  "session_id": null,
+  "customer": {"id": null, "wa_phone": "+447700900123", "name": null,
+               "external_user_id": "player-42", "opted_out": false},
+  "status": {"message_id": "wamid.HBgN…", "status": "read", "error": null,
+             "pricing_category": "utility", "billable": true}
+}
+```
+
+```json message.outbound
+{
+  "event_id": "8f2c…:out:wamid.HBgO…",
+  "type": "message.outbound",
+  "occurred_at": "2026-10-11T09:32:10+00:00",
+  "channel_account_id": "8f2c…",
+  "session_id": "151b…",
+  "customer": {"id": "df12…", "wa_phone": null, "name": null,
+               "external_user_id": "player-42", "opted_out": false},
+  "message": {"id": "wamid.HBgO…", "source": "ai", "text": "Training is at 10.", "interactive": null}
+}
+```
+</CodeGroup>
+
+- `message.received` — `handled_by` is `app`, `ai` or `human` (who answered), and `null` on the
+  [answer-first](#answer-first) call. `interactive.type` is `button_reply`, `list_reply` or
+  `template_button`; `interactive.id` is the id you gave the button or row. A message your app was
+  asked about first isn't sent again.
+- `message.status` — `sent`, `delivered`, `read` or `failed`, for any message sent on the number.
+- `message.outbound` — every message sent to a customer; `source` is `app`, `ai`, `human` or `system`.
+
+### Delivery and retries
+
+Answer a webhook with any 2xx. Otherwise the event is retried with exponential backoff (honouring
+`Retry-After`) for about a day, then marked failed; you can resend it from the delivery log. Events
+can arrive more than once and out of order: dedupe on `X-ChatterMate-Event-Id` and order by
+`occurred_at`. While your app is paused, its queued events wait and no new ones are created.
+
+Inbound media (images, documents, voice notes) isn't forwarded yet.
+
+## Send messages
+
+```
+POST https://api.chattermate.chat/api/v1/enterprise/app-api/messages
+Authorization: Bearer cmai_…
+Idempotency-Key: <your request id>     (optional)
+```
+
+The body names the WhatsApp number (`channel_account_id`), the customer — **one** of `to` (international
+format) or `external_user_id` (once [bound](#link-customers)) — and **one** of `text`, `interactive` or
+`template`.
+
+<CodeGroup>
+```json Reply buttons
+{
+  "channel_account_id": "8f2c…",
+  "external_user_id": "player-42",
+  "interactive": {
+    "kind": "buttons",
+    "body": "Is Sam coming to training on Saturday at 10?",
+    "buttons": [{"id": "attend:42", "title": "Present"}, {"id": "absent:42", "title": "Absent"}]
+  }
+}
+```
+
+```json List
+{
+  "channel_account_id": "8f2c…",
+  "to": "+447700900123",
+  "interactive": {
+    "kind": "list",
+    "body": "Pick a new slot",
+    "list_button_label": "Slots",
+    "sections": [{"title": "Saturday", "rows": [
+      {"id": "slot:sat-10", "title": "10:00", "description": "Main pitch"},
+      {"id": "slot:sat-14", "title": "14:00"}
+    ]}]
+  }
+}
+```
+
+```json Template
+{
+  "channel_account_id": "8f2c…",
+  "to": "+447700900123",
+  "template": {"name": "fee_reminder", "language": "en_GB",
+               "components": [{"type": "body", "parameters": [{"type": "text", "text": "£40"}]}]}
+}
+```
+</CodeGroup>
+
+The answer is `{"message_id": "wamid.…", "session_id": "…", "customer_id": "…", "held_by_human": false}`.
+`held_by_human: true` means someone on your team is handling the chat: the message was sent, but the
+customer's reply goes to them, not your app.
+
+- **24-hour window.** Text and interactive messages need the customer to have written in the last 24
+  hours; otherwise you get `409 template_required` — send an approved template instead. A template can
+  start a conversation.
+- **Limits.** Up to 3 reply buttons (titles ≤ 20 characters), lists up to 10 rows (titles ≤ 24), a
+  1024-character body, ids up to 256 characters. A `kind: "cta_url"` message sends one link button
+  (`url`, `display_text`).
+- **Idempotency.** Send an `Idempotency-Key` (up to 255 characters) and retry with the same key: a
+  message that was sent is never sent twice — the first answer is replayed for 24 hours. A refused
+  request sent nothing, so after fixing the cause you can retry it with the same key. The same key with
+  a different body is `422 idempotency_key_reused`; one still in flight is `409 request_in_progress`.
+- **Rate limit.** 120 requests a minute per app (`429 rate_limited`).
+
+### Errors
+
+Errors answer `{"detail": {"code": "…", "message": "…"}}`. The codes are stable:
+
+| Status | Code | Meaning |
+| --- | --- | --- |
+| 401 | `invalid_key` | Missing or wrong API key |
+| 403 | `integration_paused` | The app is paused in settings |
+| 403 | `plan_required` | The organization's plan doesn't include app integrations |
+| 403 | `scope_required` | The key can't do this |
+| 403 | `opted_out` | The customer opted out of your app's messages |
+| 404 | `account_not_attached` | That WhatsApp number isn't connected to your app |
+| 404 | `not_found` | No customer with that `external_user_id` |
+| 409 | `template_required` | Outside the 24-hour window: send a template |
+| 422 | `invalid_request` | The request doesn't validate (the message says why) |
+| 422 | `invalid_phone` | Not a number in international format |
+| 422 | `invalid_interactive` | Breaks WhatsApp's limits (every reason is listed) |
+| 429 | `rate_limited` | Too many requests |
+| 502 | `send_failed` | WhatsApp refused the message |
+
+## Link customers
+
+Bind a customer to **your own user id** and you can send to it, and see it on every event as
+`customer.external_user_id`. A customer can be bound once they have messaged one of your app's numbers.
+
+| Request | Does |
+| --- | --- |
+| `PUT /app-api/customers/binding` `{channel_account_id, wa_phone, external_user_id}` | Binds them (replacing their old id; an id another customer had moves here — e.g. a new phone number) |
+| `GET /app-api/customers/binding?external_user_id=…` or `?wa_phone=…` | Looks them up |
+| `DELETE /app-api/customers/binding?external_user_id=…` | Unbinds them |
+| `POST /app-api/customers/opt-out` `{external_user_id}` or `{wa_phone, channel_account_id}` | Stops your app's messages to them |
+| `POST /app-api/customers/opt-in` (same body) | Allows them again |
+
+Ids are 1–255 characters with no spaces at either end; numbers are taken as text. An opt-out belongs to
+the customer's WhatsApp number: unbinding or moving the id keeps it. It applies to your app's messages —
+the AI and your team can still answer the customer when they write.
+
+## Read usage
+
+```
+GET https://api.chattermate.chat/api/v1/enterprise/app-api/usage?from=2026-10-01&to=2026-10-31
+```
+
+`from` and `to` are UTC dates, both included, at most 92 days. Add `channel_account_id` for one number.
+Each row is one UTC day, number, sender (`source`) and price (`pricing_category`, `pricing_type`):
+
+```json
+{"date": "2026-10-05", "channel_account_id": "8f2c…", "source": "app",
+ "pricing_category": "utility", "pricing_type": "regular",
+ "sent": 120, "delivered": 117, "read": 98, "failed": 3, "charged": 117}
+```
+
+- Each message counts once, in its furthest state: read, delivered, failed, sent.
+- `charged` is delivered messages WhatsApp prices as paid (`pricing_type: "regular"`).
+- The day is WhatsApp's own timestamp, so totals line up with Meta's billing.
+- `numbers[].recorded_since` says since when each number has been connected: usage is recorded while
+  it stays connected (also while your app is paused).
+- A `source` of `null` is a message ChatterMate didn't send itself — sent from elsewhere on the number,
+  or before your app was connected.
