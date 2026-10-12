@@ -85,6 +85,26 @@ Once connected, messages from all channels flow into **Conversations**. Each cha
 
 When a teammate clicks **Take Over Chat**, their replies go back out on the customer's original channel — the Telegram chat, the Slack thread, the email thread — not just the widget. The AI steps aside until the conversation is handed back.
 
+## Reply buttons
+
+When the AI offers a few options (time slots, yes or no, which plan), it can send them as buttons the customer taps instead of typing. Turn it on per agent: open **AI Agents**, pick the agent, and switch on **Reply Buttons** (it appears while **Let AI Answer** is on). It is off by default.
+
+| Channel | What the customer sees |
+|---|---|
+| WhatsApp | Up to 3 reply buttons, or a list for more options |
+| Messenger | Quick replies under the message |
+| Instagram | Quick replies, plus the options as a numbered list in the message. Instagram on desktop and web doesn't show quick replies, so customers there can answer with the number |
+| Telegram | Buttons under the message. Private chats only: group chats get plain text |
+
+- Button labels are shortened to fit each platform; the AI and your inbox always see the customer's full choice.
+- On Telegram the buttons disappear once tapped, and only the first tap counts.
+- Telegram bots connected before Reply Buttons existed are updated automatically when you turn the switch on.
+- Slack, Email, SMS, LINE and the website widget are unchanged: options stay in the text.
+
+<Note>
+  Upgrading from an earlier version? WhatsApp agents used to send buttons without a switch. Turn **Reply Buttons** on for those agents to keep them.
+</Note>
+
 ## Good to know
 
 <CardGroup cols={2}>
