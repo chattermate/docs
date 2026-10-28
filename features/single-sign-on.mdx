@@ -1,0 +1,185 @@
+---
+title: 'Single Sign-On'
+description: 'Sign up and sign in to the ChatterMate dashboard with Google or Microsoft, and set up Google and Microsoft single sign-on (OpenID Connect) on a self-hosted install.'
+---
+
+# Single Sign-On
+
+Your team can sign in to the ChatterMate dashboard with a **Google** or **Microsoft** account instead of a password. On ChatterMate Cloud you can also **create your account** with one, and skip the emailed code.
+
+<CardGroup cols={2}>
+  <Card title="ChatterMate Cloud" icon="cloud">
+    Google and Microsoft are already on the login and signup pages. There is nothing to set up.
+  </Card>
+  <Card title="Self-hosted" icon="server">
+    Register an app with Google, Microsoft, or both, and add its client ID and secret to the backend's environment.
+  </Card>
+</CardGroup>
+
+## Signing up (Cloud)
+
+On the [signup page](https://app.chattermate.chat/signup), click **Google** or **Microsoft** and sign in with that account.
+
+<Frame>
+  <img src="/images/sso-signup.webp" alt="The signup page with Google and Microsoft buttons above the email form" />
+</Frame>
+
+What happens next depends on whether the provider can confirm that the email address belongs to you.
+
+<Tabs>
+  <Tab title="Address confirmed">
+    You go straight to naming your organization. There is **no password to choose and no code to enter**.
+
+    <Frame>
+      <img src="/images/sso-signup-vouched.webp" alt="Signing up as an address with Google, followed by the organization step" />
+    </Frame>
+
+    This is the case for Gmail addresses, Google Workspace addresses, personal Microsoft accounts (Outlook, Hotmail, Live), and work Microsoft accounts on a domain Microsoft has verified.
+  </Tab>
+  <Tab title="Address not confirmed">
+    Your name and email are filled in for you. Choose a password, and we email a code to confirm the address, as with a normal signup. Your Google or Microsoft account is linked once you enter the code, so you can sign in with it from then on.
+
+    <Frame>
+      <img src="/images/sso-signup-code.webp" alt="Microsoft couldn't confirm this address, so we'll email you a code" />
+    </Frame>
+  </Tab>
+</Tabs>
+
+<Note>
+If you already have an account, clicking **Google** or **Microsoft** on the signup page simply signs you in.
+</Note>
+
+## Signing in
+
+Click **Google** or **Microsoft** under the sign-in form.
+
+<Frame>
+  <img src="/images/sso-login.webp" alt="The login page with Google and Microsoft buttons below the password form" />
+</Frame>
+
+The first time a team member signs in this way, ChatterMate links the Google or Microsoft account to the team member with the **same email address**, as long as the provider confirms that address (the same rules as for signup, above). From then on the link is used, so sign-in keeps working even if the address on the Google or Microsoft side changes.
+
+- A team member can link **one account per provider**.
+- SSO never adds people to a team. [Invite them](/features/organization) first; they can then sign in with SSO.
+- Changing a team member's email address removes their links, and they link again at their next SSO sign-in.
+- A team member without a profile picture gets the one from their Google or Microsoft account.
+
+### If sign-in doesn't work
+
+| Message | What it means |
+|---|---|
+| No team account matches that e-mail address. | Nobody on a team uses this address. Ask an admin for an invite, or [sign up](https://app.chattermate.chat/signup) to start your own organization. |
+| The provider has not verified that account's e-mail address… | The account has the right address, but the provider can't confirm it belongs to the account (for example, a Microsoft work account on a domain Microsoft hasn't verified). Sign in with your password instead. |
+| Your team account is linked to a different account from this provider. | Ask an admin to unlink the old account, then sign in again. |
+| This workspace only accepts accounts from its own Google domain. | A self-hosted install that only allows its own Google Workspace domain. |
+| The sign-in took too long or was already used. | Start again from the login page. Each sign-in link works once, in the browser that started it. |
+
+## Self-hosting
+
+Each provider appears on the login page once both its client ID and secret are set. Leave a provider's values empty and its button doesn't show.
+
+The redirect URIs come from your `BACKEND_URL`:
+
+```
+{BACKEND_URL}/api/v1/sso/google/callback
+{BACKEND_URL}/api/v1/sso/microsoft/callback
+```
+
+### Google
+
+<Steps>
+  <Step title="Configure the consent screen">
+    In the [Google Cloud Console](https://console.cloud.google.com/), open **Google Auth Platform → Branding** and set your app name, support email and authorized domain.
+  </Step>
+  <Step title="Choose who can sign in">
+    Under **Audience**, choose **Internal** to allow only your own Google Workspace, or **External** for any Google account. An External app in **Testing** only lets the test users you list sign in; click **Publish app** to open it up. ChatterMate only asks for `openid`, `email` and `profile`, which need no Google review.
+  </Step>
+  <Step title="Create the client">
+    Under **Clients**, create an **OAuth client ID** of type **Web application**, and add `{BACKEND_URL}/api/v1/sso/google/callback` as an **Authorized redirect URI**.
+  </Step>
+  <Step title="Add the keys">
+    Copy the client ID and secret into the backend's environment:
+
+    ```bash
+    GOOGLE_SSO_CLIENT_ID=your-client-id.apps.googleusercontent.com
+    GOOGLE_SSO_CLIENT_SECRET=your-client-secret
+    # Optional: only accounts in this Google Workspace domain may sign in
+    GOOGLE_SSO_HOSTED_DOMAIN=example.com
+    ```
+  </Step>
+</Steps>
+
+### Microsoft
+
+<Steps>
+  <Step title="Register the app">
+    In the [Microsoft Entra admin center](https://entra.microsoft.com/), go to **App registrations → New registration**. Under **Supported account types**, choose:
+
+    - **Accounts in this organizational directory only** to allow only your own company, or
+    - **Accounts in any organizational directory and personal Microsoft accounts** to allow anyone.
+
+    Set the **Redirect URI** to platform **Web** and `{BACKEND_URL}/api/v1/sso/microsoft/callback`.
+  </Step>
+  <Step title="Create a client secret">
+    Under **Certificates & secrets**, add a **New client secret** and copy its **Value** (not the Secret ID). Secrets expire, so note the date and rotate it before then.
+  </Step>
+  <Step title="Check the permissions">
+    Under **API permissions**, keep the Microsoft Graph delegated permission `User.Read` (it is there by default). ChatterMate uses it to fetch the profile photo.
+  </Step>
+  <Step title="Add the email and xms_edov claims">
+    Under **Token configuration**, click **Add optional claim**, choose token type **ID**, and select **`email`** and **`xms_edov`**. If `xms_edov` isn't in the list, add both to `optionalClaims.idToken` in the app's **Manifest**:
+
+    ```json
+    "optionalClaims": {
+      "idToken": [
+        { "name": "email", "essential": false },
+        { "name": "xms_edov", "essential": false }
+      ]
+    }
+    ```
+
+    <Warning>
+    If your app accepts accounts from **any** directory, don't skip this step. Anyone can create a Microsoft directory and give an account any address, so ChatterMate only trusts a work account's address when Microsoft says it verified the domain, and `xms_edov` is how Microsoft says so. Without it, work and school accounts can't link and get *"The provider has not verified that account's e-mail address"*. Personal Microsoft accounts work either way.
+    </Warning>
+  </Step>
+  <Step title="Add the keys">
+    ```bash
+    MICROSOFT_SSO_CLIENT_ID=your-application-client-id
+    MICROSOFT_SSO_CLIENT_SECRET=your-client-secret-value
+    # "common" (default) accepts any work, school or personal account.
+    # Your directory (tenant) ID allows only your organization, and its addresses are trusted as-is.
+    MICROSOFT_SSO_TENANT=common
+    ```
+  </Step>
+</Steps>
+
+<Tip>
+If people at other companies see **Need admin approval** when they click Microsoft, their organization only lets users consent to apps from verified publishers. Complete **Publisher verification** under **Branding & properties**, or ask their admin to grant consent.
+</Tip>
+
+Restart the backend after changing these values.
+
+### Making SSO the way in
+
+Set `PASSWORD_LOGIN_ENABLED=false` and the login page leads with the SSO buttons, keeping the password form one click away.
+
+<Frame>
+  <img src="/images/sso-login-sso-first.webp" alt="The login page leading with Continue with Google and Continue with Microsoft, and a Sign in with password link" />
+</Frame>
+
+Once a team member has signed in with SSO, their password stops working and any sessions they opened with it end. Team members who haven't linked an account yet can still use their password, so nobody is locked out while you roll SSO out.
+
+<Note>
+`PASSWORD_LOGIN_ENABLED` applies to the whole install, so it suits a self-hosted install used by one organization.
+</Note>
+
+### Managing linked accounts
+
+Admins can list and remove a team member's linked accounts through the API:
+
+```bash
+GET    /api/v1/users/{user_id}/identities
+DELETE /api/v1/users/{user_id}/identities/{identity_id}
+```
+
+After an unlink, the team member links again the next time they sign in with SSO.

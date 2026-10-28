@@ -65,6 +65,7 @@
         "features/file-attachments",
         "features/human-agents",
         "features/roles",
+        "features/single-sign-on",
         "features/chat-management",
         "features/jira-integration",
         "features/hubspot",
