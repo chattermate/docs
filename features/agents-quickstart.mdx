@@ -33,6 +33,36 @@ Set up ChatterMate (AI customer support chat) for my website with its CLI.
    prints to this project's root layout, just before </body>.
 ```
 
+<AccordionGroup>
+  <Accordion title="Already have an account?">
+    Use this version instead. The dashboard's Create step gives you the same text, ready to copy.
+
+    ```text
+    Set up my ChatterMate support agent and chat widget with its CLI.
+    1. Install it: pipx install chattermate-cli (or: uv tool install chattermate-cli)
+    2. Ask me to run this in my own terminal, not through you, so my password stays with me:
+       chattermate login
+       It asks for my email and password. Wait until I say it is done.
+    3. Find my agent: chattermate agent list --json. Only if I have none, create one:
+       chattermate agent create --name "Support" --type customer_support --json
+    4. Teach it my site: chattermate knowledge add-url --website <my website> --agent-id <agent id>
+    5. Run chattermate widget create --agent-id <agent id> and add the snippet it
+       prints to this project's root layout, just before </body>.
+    ```
+  </Accordion>
+  <Accordion title="Self-hosted?">
+    Point the command you run yourself at your server. The CLI saves it for every later command:
+
+    ```bash
+    chattermate --api-url https://api.example.com signup   # or: ... login
+    ```
+
+    Use your API's origin, without `/api/v1`. Also add `--app-url <your dashboard URL>` to
+    `chattermate widget create`, so the snippet loads the widget from your own dashboard. Your
+    dashboard's copy of the prompt already includes both.
+  </Accordion>
+</AccordionGroup>
+
 <CardGroup cols={3}>
   <Card title="Add MCP to Cursor" icon="plug" href="https://cursor.com/install-mcp?name=chattermate&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyItLWZyb20iLCJjaGF0dGVybWF0ZS1jbGkiLCJjaGF0dGVybWF0ZS1tY3AiXSwiZW52Ijp7IkNIQVRURVJNQVRFX1RPS0VOIjoiY21hdF95b3VyX3Rva2VuX2hlcmUifX0%3D">
     Install the MCP server, then swap in your own token.
