@@ -51,10 +51,17 @@ The server is a thin, stdio-based bridge over the ChatterMate API. It ships in t
 
 ## Configuration
 
-Add the server to your MCP client's configuration, supplying your personal access token via
-`CHATTERMATE_TOKEN`. The server targets the hosted API (`https://api.chattermate.chat`) by
-default, so no API URL is needed. Running `chattermate token create` prints this exact snippet
-for you.
+Using Cursor? Install it in one click, then replace `cmat_your_token_here` with your token in
+Cursor's MCP settings:
+
+<a href="https://cursor.com/install-mcp?name=chattermate&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyItLWZyb20iLCJjaGF0dGVybWF0ZS1jbGkiLCJjaGF0dGVybWF0ZS1tY3AiXSwiZW52Ijp7IkNIQVRURVJNQVRFX1RPS0VOIjoiY21hdF95b3VyX3Rva2VuX2hlcmUifX0%3D">
+  <img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Add ChatterMate MCP server to Cursor" height="32" noZoom />
+</a>
+
+For any other client, add the server to its MCP configuration, supplying your personal access
+token via `CHATTERMATE_TOKEN`. The server targets the hosted API (`https://api.chattermate.chat`)
+by default, so no API URL is needed. Running `chattermate token create` prints this exact
+snippet for you.
 
 <CodeGroup>
 ```json Claude Desktop / generic
