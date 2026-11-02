@@ -73,7 +73,7 @@ variable, your saved config, then the default `https://api.chattermate.chat`.
 
 ## Authentication
 
-You can authenticate two ways.
+You can authenticate three ways.
 
 <Tabs>
   <Tab title="Log in (interactive)">
@@ -84,6 +84,16 @@ You can authenticate two ways.
     chattermate login --email you@acme.com
     # password is prompted securely
     ```
+  </Tab>
+  <Tab title="Google or Microsoft sign-in">
+    Accounts that sign in with Google or Microsoft have no password. Create a token in the
+    dashboard under **Settings → CLI & API tokens**, then paste it at the hidden prompt:
+
+    ```bash
+    chattermate login --token
+    ```
+
+    The token is saved to `~/.chattermate/config.json` (mode `600`) and replaces any earlier login.
   </Tab>
   <Tab title="Personal Access Token">
     Best for automation, CI, and AI agents. Long-lived and revocable. Pass it via the
@@ -128,6 +138,8 @@ headless automation.
 A token's secret is shown **only once**, at creation time. Store it somewhere safe — it cannot be
 retrieved again.
 </Warning>
+
+You can also create, list and revoke tokens in the dashboard under **Settings → CLI & API tokens**. `token create` needs an email-and-password login, so if you logged in with `--token`, make new tokens in the dashboard.
 
 <Steps>
   <Step title="Create a token">
@@ -342,7 +354,7 @@ Every command supports a `--json` flag for machine-readable output, making the C
 | Command | Description |
 | --- | --- |
 | `chattermate signup` | Create an organization and admin user |
-| `chattermate login` | Log in and store JWT credentials |
+| `chattermate login` | Log in with email and password; `--token` logs in with a personal access token |
 | `chattermate logout` | Remove stored credentials |
 | `chattermate whoami` | Show the authenticated user |
 | `chattermate token create <name>` | Create a Personal Access Token |
