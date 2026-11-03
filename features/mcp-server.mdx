@@ -8,7 +8,8 @@ description: 'Let AI agents manage ChatterMate through the Model Context Protoco
 The ChatterMate MCP server (`chattermate-mcp`) exposes your ChatterMate instance to AI agents
 through the [Model Context Protocol](https://modelcontextprotocol.io). Connect it to Claude, an
 IDE assistant, or any MCP-compatible client and the agent can read and manage your agents,
-workflows, and knowledge sources on your behalf.
+workflows, knowledge sources, widgets, [in-app actions](/features/in-app-actions),
+[journeys](/features/journeys) and help center on your behalf.
 
 <Note>
 **This is the inverse of [MCP Tools](/features/mcp-tools).** *MCP Tools* let your ChatterMate
@@ -108,32 +109,63 @@ to the `env` block.
 
 ## Available tools
 
-The server exposes the following tools. Read-only tools are safe to run freely; mutating tools
-create or change configuration.
+The server exposes the tools below. Read-only tools are safe to run freely; the others create or
+change configuration. Deleting tools, and replacing a widget's allowed sites, are marked
+*destructive*, so MCP clients that support it ask you before running them.
 
 <Tabs>
-  <Tab title="Read-only">
+  <Tab title="Agents & knowledge">
     | Tool | Description |
     | --- | --- |
-    | `whoami` | Return the authenticated user (id, email, organization, role) |
-    | `list_agents` | List all agents in the organization |
-    | `get_agent` | Get a single agent by id |
-    | `get_workflow` | Get the workflow attached to an agent |
-    | `get_workflow_nodes` | Get all nodes and connections for a workflow |
-    | `list_knowledge` | List knowledge sources linked to an agent |
-    | `get_ingestion_status` | Check the status of a knowledge ingestion job |
+    | `whoami` | The authenticated user (id, email, organization, role) |
+    | `list_agents` / `get_agent` | List agents, or get one by id |
+    | `create_agent` / `update_agent` | Create an agent, or change its instructions, name or active state |
+    | `get_workflow` / `get_workflow_nodes` | The workflow on an agent, and its nodes and connections |
+    | `create_workflow` / `update_workflow` / `update_workflow_nodes` | Create a workflow, change its details, or replace its nodes |
+    | `list_knowledge` | Knowledge sources linked to an agent |
+    | `add_knowledge_url` | Add website or PDF URLs, optionally linked to an agent |
+    | `get_ingestion_status` | Progress of a knowledge import |
+    | `link_knowledge` / `unlink_knowledge` | Link or unlink a source and an agent |
   </Tab>
-  <Tab title="Mutating">
+  <Tab title="Widgets & in-app actions">
     | Tool | Description |
     | --- | --- |
-    | `create_agent` | Create an AI agent |
-    | `update_agent` | Update an agent's instructions, name, or active state |
-    | `create_workflow` | Create a workflow for an agent |
-    | `update_workflow` | Update a workflow's metadata |
-    | `update_workflow_nodes` | Replace a workflow's nodes/connections |
-    | `add_knowledge_url` | Add website/PDF URLs to the knowledge base |
-    | `link_knowledge` | Link a knowledge source to an agent |
-    | `unlink_knowledge` | Unlink a knowledge source from an agent |
+    | `list_widgets` / `create_widget` | An agent's widgets, or a new one (its id goes in the embed code) |
+    | `get_widget_embed_settings` | The sites a widget may run on |
+    | `set_widget_allowed_domains` | Replace that list. In-app actions only run on a widget limited to its sites |
+    | `list_actions` | An agent's [in-app actions](/features/in-app-actions), and when a page last registered each |
+    | `create_action` | Declare an action: name, label, description, argument schema, confirm policy |
+    | `update_action` | Change only the fields given; the action is named by its id or name |
+    | `set_action_enabled` | Turn an action on or off |
+    | `preview_action_for_model` | Exactly what the model is told about an action |
+    | `delete_action` | Delete an action |
+  </Tab>
+  <Tab title="Journeys">
+    Every journey tool takes the journey's id or its key. See [Journeys](/features/journeys).
+
+    | Tool | Description |
+    | --- | --- |
+    | `list_journeys` / `get_journey` | An agent's journeys in priority order, or one with its full definition |
+    | `journey_templates` | Templates to start from, with their steps and the actions they expect |
+    | `journey_context_keys` | Page fields sent with `setContext` that steps can use |
+    | `create_journey_from_template` | A draft journey from a template |
+    | `create_journey` | A journey from a full definition (the tool describes the format and its rules) |
+    | `update_journey` | Change only the fields given; a fetched journey can be sent back whole |
+    | `set_journey_status` | Make a journey live, pause it, or put it back to draft |
+    | `reorder_journeys` | Set which journey wins when several could start (first runs first) |
+    | `journey_funnel` / `journey_stuck_users` | How far users got per step, and who is waiting on one |
+    | `delete_journey` | Delete a journey and everyone's progress through it |
+  </Tab>
+  <Tab title="Help center">
+    | Tool | Description |
+    | --- | --- |
+    | `help_center_settings` / `configure_help_center` | Read or change the [help center](/features/help-center)'s settings |
+    | `list_faqs` / `faq_categories` | FAQs (filter by status, category or text) and their categories |
+    | `create_faq` / `update_faq` / `delete_faq` | Manage one FAQ |
+    | `set_faq_status` / `delete_faqs` | Publish, unpublish or delete many at once |
+    | `import_faqs_from_url` / `import_faqs_from_pdf` | Import FAQs; poll the job with `help_center_job` |
+    | `upload_faq_image` / `set_help_center_logo` | Upload an image for an article, or the logo |
+    | `help_center_domain_status` / `set_help_center_domain` / `verify_help_center_domain` | Connect and verify a custom domain |
   </Tab>
 </Tabs>
 
@@ -146,9 +178,38 @@ Once connected, you can ask your AI agent things like:
   escalate disputes to a human."*
 - *"Add https://docs.acme.com to the Billing Bot's knowledge base and tell me when ingestion
   finishes."*
-- *"Create an 'Onboarding' workflow for agent &lt;id&gt; and publish it."*
+- *"Which of my agent's actions has no page registered code for it yet?"*
+- *"Show me the funnel for the setup journey over the last week, and who is stuck on the
+  invite step."*
 
 The agent translates these into the appropriate tool calls.
+
+## Set up an in-app agent with an AI assistant
+
+A coding assistant connected to both your codebase and this server can do the whole setup:
+declare the actions, write the handlers in your app, and build the journey.
+
+<Steps>
+  <Step title="Ask it to declare the actions">
+    *"Look at our settings and invoices code. Declare in-app actions on agent &lt;id&gt; for
+    changing the currency (ask before overwriting), adding a client, and sending the latest draft
+    invoice (always ask)."* The assistant calls `create_action` for each one.
+  </Step>
+  <Step title="Ask it to write the handlers">
+    *"Register those actions on our app pages with `ChatterMate.registerActions`, calling our
+    existing API client."* Then open your app, and `list_actions` shows when each action was
+    first registered by a page.
+  </Step>
+  <Step title="Limit the widget to your app">
+    *"Limit the widget to app.acme.com."* This uses `set_widget_allowed_domains`.
+  </Step>
+  <Step title="Build the journey">
+    *"Create a draft three-step 'First invoice' journey that ends when the app sends
+    invoice_sent, using those actions."* The assistant can start from `journey_templates` or
+    write the definition itself, since the tool explains the format. Review it in the
+    dashboard's **Journeys** tab before you make it live.
+  </Step>
+</Steps>
 
 ## Security
 
