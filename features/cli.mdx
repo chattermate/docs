@@ -257,8 +257,74 @@ Every command supports a `--json` flag for machine-readable output, making the C
 
     # List an agent's widgets (their ids are what you embed)
     chattermate widget list <agent-id>
+
+    # Show or set the sites the widget may run on (in-app actions only run on these)
+    chattermate widget domains <widget-id>
+    chattermate widget domains <widget-id> --set app.acme.com --set "*.acme.com"
+    chattermate widget domains <widget-id> --clear        # asks first; add --yes to skip
     ```
     The widget id is what goes in `window.chattermateId` — see [Widget integration](/features/widget).
+    `--set` replaces the whole list. An empty list lets the widget load on any site and turns
+    in-app actions off.
+  </Accordion>
+
+  <Accordion title="In-app actions" icon="bolt">
+    Declare what the agent can do inside your web app. Your page supplies the code with
+    `ChatterMate.registerActions` — see [In-app actions](/features/in-app-actions).
+    ```bash
+    # List actions, and whether a page has registered code for each
+    chattermate action list <agent-id>
+
+    # Declare one (confirm: never | always | when_overwriting)
+    chattermate action create <agent-id> \
+      --name set_currency --label "Change currency" \
+      --description "Changes the account's default currency" \
+      --confirm when_overwriting \
+      --parameters '{"type":"object","properties":{"code":{"type":"string"}},"required":["code"]}'
+
+    # Change only what you pass; name the action by its id or name
+    chattermate action update <agent-id> set_currency --label "Switch currency" --timeout 30
+    chattermate action update <agent-id> set_currency --parameters-file schema.json
+
+    # Turn it off or on, see exactly what the model is told, or delete it
+    chattermate action disable <agent-id> set_currency
+    chattermate action enable <agent-id> set_currency
+    chattermate action model-view <agent-id> set_currency
+    chattermate action delete <agent-id> set_currency      # asks first; add --yes to skip
+    ```
+  </Accordion>
+
+  <Accordion title="Journeys" icon="route">
+    Step-by-step guides the widget walks users through (**Pro**) — see [Journeys](/features/journeys).
+    A journey is named by its id or its key.
+    ```bash
+    # Templates, and the page fields journeys can use
+    chattermate journey templates <agent-id>
+    chattermate journey context-keys <agent-id>
+
+    # Create from a template (a draft), or from your own JSON
+    chattermate journey from-template <agent-id> saas_onboarding --key setup
+    chattermate journey create <agent-id> --file journey.json
+
+    # Edit: print it, change the file, send it back
+    chattermate journey show <agent-id> setup > setup.json
+    chattermate journey update <agent-id> setup --file setup.json
+    chattermate journey update <agent-id> setup --name "Get set up" --goal-event first_record_created
+
+    # Go live, pause, and set which journey wins (first listed runs first)
+    chattermate journey status <agent-id> setup live
+    chattermate journey order <agent-id> setup trial_to_paid
+
+    # How far users got, and who is waiting on a step
+    chattermate journey funnel <agent-id> setup --days 7
+    chattermate journey stuck <agent-id> setup <step-id>
+
+    chattermate journey delete <agent-id> setup           # removes everyone's progress too
+    ```
+    `journey update --file` leaves `status` and `priority` as they are, so an old file can't
+    undo a pause or a reorder made since. Change them with `journey status`, `journey order` or
+    `--priority`. Fields the server sets (`id`, `version`, timestamps) are ignored, and an
+    unknown field is refused.
   </Accordion>
 
   <Accordion title="Lead capture" icon="user-plus">
@@ -364,7 +430,9 @@ Every command supports a `--json` flag for machine-readable output, making the C
 | `chattermate customization show\|set` | Show/configure an agent's chat widget appearance |
 | `chattermate workflow get\|create\|update\|nodes\|set-nodes` | Manage workflows |
 | `chattermate knowledge add-file\|add-url\|list\|link\|unlink\|status` | Manage knowledge sources (local PDFs or URLs) |
-| `chattermate widget create\|list` | Create/list embeddable widgets and get the widget id to embed |
+| `chattermate widget create\|list\|domains` | Create/list embeddable widgets, and set the sites each may run on |
+| `chattermate action list\|create\|update\|enable\|disable\|delete\|model-view` | Declare the [in-app actions](/features/in-app-actions) an agent can run in your app |
+| `chattermate journey list\|templates\|context-keys\|show\|create\|from-template\|update\|status\|order\|delete\|funnel\|stuck` | Build and track [journeys](/features/journeys) (Pro) |
 | `chattermate lead-capture show\|set` | Show/configure an agent's lead capture (Pro) |
 | `chattermate ai setup\|show` | Set/show the org's AI model (defaults to the free ChatterMate model) |
 | `chattermate help-center faq\|import\|configure\|logo\|domain\|jobs` | Manage the public [help center](/features/help-center) — FAQs, imports, branding, custom domain (Pro) |

@@ -60,6 +60,8 @@
         "features/testing",
         "features/widget",
         "features/widget-apps",
+        "features/in-app-actions",
+        "features/journeys",
         "features/lead-capture",
         "features/authentication",
         "features/file-attachments",
