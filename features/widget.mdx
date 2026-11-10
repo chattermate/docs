@@ -46,9 +46,9 @@ The iframe method is useful for testing or when you need more control over the w
 
 ## Placement
 
-By default the launcher is a round bubble 20px from the bottom-right corner, and the chat window opens above it. You can change that in two places:
+By default the launcher is a bubble 20px from the bottom-right corner, and the chat window opens above it. You can change that in two places:
 
-- **In the dashboard** — the **Widget placement** section of your agent's *Customization* tab. These are the defaults for every site the agent is embedded on.
+- **In the dashboard** — the **Placement** section of your agent's *Customization* tab. These are the defaults for every site the agent is embedded on.
 - **In the embed snippet** — anything you set on the page wins over the dashboard, so one agent can look different on your pricing page than in your docs.
 
 Colours, fonts and the chat design itself are set in the same *Customization* tab; placement is only about where the widget sits and how it opens.
@@ -112,6 +112,7 @@ ChatterMate.init({
 | `position.offset` | number (px) | `20` | Distance from the chosen side edge. |
 | `width` | number (px) | `400` | Chat window width in floating mode (280–800). |
 | `height` | number (px) | `560` | Chat window height in floating mode (400–900). |
+| `launcherStyle` | object | dashboard | The launcher's `size`, `shape`, `icon` and `animation` — see [Launcher](#launcher). |
 | `sidebarWidth` | number (px) | `420` | Drawer width in the sidebar modes (320–640). |
 | `searchBar.placeholder` | string | `'Ask anything...'` | Text shown in the search bar, up to 80 characters. |
 | `searchBar.width` | number (px) | `320` | Width of the search bar trigger. |
@@ -149,6 +150,67 @@ height: 100vh;
 border-radius: 0;
 ```
 </CodeGroup>
+
+## Launcher
+
+The launcher is the button visitors click to open the chat. Change how it looks in the **Launcher** section of your agent's *Customization* tab; the preview next to the form shows it at its real size on a light or dark page.
+
+<Frame>
+  <img src="/images/widget-launcher.webp" alt="The Launcher section of Chat Customization, with colour, size, shape, icon and animation choices beside a preview of the launcher on a page" />
+</Frame>
+
+| Setting | Choices |
+| --- | --- |
+| Colour | Any colour. The default is the ChatterMate mark: a dark tile with a lime and a coral dot. |
+| Size | Small (48px), Medium (56px) or Large (64px). New agents start at Medium. |
+| Shape | Bubble or Circle. |
+| Icon | Dots, Chat, Headset, Help or Sparkle — or your own logo on paid plans. |
+| Animation | None, Classic, Bounce — or Swoosh and Glow on paid plans. |
+
+Bounce, Swoosh and Glow play when the page loads and then every 12 seconds, and stop for good once the visitor has opened the chat. Classic is the gentle float the launcher has always had. Visitors who have asked their device for less motion see no animation at all.
+
+On phones the launcher is never larger than 56px.
+
+### Your own logo
+
+On paid plans you can upload a PNG, WebP or JPEG of up to 1 MB, at least 96px wide and tall. ChatterMate re-saves it as a small square image, so a wide logo is fitted inside the square rather than cropped. Choose what sits behind it:
+
+- **White** or **Brand color** — the logo sits on a button of that colour.
+- **None** — the logo floats on the page by itself. Only offered for files with a transparent background. While the chat is open, a button appears behind the close arrow so visitors can still find it.
+
+The logo is uploaded when you press **Save**, so **Cancel** leaves the live launcher as it was. If your plan changes, visitors see the dots and the Classic animation instead; your logo and animation choice are kept, and come back when you upgrade.
+
+<Note>
+If your site's Content Security Policy blocks images from ChatterMate, the launcher shows the dots instead of your logo.
+</Note>
+
+### Setting the launcher on the page
+
+Like placement, anything set in the embed snippet wins over the dashboard, one setting at a time:
+
+```html
+<script>
+  window.chattermateId = 'YOUR_WIDGET_ID';
+  window.chattermateConfig = {
+    launcherStyle: { size: 'sm', shape: 'circle', icon: 'help', animation: 'none' }
+  };
+</script>
+```
+
+| Key | Values |
+| --- | --- |
+| `size` | `'sm'` · `'md'` · `'lg'` |
+| `shape` | `'bubble'` · `'circle'` |
+| `icon` | `'dots'` · `'chat'` · `'headset'` · `'help'` · `'sparkle'` |
+| `animation` | `'none'` · `'classic'` · `'bounce'` |
+
+The logo and the paid animations can only be chosen in the dashboard. Unknown values are ignored.
+
+The launcher works from the keyboard: it can be focused with Tab and opened with Enter or Space, and it tells screen readers whether the chat is open.
+
+### Chat window size
+
+The **Placement** section also sets the size of the chat window: **Compact** (360 × 520), **Standard** (400 × 560), **Large** (440 × 680) or **Custom**. The `width` and `height` options in the snippet win over it. The presets are hidden for the Ask Anything and Aurora designs, which open as a palette; their width and height can still be typed in.
 
 ## Using your own button
 
