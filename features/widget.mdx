@@ -425,28 +425,43 @@ window.postMessage({
 
 ## Widget Features
 
-### Customer Identification
-- Email collection before chat starts
-- Automatic returning customer detection
-- Previous conversation history loading
-- Context maintenance across sessions
+What visitors get in the chat:
 
-### Chat Interface
-- Real-time message updates
-- Typing indicators, shown only while a reply is actually being written
-- Message status tracking
-- File attachment support
-- Markdown formatting support
-- Emoji support
+- **Start screen** — your welcome message and quick actions to tap. With **Collect email before chat** on, an email card holds the visitor's first message until they give their email.
+- **Answers** — written out as they arrive, with numbered sources and links. While the agent works, the steps it takes (such as *Searching the help center*) show and then fold into a short note on the reply.
+- **Follow-up questions** — up to three questions to ask next, under the latest answer.
+- **Handover** — a card when the chat goes to your team, or when nobody is online.
+- **Your conversations** — the visitor's past chats, under the clock button or the *Recent* row. They can search them and continue one.
+- **Suggested for this page** — up to three rows for the page the visitor is on.
+- **Shopping** — on a Shopify store, product cards, a sheet for sizes and colours, **Add to cart** and a cart bar with *View cart* and *Checkout*.
+- **Orders** — order and ticket cards with status and delivery. The agent can look up an order by its number, or check the visitor's email with a 6-digit code and list their orders.
+- **Signed-in Shopify customers** — a customer signed in to your store chats as themselves.
+- **New chat** — ends the current chat and starts a fresh one. Hidden while a teammate is handling the chat.
+- **Files** — visitors can attach images and documents. See [File Attachments](/features/file-attachments).
+
+### Features by plan
+
+On ChatterMate Cloud, each widget feature comes with a plan. Each plan includes everything in the plans above it.
+
+| Plan | Widget features |
+| --- | --- |
+| **Free** | Answers, handover to your team, product cards with *View product*, order lookup by order number |
+| **Starter** | Quick actions, your conversations, follow-up questions, greeting messages |
+| **Growth** | Suggested for this page, **Add to cart** and the cart bar, *My orders* after an email check, AI titles for past chats |
+| **Pro** | Signed-in Shopify customers, past chats from the visitor's other browsers after an email check |
+
+On a lower plan the dashboard locks those settings with an upgrade prompt and the widget stops showing them. Anything you saved stays saved and comes back when you upgrade.
+
+Self-hosted installs have every widget feature.
 
 ### Availability
 The line under the agent's name reflects who is answering.
 
-- While the AI is answering it reads **Online · replies instantly**, which holds at any hour
+- While the AI is answering it reads **Replies instantly**, which holds at any hour, and *Working on it…* while a reply is on its way
 - When a person has to answer — an agent in [human mode](/features/ai-customization#let-ai-answer),
   or a chat a teammate has taken over — it follows your organization's
-  [business hours](/features/organization): *usually replies in a few minutes* while you are
-  open, *we'll reply when we're back* outside them
+  [business hours](/features/organization): *Online · usually replies in a few minutes* while you are
+  open, *Away · we'll reply when we're back* outside them
 
 ### Styling
 The widget uses CSS variables for consistent theming:

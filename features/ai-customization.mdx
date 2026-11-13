@@ -91,7 +91,7 @@ conversation to your team instead. See [Let AI Answer](#let-ai-answer) below.
 
     | Design | Description |
     | --- | --- |
-    | **Legacy** | The original look — light, neutral, classic chatbot. |
+    | **Classic** | The original look — light, neutral and simple. |
     | **Ask Anything** | Modern AI assistant style for general queries. |
     | **Aurora** | Dark, with a glowing aurora orb avatar. |
     | **Glass** | Frosted dark glass with soft glow and rounded bubbles. |
@@ -155,17 +155,25 @@ conversation to your team instead. See [Let AI Answer](#let-ai-answer) below.
     | Setting | Default | What it does |
     | --- | --- | --- |
     | **Show citations** | On | Lists the knowledge sources an answer came from. |
+    | **Suggest follow-up questions** | Off | Shows up to three questions to ask next under an answer. Starter plan and up. |
     | **Collect email before chat** | Off | Requires visitors to enter their email before they can start chatting. |
     | **Show AI disclaimer** | On | Adds "AI can make mistakes" to the widget footer. Hidden automatically once a human agent takes over. |
-    | **Let visitors start a new chat** | Off | Adds a **New chat** control that ends the conversation and starts a fresh one. |
 
-    #### Let visitors start a new chat
+    #### New chat
 
-    A conversation normally continues where the visitor left off, which is what most people want — they come back and their history is still there. Turn this on when they might arrive with an unrelated question and would rather start clean.
+    A conversation normally continues where the visitor left off. Every visitor also has a **New chat** button in the widget header, for when they arrive with an unrelated question and would rather start clean. On the Starter plan and up, their earlier chats stay under *Your conversations*.
 
-    The control asks for confirmation before discarding the conversation, and is hidden while a human agent is handling the chat so a visitor cannot accidentally end a live conversation with your team.
+    The button asks for confirmation before ending the conversation, and is hidden while a human agent is handling the chat so a visitor cannot accidentally end a live conversation with your team.
 
     Starting a new chat does not change who the visitor is: if your app identified them with [token authentication](/features/authentication), the new conversation arrives in the inbox as the same person, with their `custom_data`.
+
+    ### Messages
+
+    - **Welcome message** — the first thing visitors read when they open the chat.
+    - **Quick actions** — one-tap questions shown when the chat opens. Give one a page under **Show on pages** to show it only there, in *Suggested for this page*.
+    - **Greeting messages** — short messages above the launcher before the chat is opened.
+
+    Quick actions and greeting messages are on the Starter plan and up, and quick actions for some pages only on Growth and up. See [Features by plan](/features/widget#features-by-plan).
 
     ### Widget Placement
 
