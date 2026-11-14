@@ -1,131 +1,121 @@
 ---
-title: 'Chat Management'
-description: 'Manage customer conversations in ChatterMate with advanced filtering, human takeover from AI, chat reassignment, and full lifecycle control in one inbox.'
+title: 'Inbox'
+description: 'Work every customer conversation in one ChatterMate inbox: views, take over from the AI, team notes with mentions, snooze, saved replies, saved views and AI help.'
 ---
 
-# Chat Management
+# Inbox
 
-Monitor and manage customer conversations with advanced filtering, seamless human-AI collaboration, and comprehensive chat lifecycle management.
+Every conversation, from every channel, in one place. The AI answers what it can; the inbox is where your team picks up the rest.
 
-<Frame>
-  <img src="/images/chat-management.webp" alt="Chat Management Dashboard" />
-</Frame>
+The inbox has four parts: the **views** on the left, the **list** of conversations in the selected view, the **thread** you are reading, and the **details** of the customer beside it. Below 1440px the details open over the thread; on a phone the list and the thread take turns, and Back returns to the list.
 
-## Advanced Conversation Filtering
+## Views
 
-### Filter Options
-- **Agent Filter**: Filter conversations by specific AI agents
-- **User Filter**: Filter conversations by human agents/users
-- **Customer Email**: Search conversations by customer email
-- **Date Range**: Filter conversations within specific time periods
-- **Smart UI**: Icon-based filter toggle with active filter count indicator
+| View | What it lists |
+| --- | --- |
+| **Your inbox** | Chats you hold |
+| **Mentions** | Open chats where a teammate @-mentioned you in a note |
+| **Waiting for a human** | Handed over by the AI, or queued for the team, and nobody has taken them yet. The row says how long they have waited, and turns *late* after a while |
+| **All open** | Every open chat you can see |
+| **Snoozed** | Chats taken out of the views until later (shown while there are any) |
+| **AI handling now** | Chats the AI is answering |
+| **Resolved by AI** | Closed today without a person |
+| **Closed** | Closed chats |
+| **Channels** | All open chats on one channel (web chat, WhatsApp, Instagram, …) |
+| **Saved views** | *Negative sentiment*, and the views you and your team saved |
 
-### Filter Features
-- Apply-on-demand filtering (click "Apply Filters" to activate)
-- Auto-close filter panel after applying
-- Clear all filters with one click
-- Real-time filter count display
+Each view shows its count. Sort by **Newest** or **Waiting longest**, search by customer name, email or order, and filter by AI agent or by teammate.
 
-## Chat Information Panel
+Every row says who has the chat: **AI**, **Waiting**, **You**, or a teammate's name.
 
-### Detailed Chat View
-- **Customer Information**: View customer details and contact information
-- **Assignment Tracking**: See current assignee and assignment timestamp
-- **Timeline**: Track chat creation and last update times
-- **Status Monitoring**: Real-time chat status (Open, Transferred, Closed)
-- **Toggleable Sidebar**: Discord/Slack-style panel that pushes content
-
-### Panel Features
-- Responsive design matching conversation list height
-- Easy toggle on/off functionality
-- Comprehensive chat metadata display
-
-## Chat Actions & Control
+## Working a chat
 
 <CardGroup cols={2}>
-  <Card title="Take Over" icon="user-switch">
-    Human agents can instantly take control of AI-handled conversations
+  <Card title="Take over" icon="user-check">
+    Stop the AI and answer yourself. The customer is told a person joined.
   </Card>
-  <Card title="Hand to My Team" icon="users">
-    Stop the AI on a chat and queue it for whoever is free
+  <Card title="Hand to my team" icon="users">
+    Take the AI out without taking the chat: it waits for whoever is free.
   </Card>
-  <Card title="Reassign" icon="user-arrows">
-    Transfer chats between human agents with notifications
+  <Card title="Hand back to AI" icon="sparkles">
+    You are done: the customer is told, and the AI answers their next message.
   </Card>
-  <Card title="End Chat" icon="message-xmark">
-    Close conversations with reason tracking and descriptions
+  <Card title="Assign" icon="user-arrows">
+    Give the chat to a teammate. It leaves your inbox at once.
   </Card>
 </CardGroup>
 
-### Who is handling a chat
-Every conversation in the list is labelled, so you can tell at a glance who is on it:
+- **Close** asks first, tells the customer the conversation has ended, and on web chat asks them for a rating. The next conversation in the list opens. **Send and close** sends your reply, then closes.
+- **Reopen** a closed chat from the bar under it. It opens again as yours, so you reply next and the AI stays out. The customer isn't told until you write.
+- AI-handled chats close on their own after 24 hours without a message.
 
-| Label | Meaning |
+### Notes and mentions
+
+Switch the composer to **Note** to write to your team. Only your team sees notes. Type **@** to mention a teammate: they are notified and the chat shows under their **Mentions**.
+
+### Editing a reply
+
+You can edit a reply you sent for 15 minutes, while the chat is open: choose **Edit** next to its time, change the text, and press Enter (Esc cancels). The reply is marked **Edited**, and the first text is kept.
+
+The customer sees the change where the channel allows it:
+
+| Channel | The customer's copy |
 | --- | --- |
-| **AI** | The AI agent is answering |
-| **Waiting for human** | Queued for your team — nobody has picked it up yet |
-| **You** | You took it over |
-| *Teammate's name* | A colleague is handling it |
+| Web chat | Changes in place, marked *Edited* |
+| Telegram, Slack | Changes on the platform |
+| WhatsApp, Messenger, Instagram, SMS, email | Can't change once sent, so there is no Edit |
 
-A chat reads **Waiting for human** when the AI has handed it over, when someone used
-Hand to My Team, or when the agent is in [human mode](/features/ai-customization#let-ai-answer).
+### Keyboard
 
-### Human Takeover
-- **Smart Permissions**: Only available for open chats handled by AI
-- **Instant Transfer**: Seamless transition from AI to human agent
-- **Real-time Updates**: UI refreshes automatically after takeover
-- **Status Sync**: Chat assignment updated across all interfaces
+| Key | Does |
+| --- | --- |
+| **J** / **K** | Next / previous conversation |
+| **/** | Search |
+| **E** | Close the chat you hold (then **Enter** to confirm) |
+| **?** | Show the shortcuts |
+| **Esc** | Close a dialog or the details drawer |
 
-### Hand to My Team
-Takes the AI out of a conversation without making it yours. Use it when the AI is
-heading the wrong way but you are not the right person to answer.
+## Snooze
 
-- Available from the chat itself and from the chat information panel
-- Only shown while the AI is still handling the chat
-- The chat is queued for the team, not assigned to you — anyone can take it over
-- The customer is told someone will be with them shortly
-- Requires the same permission as taking a chat over
+Take a chat you hold out of the views until later: for an hour, three hours, until tomorrow 9:00 or next Monday 9:00. It comes back then, or as soon as the customer writes. A snoozed chat says so above the thread, with **Unsnooze**. A chat waiting for a person can't be snoozed: assign it first.
 
-<Note>
-Taking a chat over assigns it to you. Hand to My Team leaves it unassigned, so use it
-when the conversation needs a person but not specifically you.
-</Note>
+## Saved replies
 
-### Chat Reassignment
-- **User Selection**: Easy dropdown with agent names and emails
-- **Validation**: Only open, user-handled chats can be reassigned
-- **Multi-party Notifications**: Automatic notifications sent to:
-  - Customer (chat reassigned)
-  - New assignee (new chat assigned)
-  - Previous assignee (chat transferred)
-- **Real-time Sync**: Instant updates across all connected clients
+Write an answer once and send it in two keystrokes: type **/** and its shortcut in the reply box, or pick it from the saved replies button. Replies can fill in the customer's name, first name and email (`{{customer.name}}`, `{{customer.first_name}}`, `{{customer.email}}`) and yours (`{{agent.name}}`, `{{agent.first_name}}`). Add, edit and remove them in **Settings › Saved replies**, or use **Save as saved reply** on what you just typed.
 
-### Automated Chat Management
-- **Auto-close**: AI-handled chats automatically close after 24 hours of inactivity
-- **Reason Tracking**: End chat reasons and descriptions for analytics
-- **Background Processing**: Daily worker checks for inactive chats
+## Saved views
 
-## Real-time Features
+Set up the list the way you work (a view, a channel, an AI agent or teammate, the sort and a search) and choose **New view** under the views to save it under a name. One click, or its link, brings it all back. The ⋯ beside a view renames it, saves the list's current filters into it, shares it with the team, or deletes it. Sharing a view, and changing one someone else shared, is for people who manage all chats.
 
-### Live Updates
-- Socket.IO integration for instant notifications
-- Real-time chat status changes
-- Multi-client synchronization
-- Toast notifications for user actions
+## AI help
 
-### Notification System
-- Chat takeover notifications
-- Reassignment alerts
-- Status change updates
-- New message indicators
+- **Improve** rewrites what you typed: clearer, friendlier, shorter, or with the spelling fixed. **Undo** puts your text back.
+- **Refresh summary** has the AI summarize the conversation as it stands now. The summary the AI wrote at the handover is on the card above the team's first reply.
+- **Add the answer to knowledge** appears once your team has answered the customer's question in full. The AI checks the answer is complete and reusable, and opens the help center editor with a general question and answer, without the customer's details. When it isn't ready, it says what's missing.
 
-## What's Next?
+Each AI answer counts as one of your plan's AI messages on the ChatterMate model. With your own model key, nothing is counted.
 
-After setting up advanced chat management:
+## Customer details
 
-1. **Configure Filters**: Set up default filters for your team
-2. **Train Agents**: Educate team on takeover and reassignment features
-3. **Monitor Analytics**: Track chat lifecycle and agent performance
-4. **Optimize Workflows**: Use reassignment for workload balancing
-5. **Review Auto-close**: Adjust inactive chat timeout if needed
+Beside the thread: who the customer is (name, email, phone and anything your site passed in), the conversation (status, AI agent, who handles it, channel, handover reason, sentiment), and its linked ticket.
 
+On ChatterMate Cloud the panel also shows when the customer was first seen and how many chats they've had, their previous conversations (open one with a click), and, when the chat's AI agent is connected to Shopify, their latest orders, each opening in Shopify. Orders found by an email the customer only typed, rather than confirmed, say so.
+
+## Live updates
+
+The inbox updates as things happen: new messages, the AI's answers, a teammate taking or assigning a chat, notes, and closes. Counts refresh on their own.
+
+## Features by plan
+
+On ChatterMate Cloud, each inbox feature comes with a plan. Each plan includes everything in the plans above it.
+
+| Plan | Inbox features |
+| --- | --- |
+| **Free** | The inbox and its views, take over, hand to team, assign, close and reopen, notes and @-mentions, editing a reply, customer details with previous conversations and Shopify orders, snooze, up to 10 saved replies and 3 saved views each |
+| **Starter** | As many saved replies and views as you like, sharing views with the team, and AI help: Improve and Refresh summary |
+| **Growth** | AI-checked help articles from conversations (with the help center) |
+| **Pro** | Everything in Growth |
+
+On a lower plan, what your team saved stays saved and usable; you can't add past the plan's limit until you upgrade.
+
+Self-hosted installs have the inbox, its views, notes and mentions, editing replies, and customer details. Snooze, saved replies, saved views, AI help and the customer's history and orders are ChatterMate Cloud features.
