@@ -56,6 +56,18 @@ Create specialized roles with:
   </Accordion>
 </AccordionGroup>
 
+### Store Order Permissions
+On ChatterMate Cloud with a Shopify store, four permissions decide who can change a customer's order from the inbox (see [Shopify](/features/shopify)):
+
+| Permission | Allows | Default roles |
+| --- | --- | --- |
+| `refund_orders` | Refunding an order, in full or in part | Admin |
+| `cancel_orders` | Cancelling an order that hasn't shipped | Admin |
+| `edit_orders` | Changing an order's shipping address | Admin, Agent |
+| `create_discounts` | Creating a one-use discount code for a customer | Admin, Agent |
+
+Letting the AI agent cancel orders, change addresses or give codes needs both agent management and the matching permission.
+
 ## How Permissions Are Enforced
 
 Every permission is checked in two places, and both have to agree:

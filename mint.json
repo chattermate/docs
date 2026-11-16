@@ -70,6 +70,7 @@
         "features/single-sign-on",
         "features/chat-management",
         "features/jira-integration",
+        "features/shopify",
         "features/hubspot",
         "features/pipedrive"
       ]
