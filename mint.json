@@ -71,6 +71,7 @@
         "features/chat-management",
         "features/jira-integration",
         "features/shopify",
+        "features/wordpress",
         "features/hubspot",
         "features/pipedrive"
       ]
