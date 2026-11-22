@@ -69,6 +69,7 @@
         "features/roles",
         "features/single-sign-on",
         "features/chat-management",
+        "features/customer-memory",
         "features/jira-integration",
         "features/shopify",
         "features/wordpress",
