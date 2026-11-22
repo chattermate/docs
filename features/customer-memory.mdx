@@ -1,11 +1,11 @@
 ---
 title: 'Customer Memory'
-description: 'Let your AI agent remember returning customers: a short summary of recent conversations and what is still open, only for a customer the conversation proves.'
+description: 'Let your AI agent remember returning customers, so they never have to explain again. A Pro feature you turn on for each agent, with your privacy built in.'
 ---
 
 # Customer Memory
 
-When a customer comes back, the AI agent can pick up where things were left. It is given what it knows of their recent conversations with that agent: a short summary of each, how it ended, and anything still open. The customer doesn't have to explain again.
+When a customer comes back, your AI agent remembers their earlier conversations: what they asked about, what was done, and anything still open. The customer doesn't have to explain again.
 
 <Note>
 Customer memory is a **Pro** feature on ChatterMate Cloud. It isn't part of the open-source edition.
@@ -19,46 +19,30 @@ Customer memory is off for every agent until you turn it on.
 2. Open the **Advanced** tab.
 3. Turn on **Remember returning customers**.
 
-You need the **Manage Agents** permission to change it. On plans below Pro the switch is locked, with an upgrade link. Turning it off is always allowed, and the agent stops recalling straight away.
+You need the **Manage Agents** permission to change it. On plans below Pro the switch is locked, with an upgrade link. You can turn it off at any time.
 
 ## What the agent remembers
 
-Once a conversation has been quiet for 30 minutes, ChatterMate writes a short memory of it:
+For each earlier conversation, the agent keeps a short note: what the customer wanted, what was done or promised, and anything still to follow up. It remembers the customer's most recent conversations with that agent from the last 90 days.
 
-- **A summary** of what the customer wanted, what was found or done, and anything promised to them, in a few sentences.
-- **Open items**: up to five things still to do or still waiting on someone.
-- **How it ended**: resolved, unresolved, or handed over to your team.
-
-Memories are written in English whatever language the customer used, so they read the same for every agent. Names, order and ticket numbers, and the customer's own key phrases are kept as they wrote them. The agent still replies in the customer's language.
-
-If the customer writes in that conversation again, the memory is written again from the start.
-
-## What the agent is given
-
-When a returning customer starts a new conversation, the agent gets the memories of their **last three conversations** with that agent from the past 90 days, newest first.
-
-If they come back before their last conversation has a memory (within 30 minutes, say), the agent is given that conversation's last few messages instead.
-
-The agent is told to use this only where it helps with what the customer asks now, to check with them before acting on anything from it, and not to recite it back. It never changes the agent's instructions.
+The agent uses this only where it helps with what the customer asks now, and checks with them before acting on it. Notes are written in English, and the agent still replies in the customer's own language.
 
 ## Who counts as the same customer
 
-A customer is only recognised by something the conversation proves, so someone who types another person's email never sees that person's past:
+The agent only remembers someone it can be sure is the same person, so nobody sees another customer's history by typing their email:
 
-| Channel | Recognised as the same customer when |
+| Channel | Remembered when the customer |
 | --- | --- |
-| **Website widget** | They are on the same browser, or they confirmed their email with a code |
-| **WhatsApp, Telegram, Messenger, Instagram, LINE, SMS** | They message from the same account or number, on the same channel |
-| **Email, Slack, API** | Never: the sender can't be proven |
+| **Website widget** | Comes back on the same browser, or confirms their email with a code |
+| **WhatsApp, Telegram, Messenger, Instagram, LINE, SMS** | Messages from the same account or number |
+| **Email, Slack, API** | Not remembered |
 
-Memories never cross agents: each agent only recalls its own conversations with the customer.
+Each agent only remembers its own conversations with the customer.
 
 ## Privacy
 
-- Passwords, one-time codes, card, bank and ID numbers, and health details are taken out before the summary is written, and kept out of it.
-- Memories are encrypted at rest.
-- A memory is kept for 90 days. It is deleted with its conversation, so deleting a customer's data or your data retention settings remove it too.
+- Passwords, codes, card, bank and ID numbers, and health details are never kept.
+- Memories are encrypted.
+- Memories are kept for up to 90 days, and are deleted when the conversation is deleted.
 
-## AI usage
-
-Each memory is one call to your organization's AI model, in the background. It doesn't count as one of your plan's AI messages.
+Customer memory doesn't count toward your plan's AI messages.
