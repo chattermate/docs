@@ -7,6 +7,14 @@ description: 'Deploy ChatterMate with Docker in development or production, runni
 
 ChatterMate can be deployed using Docker in both development and production environments.
 
+## One-click install on hosting panels
+
+If your server runs a hosting control panel, you can install ChatterMate from the panel instead of setting up Docker Compose yourself.
+
+- **[Panelica](https://panelica.com)** (version 1.0.607 or later): open **Docker Manager**, find **ChatterMate** in the catalogue and deploy it. The template includes PostgreSQL with pgvector and Redis, and pins a tested ChatterMate release by image digest. When it's running, the panel shows the address and port to open, and you create your account there.
+
+The panel template follows ChatterMate releases with a short delay, since each new version is reviewed before the panel ships it.
+
 ## Development Setup
 
 For local development, we use `docker-compose.yml` which sets up:
