@@ -74,10 +74,38 @@ conversation to your team instead. See [Let AI Answer](#let-ai-answer) below.
     - Collect customer satisfaction metrics
     - Track agent performance
 
-    ### Status Management
-    - Toggle agent between Online/Offline states
-    - Offline agents won't accept new conversations
-    - Status is clearly displayed to customers
+    ### Online and Offline
+    Switch an agent **Offline** when nobody can answer, for example overnight or on a
+    holiday. While it is Offline:
+    - The AI stops answering, on the website and on every channel
+    - Each conversation gets one automatic reply, the **offline message**, and then waits in
+      your inbox for your team
+    - Open website chats change their header to *Offline · we'll reply when we're back*
+      straight away, with no page reload
+    - Once a teammate takes the conversation, they reply and no offline message is sent
+
+    Switch it back **Online** and the AI answers new messages again.
+
+    ### Offline Message
+    The reply a customer gets the first time they write to an Offline agent. It is sent
+    once per conversation, so a customer who keeps writing isn't told again. The default is:
+
+    > We're offline right now. Leave a message and our team will reply as soon as we're back.
+
+    To use your own words, write them under **Offline Message** in the agent's settings (up
+    to 500 characters). Leave the box empty to send the default.
+
+    **Ask for their email** is on by default. On your website, after the offline message,
+    visitors we have no email for get a short form asking for one, so your reply can reach
+    them after they leave. The email is saved on the customer, where your team sees it in
+    the inbox and on the People page. Turn it off to send the offline message alone. Other
+    channels never ask, because your reply goes back to the same thread.
+
+    <Note>
+    On ChatterMate Cloud, writing your own offline message is on the **Starter** plan and
+    up. On Free the agent sends the default message. Asking for an email works on every
+    plan. Self-hosted installs have all of it.
+    </Note>
   </Tab>
 
   <Tab title="Chat Customization">
