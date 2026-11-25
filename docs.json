@@ -49,6 +49,7 @@
               "features/customer-memory",
               "features/jira-integration",
               "features/shopify",
+              "features/shopify-whatsapp-order-updates",
               "features/wordpress",
               "features/hubspot",
               "features/pipedrive"
