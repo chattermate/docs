@@ -21,7 +21,8 @@ agent **call in** to ChatterMate to configure it.
 
 The server is a thin, stdio-based bridge over the ChatterMate API. It ships in the same
 `chattermate-cli` package as the [CLI](/features/cli) and is authenticated with a
-[Personal Access Token](/features/cli#personal-access-tokens).
+[Personal Access Token](/features/cli#personal-access-tokens), or, on a self-hosted open-source
+server, with your CLI login (see [Self-hosted open source](#self-hosted-open-source)).
 
 <CardGroup cols={3}>
   <Card title="stdio transport" icon="terminal">
@@ -106,6 +107,20 @@ If you installed with `pipx`, you can use the `chattermate-mcp` command directly
 Targeting a local or self-hosted backend? Add `"CHATTERMATE_API_URL": "http://localhost:8000"`
 to the `env` block.
 </Note>
+
+### Self-hosted open source
+
+Personal Access Tokens are a ChatterMate Cloud and enterprise feature, so an open-source server
+doesn't accept `cmat_` tokens. Log in with the CLI once instead, on the same machine as your MCP
+client:
+
+```bash
+chattermate --api-url https://api.example.com login --email you@acme.com
+```
+
+Then leave `CHATTERMATE_TOKEN` out of the `env` block. The server uses the saved login in
+`~/.chattermate/config.json` and refreshes it on its own. Every tool works, including knowledge and
+help center. If the refresh token expires, run `chattermate login` again.
 
 ## Available tools
 

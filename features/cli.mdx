@@ -10,8 +10,11 @@ agents, workflows, and knowledge sources directly from your terminal — no brow
 ideal for automation, CI pipelines, and scripting your ChatterMate setup.
 
 <Note>
-The CLI and MCP server are part of the **enterprise/commercial edition**. They authenticate with
-[Personal Access Tokens](#personal-access-tokens), which require the enterprise backend.
+The CLI and the [MCP server](/features/mcp-server) work with ChatterMate Cloud and with a
+self-hosted **open-source** server. On open source, sign in with `chattermate login --email` and
+your password: [Personal Access Tokens](#personal-access-tokens) (`cmat_...`) are a ChatterMate
+Cloud and enterprise feature, so `chattermate token`, `login --token` and `CHATTERMATE_TOKEN` don't
+work there. Everything else does, including the [knowledge and help center commands](#managing-resources).
 </Note>
 
 <Warning>
@@ -97,7 +100,8 @@ You can authenticate three ways.
   </Tab>
   <Tab title="Personal Access Token">
     Best for automation, CI, and AI agents. Long-lived and revocable. Pass it via the
-    `CHATTERMATE_TOKEN` environment variable.
+    `CHATTERMATE_TOKEN` environment variable. ChatterMate Cloud and enterprise only: on a
+    self-hosted open-source server, use the interactive login instead.
 
     ```bash
     export CHATTERMATE_TOKEN=cmat_xxxxxxxxxxxxxxxxxxxx
