@@ -94,8 +94,12 @@ the URL resolved, the key was accepted, and the model ID exists.
 
   <Tab title="llama.cpp">
     ```bash
-    llama-server -m ./models/your-model.gguf --host 0.0.0.0 --port 8080
+    llama-server -m ./models/your-model.gguf --jinja --host 0.0.0.0 --port 8080
     ```
+
+    `--jinja` turns on the model's chat template, which llama.cpp needs for tool calling.
+    Also set `JSON_TOOL_OUTPUT_PROVIDERS=OPENAI_COMPATIBLE` on the backend; see
+    [Server settings for local models](#server-settings-for-local-models).
 
     | Field | Value |
     | --- | --- |
@@ -190,6 +194,57 @@ Practical checks after connecting:
 If any of those silently do nothing, the model is the most likely cause. Try a larger
 one before debugging anything else.
 
+## Server settings for local models
+
+Two backend settings matter for a model on your own hardware. Add them to `backend/.env`,
+then restart the backend (`docker compose up -d --force-recreate backend`).
+
+| Setting | What it does | For a local model |
+| --- | --- | --- |
+| `JSON_TOOL_OUTPUT_PROVIDERS` | Comma-separated providers that return structured replies through a `json` tool call instead of `response_format`. Groq always does. | `OPENAI_COMPATIBLE` |
+| `AGENT_RUN_TIMEOUT` | Seconds one agent reply may take before it's cancelled and the visitor gets an error reply. Default `90`. | `300`–`600` on CPU or a small GPU |
+
+```bash backend/.env
+JSON_TOOL_OUTPUT_PROVIDERS=OPENAI_COMPATIBLE
+AGENT_RUN_TIMEOUT=600
+```
+
+**Why `JSON_TOOL_OUTPUT_PROVIDERS`:** by default ChatterMate sends the knowledge search
+tool and `response_format` in the same request. llama.cpp rejects that with HTTP 400
+`failed to parse grammar`. LM Studio accepts it, but the model stops calling the search
+tool and answers without your knowledge base. Turn it on for Ollama too if the agent
+never searches. With the setting on, the model
+gives its final answer through a `json` tool, so search runs as normal. Chat, FAQ
+generation and ticket investigation all follow it. Leave it off for hosted gateways such
+as OpenRouter, which handle `response_format` fine.
+
+<Note>
+  Needs ChatterMate v1.0.34 or later.
+</Note>
+
+**Model size:** use a model with tool calling, 7B parameters or larger. In our tests,
+Qwen2.5-7B-Instruct on llama.cpp searched and answered correctly, while Qwen2.5-1.5B never
+called the tools at all.
+
+### Embedding model
+
+Knowledge search uses a separate, small embedding model that runs inside the backend,
+set by `FASTEMBED_MODEL` (default `BAAI/bge-small-en-v1.5`). It's independent of the
+chat model, so it already runs locally.
+
+To change it, pick a [FastEmbed](https://qdrant.github.io/fastembed/examples/Supported_Models/)
+model with **384 dimensions**, such as `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`,
+which uses about 450 MB more memory.
+
+<Warning>
+  Changing `FASTEMBED_MODEL` doesn't re-embed knowledge you've already added. Remove
+  your existing sources and add them again after the change, or search will compare
+  vectors from two different models.
+</Warning>
+
+The default works well for many languages too, because the agent rewrites each
+question into search keywords before it searches.
+
 ## Troubleshooting
 
 <AccordionGroup>
@@ -212,9 +267,22 @@ one before debugging anything else.
     [Reaching your endpoint from Docker](#reaching-your-endpoint-from-docker).
   </Accordion>
 
+  <Accordion title="Every chat fails with 400 &quot;failed to parse grammar&quot;">
+    llama.cpp can't take tools and `response_format` in one request. Set
+    `JSON_TOOL_OUTPUT_PROVIDERS=OPENAI_COMPATIBLE` in `backend/.env` and restart the
+    backend. See [Server settings for local models](#server-settings-for-local-models).
+  </Accordion>
+
   <Accordion title="Replies work, but the agent never searches the knowledge base">
-    The model isn't calling tools. This is a model capability problem, not a
-    configuration one — switch to a model that supports tool calling.
+    First set `JSON_TOOL_OUTPUT_PROVIDERS=OPENAI_COMPATIBLE` (see
+    [Server settings for local models](#server-settings-for-local-models)). On llama.cpp,
+    also start the server with `--jinja`. If it still never searches, the model can't
+    call tools: switch to a larger model that supports tool calling.
+  </Accordion>
+
+  <Accordion title="Replies time out with an error">
+    Local models on CPU or a small GPU can take minutes per reply. Raise
+    `AGENT_RUN_TIMEOUT` in `backend/.env` to `300`–`600` and restart the backend.
   </Accordion>
 
   <Accordion title="The Base URL field doesn't appear">
