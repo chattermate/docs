@@ -1,11 +1,11 @@
 ---
 title: 'WhatsApp order updates for Shopify'
-description: 'Set up WhatsApp order updates and COD confirmation from the ChatterMate Shopify app: connect your number, add a payment method, get templates approved and add the thank-you page opt-in.'
+description: 'WhatsApp order updates and COD confirmation in the ChatterMate Shopify app: placed, shipped, out for delivery and delivered messages, the opt-in, and a sent log.'
 ---
 
 # WhatsApp order updates for Shopify
 
-Send customers a WhatsApp message when their order is placed and when it ships, and ask cash-on-delivery customers to confirm before you ship. Replies go to your AI agent, so "where is my order?" gets answered in the same chat.
+Send customers a WhatsApp message when their order is placed, when it ships, when it's out for delivery and when it arrives, and ask cash-on-delivery customers to confirm before you ship. Replies go to your AI agent, so "where is my order?" gets answered in the same chat.
 
 Everything is set up from the ChatterMate app inside Shopify admin, under **Apps → ChatterMate → Automations → Order tracking**. Setup takes about 10 minutes, plus Meta's review time.
 
@@ -62,13 +62,20 @@ New numbers can start conversations with 250 customers a day. Meta raises the li
 
 ## Step 4 — Turn on order updates
 
-Switch on **Order updates** and choose which messages to send: **Order placed**, **Shipped, with tracking**, or both.
+Switch on **Order updates** and choose which messages to send:
+
+- **Order placed**
+- **Shipped, with tracking**: the carrier and tracking link
+- **Out for delivery**: sent the day the carrier has it out for delivery
+- **Delivered**: sent when the carrier marks it delivered
+
+Out for delivery and delivered come from the carrier's tracking in Shopify, so they're sent only for carriers Shopify tracks. If an order is already delivered by the time an out-for-delivery message would go, only the delivered one is sent.
 
 <Frame>
   <img src="/images/shopify-order-updates-card.webp" alt="The Order updates card with Order placed and Shipped, with tracking selected, and the template review status" />
 </Frame>
 
-Turning it on submits ChatterMate's message templates to Meta for you, as **Utility** templates. You don't need to write or submit anything in WhatsApp Manager. Review usually takes minutes and can take up to 24 hours. The card shows each template's status, and messages start once they're approved.
+Turning it on submits ChatterMate's message templates to Meta for you, as **Utility** templates. You don't need to write or submit anything in WhatsApp Manager. Review usually takes minutes and can take up to 24 hours. The card shows each template's status, and messages start once they're approved. Next to the switches, a preview shows each message as customers see it: pick **Placed**, **Shipped**, **Out for delivery** or **Delivered** to switch between them.
 
 To see what customers get, type your own WhatsApp number under **Send a sample to your own WhatsApp**.
 
@@ -92,12 +99,27 @@ For cash-on-delivery orders, ChatterMate sends a message with **Confirm**, **Can
 
 So a tap can confirm or cancel the order, click **Allow order changes** and approve the permission in Shopify. Then switch on **COD confirmation**, and pick which payment methods count as cash on delivery and how long to wait before sending. You can also choose whether customers may cancel with a button.
 
+## Recent messages
+
+Once order updates or COD confirmation is on, the **Recent messages** card lists your store's latest 20 order messages: the order, the message, the customer's number (last four digits only) and what happened.
+
+| Status | Meaning |
+|---|---|
+| **Replied** | Sent, and the customer replied. The chat is in your inbox. |
+| **Read** / **Sent** | Delivered to WhatsApp, read or not yet read. |
+| **Waiting** | Queued, for example until the morning in your time zone. |
+| **On hold** | Held back, with the reason shown, such as waiting for Meta to approve the message or for your daily limit to reset. |
+| **Not sent** | It won't be sent, with the reason, such as the customer replied STOP or didn't tick the WhatsApp box. |
+
+Click **Refresh** to check again.
+
 ## How sending works
 
 - **Only to customers who opted in.** A tick on the thank-you page covers that order's updates.
 - **Not at night.** Nothing is sent between 9 pm and 8 am in your store's time zone. Messages wait until morning.
 - **Replies go to your AI agent**, and a teammate can take over from the inbox.
 - **Customers can reply STOP** to stop all messages from your number, and **START** to get them again.
+- **One chat per customer.** In some countries (such as Mexico, Argentina and Brazil) WhatsApp writes a number differently from how it was typed at checkout. ChatterMate treats both forms as the same customer, so STOP, START and replies all land in one chat.
 
 ## Troubleshooting
 
@@ -107,6 +129,8 @@ So a tap can confirm or cancel the order, click **Allow order changes** and appr
 | Message templates: in review with Meta | Wait for Meta's review. Messages start once the templates are approved. |
 | A template was rejected | Contact support and we'll look at it with you. |
 | Allow order changes | Click it and approve the permission in Shopify so COD buttons can confirm or cancel orders. |
+| No out-for-delivery or delivered messages | Check the order's carrier shows tracking updates in Shopify. These messages only go for carriers Shopify tracks. |
+| A message shows **On hold** or **Not sent** | The **Recent messages** card gives the reason for each one. |
 | Nobody has opted in | Check the **WhatsApp order updates** block is on your thank-you page and saved. |
 
 For the WhatsApp channel itself (templates, the 24-hour window, connecting from the ChatterMate dashboard), see [WhatsApp](/features/channels/whatsapp).
